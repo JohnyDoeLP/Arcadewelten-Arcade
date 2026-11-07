@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- ACP: explanation on the categories page mentions the group visibility
+
 ## 0.14.0-beta (2026-11-07)
 
 - New phpBB permission **“Can use the arcade”** (user permissions, tab “Misc”). Granted to guests, registered users and the usual user roles on installation, so nothing changes until you adjust it. Without it the arcade link is hidden, guests are asked to log in and members get a notice.
