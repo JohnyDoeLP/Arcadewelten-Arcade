@@ -1,0 +1,14 @@
+Text block for your privacy policy (Arcadewelten Arcade)
+--------------------------------------------------------
+
+Arcade
+
+Our arcade lets you play browser games. When you play as a logged-in member, we store for each game your best score, the time of that result and the number of your tries. Other logged-in members can see this data together with your username in the highscores, on your records page and next to your posts. During a game we briefly create a play session (member ID, game, start time) so that only genuine results are saved; it is deleted after the score has been submitted; unfinished sessions are removed automatically after about four to five hours.
+
+If a result is flagged by the automatic plausibility check (e.g. an unusually short play time), it is stored with game, score and play time for review by an administrator and is then accepted or deleted.
+
+The games and the Flash emulator they need (Ruffle) are loaded exclusively from our own server. No data is transferred to third parties and no advertising or tracking services are used.
+
+The legal basis is Art. 6(1)(b) GDPR (use of the arcade as part of our forum). If your account is deleted, your arcade data is deleted as well.
+
+[Only if points (Ultimate Points) are enabled:] Forum points may be deducted for playing and credited for results; these transactions are stored in your points account in the forum.

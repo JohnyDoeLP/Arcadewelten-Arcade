@@ -1,0 +1,10 @@
+{% if loops.aw_latest_records|length %}
+<div class="stat-block aw-latest-records">
+	<h3><a href="{{ U_AW_ARCADE_HALL }}">{{ lang('AW_ARCADE_LATEST_RECORDS') }}</a></h3>
+	<p>
+	{% for r in loops.aw_latest_records %}
+		<i class="icon fa-trophy" style="color:#d4a017" aria-hidden="true"></i> {{ r.USER }} – <a href="{{ r.U_SCORES }}">{{ r.GAME }}</a> <span class="responsive-hide">({{ r.DATE }})</span>{% if not loop.last %}<br>{% endif %}
+	{% endfor %}
+	</p>
+</div>
+{% endif %}

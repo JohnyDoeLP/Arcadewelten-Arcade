@@ -1,0 +1,57 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+
+<h2 class="aw-title">{{ lang('AW_ARCADE_HIGHSCORES') }}: {{ AW_GAME_NAME }}</h2>
+
+{% if AW_MESSAGE %}
+<div class="panel aw-message"><div class="inner"><p>{{ AW_MESSAGE }}</p></div></div>
+{% endif %}
+
+<div class="panel">
+	<div class="inner aw-score-head">
+		{% if AW_GAME_IMAGE %}<img class="aw-score-img" src="{{ AW_GAME_IMAGE }}" alt="">{% endif %}
+		<div>
+			<p>{{ lang('AW_ARCADE_PLAYS', AW_GAME_PLAYS) }} &bull; {{ lang('AW_ARCADE_PLAYERS', AW_TOTAL_SCORES) }}{% if S_AW_LOW_WINS %} &bull; {{ lang('AW_ARCADE_LOW_WINS') }}{% endif %}</p>
+			{% if AW_MY_RANK %}<p>{{ lang('AW_ARCADE_MY_RANK', AW_MY_RANK) }}</p>{% endif %}
+			<a class="button" href="{{ U_AW_PLAY }}"><i class="icon fa-play fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_PLAY_NOW') }}</span></a>
+		</div>
+	</div>
+</div>
+
+{% if loops.scores|length %}
+<div class="forumbg">
+	<div class="inner">
+	<table class="table1 aw-scores">
+		<thead>
+			<tr>
+				<th class="aw-rank">#</th>
+				<th>{{ lang('USERNAME') }}</th>
+				<th class="aw-num">{{ lang('AW_ARCADE_SCORE') }}</th>
+				<th class="aw-num">{{ lang('AW_ARCADE_TRIES') }}</th>
+				<th>{{ lang('AW_ARCADE_DATE') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for s in loops.scores %}
+			<tr class="{% if s.S_ME %}reported{% elseif loop.index is odd %}bg1{% else %}bg2{% endif %}">
+				<td class="aw-rank">{% if s.RANK <= 3 %}<i class="icon fa-trophy aw-cup aw-cup-{{ s.RANK }}" aria-hidden="true" title="{{ s.RANK }}."></i>{% else %}{{ s.RANK }}{% endif %}</td>
+				<td>{{ s.USER }}</td>
+				<td class="aw-num"><strong>{{ s.SCORE }}</strong></td>
+				<td class="aw-num">{{ s.PLAYS }}</td>
+				<td>{{ s.DATE }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	</div>
+</div>
+{% if loops.pagination|length %}
+<div class="action-bar bar-bottom"><div class="pagination">{% include 'pagination.html' %}</div></div>
+{% endif %}
+{% else %}
+<div class="panel"><div class="inner"><p>{{ lang('AW_ARCADE_NO_HIGHSCORES') }}</p></div></div>
+{% endif %}
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

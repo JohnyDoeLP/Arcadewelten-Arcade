@@ -1,0 +1,24 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+
+<h2 class="aw-title">{{ AW_GAME_NAME }}</h2>
+
+<form method="post" action="{{ U_AW_ACTION }}">
+<div class="panel">
+	<div class="inner">
+		{% if AW_ERROR %}<p class="error">{{ AW_ERROR }}</p>{% endif %}
+		<p><strong>{{ lang('AW_ARCADE_PAY_EXPLAIN', AW_COST, AW_POINTS_NAME) }}</strong></p>
+		<p>{{ lang('AW_ARCADE_YOUR_BALANCE', AW_BALANCE, AW_POINTS_NAME) }}</p>
+		{% if AW_POINTS_INFO %}<p class="aw-small">{{ AW_POINTS_INFO }}</p>{% endif %}
+		<p>
+			<button class="button" type="submit" name="aw_pay" value="1"><i class="icon fa-play fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_PAY_AND_PLAY', AW_COST, AW_POINTS_NAME) }}</span></button>
+			<a class="button" href="{{ U_AW_ARCADE }}"><span>{{ lang('CANCEL') }}</span></a>
+		</p>
+		{{ S_FORM_TOKEN }}
+	</div>
+</div>
+</form>
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

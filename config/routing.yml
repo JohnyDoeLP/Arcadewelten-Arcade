@@ -1,0 +1,32 @@
+arcadewelten_arcade_index:
+    path: /arcadehall
+    defaults: { _controller: arcadewelten.arcade.controller.main:index, cat_id: 0 }
+
+arcadewelten_arcade_cat:
+    path: /arcadehall/cat/{cat_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:index }
+    requirements:
+        cat_id: \d+
+
+arcadewelten_arcade_play:
+    path: /arcadehall/play/{game_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:play }
+    requirements:
+        game_id: \d+
+
+arcadewelten_arcade_scores:
+    path: /arcadehall/scores/{game_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:scores }
+    requirements:
+        game_id: \d+
+
+arcadewelten_arcade_submit:
+    path: /arcadehall/submit
+    defaults: { _controller: arcadewelten.arcade.controller.main:submit }
+    methods: [POST]
+
+arcadewelten_arcade_user:
+    path: /arcadehall/user/{user_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:user }
+    requirements:
+        user_id: \d+

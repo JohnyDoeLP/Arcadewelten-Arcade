@@ -1,0 +1,187 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+
+<h2 class="aw-title">{{ AW_GAME_NAME }}</h2>
+
+{% if S_AW_GUEST and not S_AW_NO_SCORES %}
+<div class="panel aw-message"><div class="inner"><p>{{ lang('AW_ARCADE_GUEST_HINT') }}</p></div></div>
+{% endif %}
+
+{% if AW_POINTS_INFO %}
+<p class="aw-points-info"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ AW_POINTS_INFO }}</p>
+{% endif %}
+
+<div class="aw-play-wrap">
+	<div id="aw-stage" class="aw-stage" style="max-width: {{ AW_GAME_WIDTH }}px; aspect-ratio: {{ AW_GAME_WIDTH }} / {{ AW_GAME_HEIGHT }};">
+		{% if S_AW_HTML5 %}
+		<iframe id="aw-frame" src="{{ AW_GAME_URL }}" title="{{ AW_GAME_NAME }}" allow="autoplay; fullscreen" allowfullscreen></iframe>
+		{% endif %}
+		<noscript><p class="error">{{ lang('AW_ARCADE_NEED_JS') }}</p></noscript>
+	</div>
+	<div class="aw-play-tools">
+		<button type="button" class="button" id="aw-fullscreen"><i class="icon fa-arrows-alt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_FULLSCREEN') }}</span></button>
+		{% if not S_AW_GUEST %}<a class="button" href="{{ U_AW_SCORES }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_HIGHSCORES') }}</span></a>{% endif %}
+	</div>
+</div>
+
+<div class="aw-columns">
+	{% if AW_GAME_DESC %}
+	<div class="panel aw-col">
+		<div class="inner">
+			<h3>{{ lang('AW_ARCADE_DESCRIPTION') }}</h3>
+			<p>{{ AW_GAME_DESC }}</p>
+		</div>
+	</div>
+	{% endif %}
+	{% if not S_AW_NO_SCORES and not S_AW_GUEST %}
+	<div class="panel aw-col">
+		<div class="inner">
+			<h3>{{ lang('AW_ARCADE_TOP10') }}</h3>
+			{% if loops.scores|length %}
+			<ol class="aw-top">
+				{% for s in loops.scores %}<li>{% if s.RANK <= 3 %}<i class="icon fa-trophy fa-fw aw-cup aw-cup-{{ s.RANK }}" aria-hidden="true"></i> {% endif %}{{ s.USER }} <strong>{{ s.SCORE }}</strong></li>{% endfor %}
+			</ol>
+			{% else %}
+			<p>{{ lang('AW_ARCADE_NO_HIGHSCORES') }}</p>
+			{% endif %}
+		</div>
+	</div>
+	{% endif %}
+</div>
+
+<form id="aw-score-form" style="display:none">{{ S_FORM_TOKEN }}</form>
+
+<script>
+(function () {
+	'use strict';
+
+	var stage = document.getElementById('aw-stage');
+	var cfg = {
+		gameUrl: {{ AW_GAME_URL|json_encode|raw }},
+		boardUrl: {{ AW_BOARD_URL|json_encode|raw }},
+		ruffleUrl: {{ AW_RUFFLE_URL|json_encode|raw }},
+		playId: {{ AW_PLAY_ID|json_encode|raw }},
+		submitUrl: {{ U_AW_SUBMIT|json_encode|raw }},
+		scoresUrl: {{ U_AW_SCORES|json_encode|raw }},
+		guestDoneUrl: {{ U_AW_GUEST_DONE|json_encode|raw }}
+	};
+
+	/* Score API for HTML5 games:
+	 *   parent.awArcade.submitScore(1234)
+	 * or
+	 *   parent.postMessage({ type: 'aw_arcade_score', score: 1234 }, '*')
+	 */
+	var sent = false;
+	window.awArcade = {
+		submitScore: function (score) {
+			if (sent) { return; }
+			sent = true;
+
+			if (!cfg.playId) {
+				window.location.href = cfg.guestDoneUrl;
+				return;
+			}
+
+			var data = new FormData(document.getElementById('aw-score-form'));
+			data.append('play_id', cfg.playId);
+			data.append('score', String(Number(score) || 0));
+
+			fetch(cfg.submitUrl, { method: 'POST', body: data, credentials: 'same-origin' })
+				.then(function (r) { return r.json(); })
+				.then(function (res) { window.location.href = res.redirect || cfg.scoresUrl; })
+				.catch(function () { window.location.href = cfg.scoresUrl; });
+		}
+	};
+
+	window.addEventListener('message', function (e) {
+		if (e.origin !== window.location.origin || !e.data || e.data.type !== 'aw_arcade_score') { return; }
+		window.awArcade.submitScore(e.data.score);
+	});
+
+	/* Keyboard focus for HTML5 games: some games block the default mouse action,
+	 * so the game frame never gets the focus and keys would go to the forum page. */
+	var frame = document.getElementById('aw-frame');
+	if (frame) {
+		var focusGame = function () {
+			try { frame.contentWindow.focus(); } catch (e) {}
+		};
+		frame.addEventListener('load', focusGame);
+		frame.addEventListener('pointerenter', focusGame);
+		frame.addEventListener('mouseenter', focusGame);
+	}
+
+	/* While the mouse is over the game or the game is in fullscreen, keys belong to the game:
+	 * they must not scroll the page or open the browser's quick find (Firefox). */
+	var overStage = false;
+	stage.addEventListener('mouseenter', function () { overStage = true; });
+	stage.addEventListener('mouseleave', function () { overStage = false; });
+	document.addEventListener('keydown', function (e) {
+		var t = e.target;
+		var fs = (document.fullscreenElement || document.webkitFullscreenElement) === stage;
+		if (!frame || !(overStage || fs) || e.ctrlKey || e.metaKey || e.altKey || e.key === 'Escape' || e.key === 'F11' ||
+			(t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))) {
+			return;
+		}
+		if (e.key && (e.key.length === 1 || /^Arrow|^(Enter|Tab|Backspace|PageUp|PageDown|Home|End)$/.test(e.key))) {
+			e.preventDefault();
+			try { frame.contentWindow.focus(); } catch (x) {}
+		}
+	});
+
+	/* Fullscreen: the whole stage (Ruffle player or game iframe) fills the screen. */
+	document.getElementById('aw-fullscreen').addEventListener('click', function () {
+		var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+		if (fsEl) {
+			(document.exitFullscreen || document.webkitExitFullscreen).call(document);
+			return;
+		}
+		var req = stage.requestFullscreen || stage.webkitRequestFullscreen;
+		if (req) {
+			var res = req.call(stage);
+			if (res && res.then) {
+				res.then(function () {
+					var game = stage.querySelector('ruffle-player, iframe');
+					if (game) { game.focus(); }
+				}).catch(function () {});
+			}
+		}
+	});
+
+	{% if S_AW_FLASH %}
+	window.RufflePlayer = window.RufflePlayer || {};
+	window.RufflePlayer.config = {
+		publicPath: cfg.ruffleUrl,
+		polyfills: false,
+		autoplay: 'on',
+		unmuteOverlay: 'visible',
+		splashScreen: false,
+		letterbox: 'on',
+		allowScriptAccess: true,
+		allowNetworking: 'all',
+		openUrlMode: 'allow',
+		upgradeToHttps: window.location.protocol === 'https:',
+		warnOnUnsupportedContent: false,
+		contextMenu: 'rightClickOnly'
+	};
+
+	var s = document.createElement('script');
+	s.src = cfg.ruffleUrl + 'ruffle.js';
+	s.onload = function () {
+		var player = window.RufflePlayer.newest().createPlayer();
+		player.id = 'aw-ruffle';
+		stage.appendChild(player);
+		// Old arcade games resolve their score URLs relative to the board root.
+		var api = typeof player.ruffle === 'function' ? player.ruffle() : player;
+		api.load({ url: cfg.gameUrl, base: cfg.boardUrl, allowScriptAccess: true });
+	};
+	s.onerror = function () {
+		stage.innerHTML = '<p class="error">{{ lang('AW_ARCADE_RUFFLE_MISSING')|e('js') }}</p>';
+	};
+	document.head.appendChild(s);
+	{% endif %}
+})();
+</script>
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

@@ -1,0 +1,37 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+
+<h2 class="aw-title"><i class="icon fa-trophy aw-cup aw-cup-1" aria-hidden="true"></i> {{ lang('AW_ARCADE_RECORDS_TITLE') }}: {{ AW_USER }}</h2>
+
+{% if loops.records|length %}
+<div class="forumbg">
+	<div class="inner">
+	<table class="table1 aw-scores">
+		<thead>
+			<tr>
+				<th>{{ lang('AW_ARCADE_GAME') }}</th>
+				<th class="aw-num">{{ lang('AW_ARCADE_SCORE') }}</th>
+				<th>{{ lang('AW_ARCADE_DATE') }}</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for r in loops.records %}
+			<tr class="{% if loop.index is odd %}bg1{% else %}bg2{% endif %}">
+				<td><a href="{{ r.U_PLAY }}"><strong>{{ r.GAME }}</strong></a></td>
+				<td class="aw-num">{{ r.SCORE }}</td>
+				<td>{{ r.DATE }}</td>
+				<td><a href="{{ r.U_SCORES }}">{{ lang('AW_ARCADE_HIGHSCORES') }}</a></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	</div>
+</div>
+{% else %}
+<div class="panel"><div class="inner"><p>{{ lang('AW_ARCADE_NO_RECORDS') }}</p></div></div>
+{% endif %}
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

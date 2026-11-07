@@ -1,0 +1,7 @@
+<p><strong>{{ lang('ACP_AW_ARCADE_POINTS') }}</strong> – {{ lang('ACP_AW_ARCADE_PT_INHERIT_EXPLAIN') }}</p>
+{% for f in loops.point_fields %}
+<dl>
+	<dt><label for="pt_{{ f.KEY }}">{{ f.LABEL }}{{ lang('COLON') }}</label></dt>
+	<dd><input type="text" class="text" size="8" id="pt_{{ f.KEY }}" name="pt_{{ f.KEY }}" value="{{ f.VALUE }}" placeholder="{{ lang('ACP_AW_ARCADE_PT_INHERIT') }}"> <span class="small">({{ lang('ACP_AW_ARCADE_PT_GLOBAL', f.GLOBAL) }})</span></dd>
+</dl>
+{% endfor %}

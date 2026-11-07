@@ -1,0 +1,105 @@
+parameters:
+    arcadewelten.arcade.tables.games: '%core.table_prefix%aw_arcade_games'
+    arcadewelten.arcade.tables.cats: '%core.table_prefix%aw_arcade_cats'
+    arcadewelten.arcade.tables.scores: '%core.table_prefix%aw_arcade_scores'
+    arcadewelten.arcade.tables.sessions: '%core.table_prefix%aw_arcade_sessions'
+    arcadewelten.arcade.tables.flagged: '%core.table_prefix%aw_arcade_flagged'
+
+services:
+    arcadewelten.arcade.games:
+        class: arcadewelten\arcade\core\games
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '%core.root_path%'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.cats%'
+
+    arcadewelten.arcade.scores:
+        class: arcadewelten\arcade\core\scores
+        arguments:
+            - '@dbal.conn'
+            - '@cache.driver'
+            - '%arcadewelten.arcade.tables.scores%'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.sessions%'
+            - '%arcadewelten.arcade.tables.cats%'
+            - '%arcadewelten.arcade.tables.flagged%'
+            - '@config'
+
+    arcadewelten.arcade.importer:
+        class: arcadewelten\arcade\core\importer
+        arguments:
+            - '@arcadewelten.arcade.games'
+            - '@config'
+            - '%core.root_path%'
+
+    arcadewelten.arcade.access:
+        class: arcadewelten\arcade\core\access
+        arguments:
+            - '@config'
+            - '@user'
+            - '@auth'
+            - '@request'
+            - '@passwords.manager'
+
+    arcadewelten.arcade.points:
+        class: arcadewelten\arcade\core\points
+        arguments:
+            - '@config'
+            - '@language'
+            - '@?dmzx.ultimatepoints.api'
+
+    arcadewelten.arcade.season:
+        class: arcadewelten\arcade\core\season
+        arguments:
+            - '@arcadewelten.arcade.games'
+            - '@arcadewelten.arcade.scores'
+            - '@arcadewelten.arcade.points'
+            - '@config'
+            - '@log'
+            - '@user'
+            - '@language'
+
+    arcadewelten.arcade.legacy:
+        class: arcadewelten\arcade\core\legacy
+        arguments:
+            - '@arcadewelten.arcade.games'
+            - '@arcadewelten.arcade.scores'
+            - '@arcadewelten.arcade.points'
+            - '@request'
+            - '@user'
+            - '@auth'
+            - '@controller.helper'
+            - '@config'
+            - '@log'
+
+    arcadewelten.arcade.controller.main:
+        class: arcadewelten\arcade\controller\main
+        arguments:
+            - '@arcadewelten.arcade.games'
+            - '@arcadewelten.arcade.scores'
+            - '@arcadewelten.arcade.access'
+            - '@arcadewelten.arcade.points'
+            - '@config'
+            - '@controller.helper'
+            - '@template'
+            - '@language'
+            - '@user'
+            - '@request'
+            - '@pagination'
+            - '%core.root_path%'
+
+    arcadewelten.arcade.listener:
+        class: arcadewelten\arcade\event\listener
+        arguments:
+            - '@arcadewelten.arcade.legacy'
+            - '@arcadewelten.arcade.scores'
+            - '@controller.helper'
+            - '@template'
+            - '@request'
+            - '@user'
+            - '@language'
+            - '@config'
+        tags:
+            - { name: event.listener }

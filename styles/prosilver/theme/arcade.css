@@ -1,0 +1,93 @@
+/* Arcadewelten Arcade */
+.aw-title { margin-top: 0.5em; }
+
+.aw-cats .inner { display: flex; flex-wrap: wrap; gap: 6px; }
+.aw-cat { display: inline-block; padding: 4px 10px; border: 1px solid #c7c3bf; border-radius: 4px; text-decoration: none; }
+.aw-cat-active { font-weight: bold; border-color: #105289; }
+.aw-count { opacity: 0.6; font-size: 0.9em; }
+
+.aw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 10px 0; }
+.aw-card { display: flex; gap: 8px; padding: 8px; border: 1px solid #c7c3bf; border-radius: 6px; background: rgba(255, 255, 255, 0.35); }
+.aw-thumb { flex: 0 0 64px; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: rgba(0, 0, 0, 0.06); }
+.aw-thumb img { max-width: 100%; max-height: 100%; }
+.aw-thumb .icon { font-size: 28px; opacity: 0.5; }
+.aw-card-body { min-width: 0; }
+.aw-game-name { font-weight: bold; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aw-small { font-size: 0.9em; opacity: 0.85; margin-top: 2px; }
+
+.aw-play-wrap { margin: 10px 0; text-align: center; }
+.aw-stage { width: 100%; margin: 0 auto; background: #000; position: relative; }
+.aw-stage > ruffle-player, .aw-stage > iframe { display: block; width: 100%; height: 100%; border: 0; }
+.aw-stage:fullscreen { max-width: none !important; aspect-ratio: auto !important; width: 100vw; height: 100vh; }
+.aw-stage:-webkit-full-screen { max-width: none !important; aspect-ratio: auto !important; width: 100vw; height: 100vh; }
+.aw-play-tools { margin-top: 8px; }
+
+.aw-columns { display: flex; flex-wrap: wrap; gap: 10px; }
+.aw-col { flex: 1 1 280px; }
+.aw-top { margin-left: 1.5em; }
+.aw-top li { margin: 2px 0; }
+
+.aw-message .inner { font-weight: bold; }
+.aw-score-head { display: flex; gap: 12px; align-items: center; }
+.aw-score-img { max-width: 80px; max-height: 80px; border-radius: 4px; }
+.aw-scores .aw-num { text-align: right; }
+.aw-scores .aw-rank { width: 40px; text-align: center; }
+
+/* Trophies */
+.aw-cup-1 { color: #d4a017; }
+.aw-cup-2 { color: #9fa4ab; }
+.aw-cup-3 { color: #b8713a; }
+.aw-podium { list-style: none; margin: 2px 0 0; padding: 0; }
+.aw-podium li { margin: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aw-podium-score { opacity: 0.8; }
+.aw-hall h3 { margin-top: 0; }
+.aw-hall-list { display: flex; flex-wrap: wrap; gap: 12px; }
+.aw-hall-entry { flex: 1 1 180px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid #c7c3bf; border-radius: 6px; background: rgba(255, 255, 255, 0.35); }
+.aw-hall-entry .aw-cup { font-size: 30px; }
+.aw-place-1 .aw-cup { font-size: 38px; }
+.aw-hall-user { font-weight: bold; font-size: 1.15em; }
+.aw-records-badge { white-space: nowrap; }
+
+/* Podium */
+.aw-podium-stage { display: flex; justify-content: center; align-items: flex-end; gap: 10px; padding-top: 6px; }
+.aw-step { flex: 0 1 200px; display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
+.aw-step-1 { order: 2; }
+.aw-step-2 { order: 1; }
+.aw-step-3 { order: 3; }
+.aw-step-avatar { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.08); margin-bottom: 4px; border: 3px solid #9fa4ab; }
+.aw-step-1 .aw-step-avatar { width: 84px; height: 84px; border-color: #d4a017; }
+.aw-step-3 .aw-step-avatar { border-color: #b8713a; }
+.aw-step-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.aw-step-avatar .icon { font-size: 40px; opacity: 0.6; }
+.aw-step-user { font-weight: bold; font-size: 1.1em; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aw-step-block { width: 100%; margin-top: 6px; border-radius: 6px 6px 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
+.aw-step-block .aw-cup { color: #fff; font-size: 26px; }
+.aw-step-1 .aw-step-block { height: 110px; background: linear-gradient(#f2c94c, #c99a12); }
+.aw-step-2 .aw-step-block { height: 80px; background: linear-gradient(#cfd3d8, #8e949b); }
+.aw-step-3 .aw-step-block { height: 60px; background: linear-gradient(#dc9a63, #a8622e); }
+.aw-step-place { font-size: 1.6em; font-weight: bold; line-height: 1; }
+.aw-step-medal { font-size: 0.9em; }
+.aw-step-3 .aw-step-block .aw-cup { font-size: 20px; }
+.aw-step-3 .aw-step-place { font-size: 1.3em; }
+
+/* Points */
+.aw-points-info { text-align: center; margin: 4px 0; }
+.aw-cost { font-weight: bold; }
+
+/* Credit line */
+.aw-credit { text-align: center; font-size: 0.85em; opacity: 0.75; margin: 10px 0 0; }
+
+/* Category tiles */
+.aw-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; padding: 4px 2px 10px; margin-bottom: 6px; }
+.aw-tile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 8px 6px; border: 1px solid #c7c3bf; border-radius: 8px; background: rgba(255, 255, 255, 0.35); text-decoration: none; }
+.aw-tile:hover { border-color: #105289; text-decoration: none; }
+.aw-tile-active { border: 2px solid #105289; background: rgba(255, 255, 255, 0.6); }
+.aw-tile-img { position: relative; width: 72px; height: 72px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.07); }
+.aw-tile-img img { width: 100%; height: 100%; object-fit: cover; }
+.aw-tile-img .icon { font-size: 32px; opacity: 0.55; }
+.aw-tile-locked .aw-tile-img { filter: grayscale(1); }
+.aw-tile-lock { position: absolute; right: 3px; bottom: 3px; background: rgba(0, 0, 0, 0.6); color: #fff; border-radius: 4px; padding: 1px 4px; font-size: 11px; }
+.aw-tile-lock .icon { font-size: 11px; opacity: 1; }
+.aw-tile-name { font-weight: bold; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aw-tile-meta { font-size: 0.85em; opacity: 0.85; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aw-tile-champ a { font-weight: bold; }

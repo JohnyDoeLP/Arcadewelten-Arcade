@@ -1,0 +1,42 @@
+<dl>
+	<dt><label for="cat_name">{{ lang('ACP_AW_ARCADE_NAME') }}{{ lang('COLON') }}</label></dt>
+	<dd><input class="text medium" type="text" id="cat_name" name="cat_name" value="{{ CAT_NAME }}" maxlength="255" required></dd>
+</dl>
+<dl>
+	<dt><label for="cat_desc">{{ lang('ACP_AW_ARCADE_DESC') }}{{ lang('COLON') }}</label></dt>
+	<dd><input class="text medium" type="text" id="cat_desc" name="cat_desc" value="{{ CAT_DESC }}" maxlength="255"></dd>
+</dl>
+<dl>
+	<dt><label for="cat_image_pick">{{ lang('ACP_AW_ARCADE_CAT_IMAGE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_IMAGE_EXPLAIN') }}</span></dt>
+	<dd>
+		<img id="aw_cat_preview" src="{{ CAT_IMAGE_PREVIEW }}" alt="" width="72" height="72" style="float:left; margin-right:10px; border-radius:8px; background:#0b1030;{% if not CAT_IMAGE_PREVIEW %} visibility:hidden;{% endif %}">
+		<select id="cat_image_pick" name="cat_image_pick">
+			<option value="">{{ lang('ACP_AW_ARCADE_CAT_IMAGE_AUTO') }}</option>
+			{% for img in cat_images %}<option value="{{ img.PATH }}" data-url="{{ img.URL }}"{% if img.S_SELECTED %} selected{% endif %}>{{ img.LABEL }}</option>{% endfor %}
+		</select><br>
+		<label for="cat_image_custom">{{ lang('ACP_AW_ARCADE_CAT_IMAGE_CUSTOM') }}{{ lang('COLON') }}</label><br>
+		<input class="text medium" type="text" id="cat_image_custom" name="cat_image_custom" value="{{ CAT_IMAGE_CUSTOM }}" maxlength="255" placeholder="images/arcade/action.png">
+	</dd>
+</dl>
+<script>
+(function () {
+	var pick = document.getElementById('cat_image_pick'), custom = document.getElementById('cat_image_custom'), img = document.getElementById('aw_cat_preview');
+	function update() {
+		var src = custom.value.trim() !== '' ? '{{ AW_BOARD_ROOT|e('js') }}' + custom.value.trim().replace(/^\/+/, '') : (pick.selectedIndex > 0 ? pick.options[pick.selectedIndex].getAttribute('data-url') : '');
+		img.style.visibility = src ? 'visible' : 'hidden';
+		if (src) { img.src = src; }
+	}
+	pick.addEventListener('change', update);
+	custom.addEventListener('input', update);
+})();
+</script>
+<dl>
+	<dt><label for="cat_password">{{ lang('PASSWORD') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_PASSWORD_EXPLAIN') }}</span></dt>
+	<dd>
+		<input class="text medium" type="password" id="cat_password" name="cat_password" value="" autocomplete="new-password">
+		{% if S_CAT_PROTECTED %}<br><label><input type="checkbox" name="cat_password_remove" value="1"> {{ lang('ACP_AW_ARCADE_CAT_PASSWORD_REMOVE') }}</label>{% endif %}
+	</dd>
+</dl>
+{% if S_AW_POINTS_AVAILABLE %}
+{% include '@arcadewelten_arcade/acp_aw_arcade_point_fields.html' %}
+{% endif %}

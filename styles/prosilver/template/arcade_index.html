@@ -1,0 +1,112 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+
+<h2 class="aw-title">{% if AW_CAT_NAME %}{{ AW_CAT_NAME }}{% else %}{{ lang('AW_ARCADE') }}{% endif %}</h2>
+
+{% if AW_MESSAGE %}
+<div class="panel aw-message"><div class="inner"><p>{{ AW_MESSAGE }}</p></div></div>
+{% endif %}
+
+{% if S_AW_GUEST %}
+<div class="panel aw-guest">
+	<div class="inner">
+		<p><strong>{{ lang('AW_ARCADE_GUEST_TITLE') }}</strong></p>
+		<p>{% if S_AW_GUESTS_BLOCKED %}{{ lang('AW_ARCADE_GUEST_BLOCKED') }}{% else %}{{ lang('AW_ARCADE_GUEST_LIMITED', AW_ALL_GAMES) }}{% endif %}</p>
+		<p><a class="button" href="{{ U_AW_LOGIN }}"><i class="icon fa-sign-in fa-fw" aria-hidden="true"></i><span>{{ lang('LOGIN') }}</span></a> <a class="button" href="{{ U_AW_REGISTER }}"><i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>{{ lang('REGISTER') }}</span></a></p>
+	</div>
+</div>
+{% endif %}
+
+{% if loops.cats|length %}
+<div class="aw-tiles" role="navigation" aria-label="{{ lang('AW_ARCADE_CATEGORIES') }}">
+	<a class="aw-tile{% if not AW_CAT_NAME %} aw-tile-active{% endif %}" href="{{ U_AW_ARCADE }}">
+		<span class="aw-tile-img aw-tile-all"><i class="icon fa-th-large" aria-hidden="true"></i></span>
+		<span class="aw-tile-name">{{ lang('AW_ARCADE_ALL_GAMES') }}</span>
+	</a>
+	{% for cat in loops.cats %}
+	<a class="aw-tile{% if cat.S_ACTIVE %} aw-tile-active{% endif %}{% if cat.S_LOCKED %} aw-tile-locked{% endif %}" href="{{ cat.U_CAT }}" title="{{ cat.DESC }}">
+		<span class="aw-tile-img">
+			{% if cat.IMAGE %}<img src="{{ cat.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}
+			{% if cat.S_PROTECTED %}<span class="aw-tile-lock"><i class="icon fa-{% if cat.S_LOCKED %}lock{% else %}unlock{% endif %}" aria-hidden="true"></i></span>{% endif %}
+		</span>
+		<span class="aw-tile-name">{{ cat.NAME }}</span>
+		<span class="aw-tile-meta">{{ lang('AW_ARCADE_GAME_COUNT', cat.COUNT) }}</span>
+		{% if cat.CHAMPION %}<span class="aw-tile-meta aw-tile-champ"><i class="icon fa-trophy aw-cup-1" aria-hidden="true"></i> {{ cat.CHAMPION }} ({{ cat.CHAMP_RECORDS }})</span>{% endif %}
+	</a>
+	{% endfor %}
+</div>
+{% endif %}
+
+{% if loops.hall|length %}
+<div class="panel aw-hall">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_HALL_OF_FAME') }}</h3>
+		<div class="aw-podium-stage">
+		{% for h in loops.hall %}
+			<div class="aw-step aw-step-{{ h.PLACE }}">
+				<div class="aw-step-avatar">{% if h.AVATAR %}{{ h.AVATAR }}{% else %}<i class="icon fa-smile-o" aria-hidden="true"></i>{% endif %}</div>
+				<div class="aw-step-user">{{ h.USER }}</div>
+				<a class="aw-small" href="{{ h.U_RECORDS }}">{{ lang('AW_ARCADE_RECORDS', h.RECORDS) }}</a>
+				<div class="aw-step-block">
+					<i class="icon fa-trophy aw-cup aw-cup-{{ h.PLACE }}" aria-hidden="true"></i>
+					<span class="aw-step-place">{{ h.PLACE }}.</span>
+					<span class="aw-step-medal">{{ h.MEDAL }}</span>
+				</div>
+			</div>
+		{% endfor %}
+		</div>
+	</div>
+</div>
+{% endif %}
+
+<div class="action-bar bar-top">
+	<div class="search-box" role="search">
+		<form method="get" action="{{ U_AW_SEARCH }}">
+			<fieldset>
+				<input class="inputbox search tiny" type="search" name="q" value="{{ AW_SEARCH }}" placeholder="{{ lang('AW_ARCADE_SEARCH') }}" maxlength="100">
+				<button class="button button-search" type="submit" title="{{ lang('SEARCH') }}"><i class="icon fa-search fa-fw" aria-hidden="true"></i></button>
+			</fieldset>
+		</form>
+	</div>
+	<div class="pagination">
+		{{ lang('AW_ARCADE_GAME_COUNT', AW_TOTAL_GAMES) }}
+		{% if loops.pagination|length %} &bull; {% include 'pagination.html' %}{% endif %}
+	</div>
+</div>
+
+{% if loops.games|length %}
+<div class="aw-grid">
+	{% for game in loops.games %}
+	<div class="aw-card">
+		<a class="aw-thumb" href="{{ game.U_PLAY }}">
+			{% if game.IMAGE %}<img src="{{ game.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}
+		</a>
+		<div class="aw-card-body">
+			<a class="aw-game-name" href="{{ game.U_PLAY }}">{{ game.NAME }}</a>
+			{% if not AW_CAT_NAME and game.CAT_NAME %}<div class="aw-small">{{ game.CAT_NAME }}</div>{% endif %}
+			{% if game.COST %}<div class="aw-small aw-cost"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ game.COST }}</div>{% endif %}
+			<div class="aw-small">
+				{% if game.S_GUEST %}{{ lang('AW_ARCADE_GUEST_RELEASED') }}
+				{% elseif game.S_NO_SCORES %}{{ lang('AW_ARCADE_NO_SCORES') }}
+				{% elseif game.top|length %}
+				<ol class="aw-podium">
+				{% for t in game.top %}<li><i class="icon fa-trophy fa-fw aw-cup aw-cup-{{ t.PLACE }}" aria-hidden="true" title="{{ t.PLACE }}."></i> {{ t.USER }} <span class="aw-podium-score">{{ t.SCORE }}</span></li>{% endfor %}
+				</ol>
+				{% else %}{{ lang('AW_ARCADE_NO_CHAMPION') }}{% endif %}
+			</div>
+			<div class="aw-small">{{ lang('AW_ARCADE_PLAYS', game.PLAYS) }}{% if not game.S_GUEST %} &bull; <a href="{{ game.U_SCORES }}">{{ lang('AW_ARCADE_HIGHSCORES') }}</a>{% endif %}</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% else %}
+{% if not S_AW_GUEST %}<div class="panel"><div class="inner"><p>{{ lang('AW_ARCADE_NO_GAMES') }}</p></div></div>{% endif %}
+{% endif %}
+
+{% if loops.pagination|length %}
+<div class="action-bar bar-bottom"><div class="pagination">{% include 'pagination.html' %}</div></div>
+{% endif %}
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

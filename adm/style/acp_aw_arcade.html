@@ -1,0 +1,414 @@
+{% include 'overall_header.html' %}
+
+<h1>{{ lang('ACP_AW_ARCADE') }}</h1>
+
+{# ================= Settings ================= #}
+{% if AW_MODE == 'settings' and S_AW_SEASON %}
+<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+<h2>{{ lang('ACP_AW_ARCADE_SEASON') }}</h2>
+<p>{{ lang('ACP_AW_ARCADE_SEASON_EXPLAIN', AW_SEASON_START) }}</p>
+{% if not S_AW_POINTS_ACTIVE %}<p class="error">{{ lang('ACP_AW_ARCADE_SEASON_NO_POINTS') }}</p>{% endif %}
+
+{% if loops.season_users|length %}
+<fieldset>
+	<legend>{{ lang('ACP_AW_ARCADE_SEASON_PAYOUT', AW_SEASON_TOTAL, AW_POINTS_NAME) }}</legend>
+	<table class="table1 zebra-table">
+		<thead><tr><th>{{ lang('USERNAME') }}</th><th>{{ AW_POINTS_NAME }}</th></tr></thead>
+		<tbody>{% for u in loops.season_users %}<tr><td>{{ u.USER }}</td><td><strong>+{{ u.AMOUNT }}</strong></td></tr>{% endfor %}</tbody>
+	</table>
+</fieldset>
+{% endif %}
+
+{% if loops.season_rows|length %}
+<fieldset>
+	<legend>{{ lang('ACP_AW_ARCADE_SEASON_DETAILS') }}</legend>
+	<table class="table1 zebra-table">
+		<thead><tr><th>{{ lang('ACP_AW_ARCADE_NAME') }}</th><th>{{ lang('ACP_AW_ARCADE_PLACE') }}</th><th>{{ lang('USERNAME') }}</th><th>{{ lang('AW_ARCADE_SCORE') }}</th><th>{{ AW_POINTS_NAME }}</th></tr></thead>
+		<tbody>{% for r in loops.season_rows %}<tr><td>{{ r.GAME }}</td><td>{{ r.PLACE }}.</td><td>{{ r.USER }}</td><td>{{ r.SCORE }}</td><td>{{ r.AMOUNT }}</td></tr>{% endfor %}</tbody>
+	</table>
+</fieldset>
+{% else %}
+<p>{{ lang('ACP_AW_ARCADE_SEASON_EMPTY') }}</p>
+{% endif %}
+
+<form id="aw_season" method="post" action="{{ U_AW_SEASON_ACTION }}">
+	<fieldset>
+		<dl>
+			<dt><label for="season_reset">{{ lang('ACP_AW_ARCADE_SEASON_RESET') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_SEASON_RESET_EXPLAIN') }}</span></dt>
+			<dd><label><input type="checkbox" id="season_reset" name="season_reset" value="1" checked> {{ lang('YES') }}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="season_reset_plays">{{ lang('ACP_AW_ARCADE_SEASON_RESET_PLAYS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_SEASON_RESET_PLAYS_EXPLAIN') }}</span></dt>
+			<dd><label><input type="checkbox" id="season_reset_plays" name="season_reset_plays" value="1" checked> {{ lang('YES') }}</label></dd>
+		</dl>
+	</fieldset>
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" name="season_close" value="{{ lang('ACP_AW_ARCADE_SEASON_CLOSE') }}">
+	</fieldset>
+</form>
+{% elseif AW_MODE == 'settings' %}
+<p>{{ lang('ACP_AW_ARCADE_SETTINGS_EXPLAIN') }}</p>
+
+<form id="aw_settings" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_SETTINGS') }}</legend>
+		<dl>
+			<dt><label for="aw_games_path">{{ lang('ACP_AW_ARCADE_GAMES_PATH') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GAMES_PATH_EXPLAIN') }}</span></dt>
+			<dd>
+				<input class="text medium" type="text" id="aw_games_path" name="aw_games_path" value="{{ AW_GAMES_PATH }}">
+				{% if AW_GAMES_PATH_OK %}<strong style="color:green">✔</strong>{% else %}<strong class="error">{{ lang('ACP_AW_ARCADE_PATH_MISSING') }}</strong>{% endif %}
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_GAMEDATA') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GAMEDATA_EXPLAIN') }}</span></dt>
+			<dd>{% if AW_GAMEDATA_OK %}<strong style="color:green">✔</strong>{% else %}<strong class="error">{{ lang('ACP_AW_ARCADE_PATH_MISSING') }}</strong>{% endif %}</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_AMOD_BRIDGE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_AMOD_BRIDGE_EXPLAIN') }}</span></dt>
+			<dd>{% if AW_AMOD_BRIDGE_OK %}<strong style="color:green">✔</strong>{% else %}<strong class="error">{{ lang('ACP_AW_ARCADE_PATH_MISSING') }}</strong>{% endif %}</dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_guest_play">{{ lang('ACP_AW_ARCADE_GUEST_PLAY') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GUEST_PLAY_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_guest_play" value="1"{% if AW_GUEST_PLAY %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_guest_play" value="0"{% if not AW_GUEST_PLAY %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_min_time">{{ lang('ACP_AW_ARCADE_MIN_TIME') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_MIN_TIME_EXPLAIN') }}</span></dt>
+			<dd><input type="number" id="aw_min_time" name="aw_min_time" min="0" max="600" value="{{ AW_MIN_TIME }}"> {{ lang('ACP_AW_ARCADE_SECONDS') }}</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_CREDIT') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CREDIT_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_credit" value="1"{% if AW_CREDIT %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_credit" value="0"{% if not AW_CREDIT %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_DEBUG') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_DEBUG_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_debug" value="1"{% if AW_DEBUG %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_debug" value="0"{% if not AW_DEBUG %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_games_per_page">{{ lang('ACP_AW_ARCADE_GAMES_PER_PAGE') }}{{ lang('COLON') }}</label></dt>
+			<dd><input type="number" id="aw_games_per_page" name="aw_games_per_page" min="5" max="200" value="{{ AW_GAMES_PER_PAGE }}"></dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_scores_per_page">{{ lang('ACP_AW_ARCADE_SCORES_PER_PAGE') }}{{ lang('COLON') }}</label></dt>
+			<dd><input type="number" id="aw_scores_per_page" name="aw_scores_per_page" min="5" max="200" value="{{ AW_SCORES_PER_PAGE }}"></dd>
+		</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_POINTS') }}</legend>
+		{% if not S_AW_POINTS_AVAILABLE %}
+		<p>{{ lang('ACP_AW_ARCADE_POINTS_MISSING') }}</p>
+		{% else %}
+		<p>{{ lang('ACP_AW_ARCADE_POINTS_EXPLAIN', AW_POINTS_NAME) }}</p>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_POINTS_ENABLE') }}{{ lang('COLON') }}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_points_enable" value="1"{% if S_AW_POINTS_ENABLE %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_points_enable" value="0"{% if not S_AW_POINTS_ENABLE %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl><dt><label for="aw_cost">{{ lang('ACP_AW_ARCADE_PT_COST') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_cost" name="aw_cost" value="{{ AW_COST }}"> {{ AW_POINTS_NAME }}</dd></dl>
+		<dl><dt><label for="aw_reward_play">{{ lang('ACP_AW_ARCADE_PT_REWARD_PLAY') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_PT_REWARD_PLAY_EXPLAIN') }}</span></dt><dd><input type="text" class="text" size="8" id="aw_reward_play" name="aw_reward_play" value="{{ AW_REWARD_PLAY }}"> {{ AW_POINTS_NAME }}</dd></dl>
+		<dl><dt><label for="aw_reward_1">{{ lang('ACP_AW_ARCADE_PT_REWARD_1') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_reward_1" name="aw_reward_1" value="{{ AW_REWARD_1 }}"> {{ AW_POINTS_NAME }}</dd></dl>
+		<dl><dt><label for="aw_reward_2">{{ lang('ACP_AW_ARCADE_PT_REWARD_2') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_reward_2" name="aw_reward_2" value="{{ AW_REWARD_2 }}"> {{ AW_POINTS_NAME }}</dd></dl>
+		<dl><dt><label for="aw_reward_3">{{ lang('ACP_AW_ARCADE_PT_REWARD_3') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_reward_3" name="aw_reward_3" value="{{ AW_REWARD_3 }}"> {{ AW_POINTS_NAME }}</dd></dl>
+		{% endif %}
+	</fieldset>
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}">
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+
+<fieldset>
+	<legend>{{ lang('ACP_AW_ARCADE_SEASON') }}</legend>
+	<p>{{ lang('ACP_AW_ARCADE_SEASON_SHORT', AW_SEASON_START) }}</p>
+	<p><a class="button2" href="{{ U_AW_SEASON }}">{{ lang('ACP_AW_ARCADE_SEASON_OPEN') }}</a></p>
+</fieldset>
+
+<fieldset>
+	<legend>{{ lang('ACP_AW_ARCADE_PLAYS_RESET') }}</legend>
+	<p>{{ lang('ACP_AW_ARCADE_PLAYS_RESET_EXPLAIN') }}</p>
+	<p><a class="button2" href="{{ U_AW_RESET_PLAYS }}">{{ lang('ACP_AW_ARCADE_PLAYS_RESET') }}</a></p>
+</fieldset>
+{% endif %}
+
+{# ================= Games ================= #}
+{% if AW_MODE == 'games' %}
+{% if S_AW_EDIT %}
+<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+<h2>{{ GAME_NAME }}</h2>
+<p>{{ lang('ACP_AW_ARCADE_GAME_FILES') }}{{ lang('COLON') }} <code>{{ GAME_DIR }}/{{ GAME_FILE }}</code> &bull; {{ lang('ACP_AW_ARCADE_SCOREVAR') }}{{ lang('COLON') }} <code>{{ GAME_SCOREVAR }}</code></p>
+
+<form id="aw_game_edit" method="post" action="{{ U_EDIT_ACTION }}">
+	<fieldset>
+		<dl>
+			<dt><label for="game_name">{{ lang('ACP_AW_ARCADE_NAME') }}{{ lang('COLON') }}</label></dt>
+			<dd><input class="text medium" type="text" id="game_name" name="game_name" value="{{ GAME_NAME }}" maxlength="255"></dd>
+		</dl>
+		<dl>
+			<dt><label for="game_desc">{{ lang('ACP_AW_ARCADE_DESC') }}{{ lang('COLON') }}</label></dt>
+			<dd><textarea id="game_desc" name="game_desc" rows="4" cols="60">{{ GAME_DESC }}</textarea></dd>
+		</dl>
+		<dl>
+			<dt><label for="cat_id">{{ lang('ACP_AW_ARCADE_CAT') }}{{ lang('COLON') }}</label></dt>
+			<dd><select id="cat_id" name="cat_id"><option value="0">{{ lang('ACP_AW_ARCADE_NO_CAT') }}</option>{% for c in loops.cat_options %}<option value="{{ c.ID }}"{% if c.S_SEL %} selected{% endif %}>{{ c.NAME }}</option>{% endfor %}</select></dd>
+		</dl>
+		<dl>
+			<dt><label for="game_width">{{ lang('ACP_AW_ARCADE_SIZE') }}{{ lang('COLON') }}</label></dt>
+			<dd><input type="number" id="game_width" name="game_width" value="{{ GAME_WIDTH }}" min="100" max="4000"> × <input type="number" name="game_height" value="{{ GAME_HEIGHT }}" min="100" max="4000"> px</dd>
+		</dl>
+		<dl>
+			<dt><label for="game_save_type">{{ lang('ACP_AW_ARCADE_SAVE_TYPE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_SAVE_TYPE_EXPLAIN') }}</span></dt>
+			<dd><select id="game_save_type" name="game_save_type">{% for t in loops.save_types %}<option value="{{ t.VALUE }}"{% if t.S_SEL %} selected{% endif %}>{{ t.LABEL }}</option>{% endfor %}</select></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_SCORETYPE') }}{{ lang('COLON') }}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="game_scoretype" value="1"{% if not S_LOW_WINS %} checked{% endif %}> {{ lang('ACP_AW_ARCADE_HIGH_WINS') }}</label>
+				<label><input type="radio" class="radio" name="game_scoretype" value="2"{% if S_LOW_WINS %} checked{% endif %}> {{ lang('ACP_AW_ARCADE_LOW_WINS') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="game_min_time">{{ lang('ACP_AW_ARCADE_MIN_TIME') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GAME_MIN_TIME_EXPLAIN', AW_MIN_TIME) }}</span></dt>
+			<dd><input type="number" id="game_min_time" name="game_min_time" min="0" max="3600" value="{{ GAME_MIN_TIME }}"> {{ lang('ACP_AW_ARCADE_SECONDS') }}</dd>
+		</dl>
+		<dl>
+			<dt><label for="game_max_score">{{ lang('ACP_AW_ARCADE_MAX_SCORE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_MAX_SCORE_EXPLAIN') }}</span></dt>
+			<dd><input type="text" class="text" size="12" id="game_max_score" name="game_max_score" value="{{ GAME_MAX_SCORE }}"></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_ACTIVE') }}{{ lang('COLON') }}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="game_active" value="1"{% if S_GAME_ACTIVE %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="game_active" value="0"{% if not S_GAME_ACTIVE %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_GUEST_RELEASE') }}{{ lang('COLON') }}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="game_guest" value="1"{% if S_GAME_GUEST %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="game_guest" value="0"{% if not S_GAME_GUEST %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		{% if S_AW_POINTS_AVAILABLE %}
+		{% include '@arcadewelten_arcade/acp_aw_arcade_point_fields.html' %}
+		{% endif %}
+		<dl>
+			<dt><label for="reset_scores">{{ lang('ACP_AW_ARCADE_RESET_SCORES') }}{{ lang('COLON') }}</label></dt>
+			<dd><label><input type="checkbox" id="reset_scores" name="reset_scores" value="1"> {{ lang('ACP_AW_ARCADE_RESET_SCORES_EXPLAIN') }}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="reset_plays">{{ lang('ACP_AW_ARCADE_PLAYS_RESET') }}{{ lang('COLON') }}</label></dt>
+			<dd><label><input type="checkbox" id="reset_plays" name="reset_plays" value="1"> {{ lang('ACP_AW_ARCADE_RESET_PLAYS_GAME') }}</label></dd>
+		</dl>
+	</fieldset>
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}">
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+
+{% else %}
+
+<form id="aw_games" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_INSTALLED', AW_TOTAL_GAMES) }}</legend>
+		<p>
+			<a href="{{ U_ACTION }}&amp;fc=-1">{{ lang('AW_ARCADE_ALL_GAMES') }}</a>
+			{% for c in loops.cat_options %} &bull; <a href="{{ U_ACTION }}&amp;fc={{ c.ID }}"{% if c.S_SEL %} style="font-weight:bold"{% endif %}>{{ c.NAME }}</a>{% endfor %}
+		</p>
+		{% if loops.games|length %}
+		<table class="table1 zebra-table">
+			<thead>
+				<tr>
+					<th style="width: 20px;"><input type="checkbox" onclick="var c=this.checked;document.querySelectorAll('.aw-gid').forEach(function(x){x.checked=c;});"></th>
+					<th>{{ lang('ACP_AW_ARCADE_NAME') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_CAT') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_SAVE_TYPE') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_PLAYS') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_ACTIVE') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_GUEST') }}</th>
+					<th>{{ lang('ACTION') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for g in loops.games %}
+				<tr>
+					<td><input type="checkbox" class="aw-gid" name="game_ids[]" value="{{ g.ID }}"></td>
+					<td><strong>{{ g.NAME }}</strong><br><span class="small">{{ g.DIR }}</span></td>
+					<td>{{ g.CAT }}</td>
+					<td>{{ g.SAVE_TYPE }}</td>
+					<td>{{ g.PLAYS }}</td>
+					<td>{% if g.S_ACTIVE %}{{ lang('YES') }}{% else %}<strong class="error">{{ lang('NO') }}</strong>{% endif %}</td>
+					<td>{% if g.S_GUEST %}{{ lang('YES') }}{% else %}–{% endif %}</td>
+					<td class="actions"><a href="{{ g.U_EDIT }}">{{ ICON_EDIT }}</a> <a href="{{ g.U_DELETE }}">{{ ICON_DELETE }}</a></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		{% if loops.pagination|length %}<div class="pagination">{% include 'pagination.html' %}</div>{% endif %}
+		<p>
+			{{ lang('ACP_AW_ARCADE_SELECTED') }}{{ lang('COLON') }}
+			<select name="bulk_action">
+				<option value="activate">{{ lang('ACP_AW_ARCADE_ACTIVATE') }}</option>
+				<option value="deactivate">{{ lang('ACP_AW_ARCADE_DEACTIVATE') }}</option>
+				<option value="guest_on">{{ lang('ACP_AW_ARCADE_GUEST_ON') }}</option>
+				<option value="guest_off">{{ lang('ACP_AW_ARCADE_GUEST_OFF') }}</option>
+				<option value="move">{{ lang('ACP_AW_ARCADE_MOVE_TO') }}</option>
+			</select>
+			<select name="bulk_cat"><option value="0">{{ lang('ACP_AW_ARCADE_NO_CAT') }}</option>{% for c in loops.cat_options %}<option value="{{ c.ID }}">{{ c.NAME }}</option>{% endfor %}</select>
+			<input class="button2" type="submit" name="bulk" value="{{ lang('SUBMIT') }}">
+		</p>
+		{% else %}
+		<p>{{ lang('AW_ARCADE_NO_GAMES') }}</p>
+		{% endif %}
+	</fieldset>
+	{{ S_FORM_TOKEN }}
+</form>
+
+<form id="aw_import" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_IMPORT') }}</legend>
+		{% if not S_AW_GAMES_DIR %}
+		<p class="error">{{ lang('ACP_AW_ARCADE_IMPORT_NO_DIR', AW_GAMES_PATH) }}</p>
+		{% elseif loops.import|length %}
+		<p>{{ lang('ACP_AW_ARCADE_IMPORT_EXPLAIN', AW_IMPORTABLE) }}</p>
+		<table class="table1 zebra-table">
+			<thead>
+				<tr>
+					<th style="width: 20px;"><input type="checkbox" checked onclick="var c=this.checked;document.querySelectorAll('.aw-imp:not([disabled])').forEach(function(x){x.checked=c;});"></th>
+					<th>{{ lang('ACP_AW_ARCADE_NAME') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_SAVE_TYPE') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_SIZE') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_STATUS') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for g in loops.import %}
+				<tr>
+					<td><input type="checkbox" class="aw-imp" name="import_dirs[]" value="{{ g.DIR }}"{% if g.S_SUPPORTED %} checked{% else %} disabled{% endif %}></td>
+					<td><strong>{{ g.NAME }}</strong><br><span class="small">{{ g.DIR }}</span></td>
+					<td>{{ g.SAVE_TYPE }}</td>
+					<td>{{ g.SIZE }}</td>
+					<td>{% if g.S_SUPPORTED %}{{ lang('ACP_AW_ARCADE_READY') }}{% else %}<span class="error">{{ g.REASON }}</span>{% endif %}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		<dl>
+			<dt><label for="import_cat">{{ lang('ACP_AW_ARCADE_IMPORT_TO') }}{{ lang('COLON') }}</label></dt>
+			<dd>
+				<select id="import_cat" name="import_cat"><option value="0">{{ lang('ACP_AW_ARCADE_NO_CAT') }}</option>{% for c in loops.cat_options %}<option value="{{ c.ID }}">{{ c.NAME }}</option>{% endfor %}</select>
+				{{ lang('ACP_AW_ARCADE_OR_NEW_CAT') }} <input class="text" type="text" name="import_new_cat" maxlength="255">
+			</dd>
+		</dl>
+		<p class="submit-buttons"><input class="button1" type="submit" name="import" value="{{ lang('ACP_AW_ARCADE_IMPORT_BUTTON') }}"></p>
+		{% else %}
+		<p>{{ lang('ACP_AW_ARCADE_IMPORT_NOTHING') }}</p>
+		{% endif %}
+	</fieldset>
+	{{ S_FORM_TOKEN }}
+</form>
+{% endif %}
+{% endif %}
+
+{# ================= Categories ================= #}
+{% if AW_MODE == 'cats' %}
+{% if S_AW_CAT_EDIT %}
+<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+<form id="aw_cat_edit" method="post" action="{{ U_CAT_ACTION }}">
+	<fieldset>
+		<legend>{{ CAT_NAME }}</legend>
+		{% include '@arcadewelten_arcade/acp_aw_arcade_cat_fields.html' %}
+	</fieldset>
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}">
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+{% else %}
+<p>{{ lang('ACP_AW_ARCADE_CATS_EXPLAIN') }}</p>
+<table class="table1 zebra-table">
+	<thead>
+		<tr>
+			<th>{{ lang('ACP_AW_ARCADE_CAT') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_GAMES') }}</th>
+			<th>{{ lang('PASSWORD') }}</th>
+			<th>{{ lang('ACTION') }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for c in loops.cats %}
+		<tr>
+			<td><strong>{{ c.NAME }}</strong>{% if c.DESC %}<br><span class="small">{{ c.DESC }}</span>{% endif %}</td>
+			<td>{{ c.COUNT }}</td>
+			<td>{% if c.S_PROTECTED %}{{ lang('YES') }}{% else %}{{ lang('NO') }}{% endif %}</td>
+			<td class="actions">
+				{% if not loop.first %}<a href="{{ c.U_UP }}">{{ ICON_MOVE_UP }}</a>{% else %}{{ ICON_MOVE_UP_DISABLED }}{% endif %}
+				{% if not loop.last %}<a href="{{ c.U_DOWN }}">{{ ICON_MOVE_DOWN }}</a>{% else %}{{ ICON_MOVE_DOWN_DISABLED }}{% endif %}
+				<a href="{{ c.U_EDIT }}">{{ ICON_EDIT }}</a>
+				<a href="{{ c.U_DELETE }}">{{ ICON_DELETE }}</a>
+			</td>
+		</tr>
+	{% else %}
+		<tr><td colspan="4">{{ lang('ACP_AW_ARCADE_NO_CATS') }}</td></tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+<form id="aw_cat_add" method="post" action="{{ U_CAT_ADD }}">
+	<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_CAT_ADD') }}</legend>
+		{% include '@arcadewelten_arcade/acp_aw_arcade_cat_fields.html' %}
+	</fieldset>
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" name="submit" value="{{ lang('ACP_AW_ARCADE_CAT_ADD') }}">
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+{% endif %}
+{% endif %}
+
+{# ================= Review ================= #}
+{% if AW_MODE == 'review' %}
+<p>{{ lang('ACP_AW_ARCADE_REVIEW_EXPLAIN') }}</p>
+<table class="table1 zebra-table">
+	<thead>
+		<tr>
+			<th>{{ lang('ACP_AW_ARCADE_NAME') }}</th>
+			<th>{{ lang('USERNAME') }}</th>
+			<th>{{ lang('AW_ARCADE_SCORE') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_PLAY_TIME') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_FLAG_REASON') }}</th>
+			<th>{{ lang('AW_ARCADE_DATE') }}</th>
+			<th>{{ lang('ACTION') }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for f in loops.flagged %}
+		<tr>
+			<td><strong>{{ f.GAME }}</strong></td>
+			<td>{{ f.USER }}</td>
+			<td>{{ f.SCORE }}</td>
+			<td>{{ f.SECONDS }} {{ lang('ACP_AW_ARCADE_SECONDS') }}</td>
+			<td>{{ f.REASON }}</td>
+			<td>{{ f.DATE }}</td>
+			<td class="actions"><a href="{{ f.U_APPROVE }}">{{ lang('ACP_AW_ARCADE_APPROVE') }}</a> &bull; <a href="{{ f.U_DELETE }}">{{ lang('DELETE') }}</a></td>
+		</tr>
+	{% else %}
+		<tr><td colspan="7">{{ lang('ACP_AW_ARCADE_REVIEW_EMPTY') }}</td></tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endif %}
+
+{% include 'overall_footer.html' %}
