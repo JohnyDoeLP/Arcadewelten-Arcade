@@ -30,3 +30,10 @@ arcadewelten_arcade_user:
     defaults: { _controller: arcadewelten.arcade.controller.main:user }
     requirements:
         user_id: \d+
+
+arcadewelten_arcade_rate:
+    path: /arcadehall/rate/{game_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:rate }
+    methods: [POST]
+    requirements:
+        game_id: \d+

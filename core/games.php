@@ -136,13 +136,23 @@ class games
 		return $dirs;
 	}
 
-	public function list_games($cat_id = 0, $start = 0, $limit = 30, $only_active = true, $search = '', array $exclude_cats = [])
+	/**
+	 * Sort orders for the game list (key => ORDER BY).
+	 */
+	const SORTS = [
+		'name'		=> 'g.game_name ASC',
+		'rating'	=> 'CASE WHEN g.game_rating_count > 0 THEN g.game_rating_sum * 1.0 / g.game_rating_count ELSE 0 END DESC, g.game_rating_count DESC, g.game_name ASC',
+		'plays'		=> 'g.game_plays DESC, g.game_name ASC',
+		'new'		=> 'g.game_added DESC, g.game_id DESC',
+	];
+
+	public function list_games($cat_id = 0, $start = 0, $limit = 30, $only_active = true, $search = '', array $exclude_cats = [], $sort = 'name')
 	{
 		$sql = 'SELECT g.*, c.cat_name, c.cat_password, c.cat_cost, c.cat_reward_play, c.cat_reward_1, c.cat_reward_2, c.cat_reward_3
 			FROM ' . $this->games_table . ' g
 			LEFT JOIN ' . $this->cats_table . ' c ON c.cat_id = g.cat_id
 			WHERE ' . $this->where($cat_id, $only_active, $search, $exclude_cats) . '
-			ORDER BY g.game_name ASC';
+			ORDER BY ' . (isset(self::SORTS[$sort]) ? self::SORTS[$sort] : self::SORTS['name']);
 		$result = $this->db->sql_query_limit($sql, (int) $limit, (int) $start);
 		$rows = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);

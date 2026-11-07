@@ -11,8 +11,8 @@ namespace arcadewelten\arcade\core;
 /**
  * Builds the arcade section for the board's privacy policy.
  *
- * The text follows the current settings: guest play, plausibility check,
- * category passwords (cookie), Ultimate Points and diagnostic mode.
+ * The text follows the current settings: guest play, ratings, plausibility
+ * check, category passwords (cookie), Ultimate Points and diagnostic mode.
  */
 class privacy
 {
@@ -22,15 +22,17 @@ class privacy
 	protected $config;
 	protected $language;
 	protected $points;
+	protected $ratings;
 	protected $games_table;
 	protected $cats_table;
 
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\language\language $language, points $points, $games_table, $cats_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\language\language $language, points $points, ratings $ratings, $games_table, $cats_table)
 	{
 		$this->db = $db;
 		$this->config = $config;
 		$this->language = $language;
 		$this->points = $points;
+		$this->ratings = $ratings;
 		$this->games_table = $games_table;
 		$this->cats_table = $cats_table;
 	}
@@ -58,6 +60,11 @@ class privacy
 		if (!empty($this->config['aw_arcade_guest_play']))
 		{
 			$paragraphs[] = ['AW_ARCADE_PRIVACY_GUESTS'];
+		}
+
+		if ($this->ratings->enabled())
+		{
+			$paragraphs[] = ['AW_ARCADE_PRIVACY_RATINGS'];
 		}
 
 		if ($this->plausibility_active())

@@ -9,6 +9,7 @@
 namespace arcadewelten\arcade\controller;
 
 use arcadewelten\arcade\core\games;
+use arcadewelten\arcade\core\ratings;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class main
@@ -17,6 +18,7 @@ class main
 	protected $scores;
 	protected $access;
 	protected $points;
+	protected $ratings;
 	protected $config;
 	protected $helper;
 	protected $template;
@@ -26,12 +28,13 @@ class main
 	protected $pagination;
 	protected $root_path;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
 		$this->access = $access;
 		$this->points = $points;
+		$this->ratings = $ratings;
 		$this->config = $config;
 		$this->helper = $helper;
 		$this->template = $template;
@@ -133,6 +136,11 @@ class main
 		}
 
 		$search = $this->request->variable('q', '', true);
+		$sort = $this->request->variable('sort', 'name');
+		if (!isset(games::SORTS[$sort]) || ($sort === 'rating' && !$this->ratings->enabled()))
+		{
+			$sort = 'name';
+		}
 		$start = max(0, $this->request->variable('start', 0));
 		$per_page = max(1, (int) $this->config['aw_arcade_games_per_page']);
 		$exclude = $cat_id ? [] : $locked;
@@ -140,7 +148,7 @@ class main
 		$guests_blocked = $is_guest && !$this->config['aw_arcade_guest_play'];
 		$total = $guests_blocked ? 0 : $this->games->count_games($cat_id, true, $search, $exclude);
 		$start = $this->pagination->validate_start($start, $per_page, $total);
-		$rows = $guests_blocked ? [] : $this->games->list_games($cat_id, $start, $per_page, true, $search, $exclude);
+		$rows = $guests_blocked ? [] : $this->games->list_games($cat_id, $start, $per_page, true, $search, $exclude, $sort);
 		$tops = $is_guest ? [] : $this->scores->get_top($rows, 3);
 
 		foreach ($rows as $row)
@@ -158,6 +166,9 @@ class main
 				'CHAMP_SCORE'	=> $champ ? $this->format_score($champ['score']) : '',
 				'S_NO_SCORES'	=> (int) $row['game_save_type'] === games::SAVE_NONE,
 				'S_GUEST'		=> $is_guest,
+				'RATING_COUNT'	=> $this->ratings->enabled() ? (int) $row['game_rating_count'] : 0,
+				'RATING_STARS'	=> $this->stars($row),
+				'RATING_AVG'	=> $this->format_rating($row),
 				'COST'			=> (!$is_guest && $this->points->active() && ($c = $this->points->value($row, 'cost')) > 0) ? $this->points->format($c) . ' ' . $this->points->name() : '',
 				'U_PLAY'		=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => $id]),
 				'U_SCORES'		=> $this->helper->route('arcadewelten_arcade_scores', ['game_id' => $id]),
@@ -190,14 +201,30 @@ class main
 			}
 		}
 
+		$params = ($search !== '' ? ['q' => $search] : []) + ($sort !== 'name' ? ['sort' => $sort] : []);
 		$base_url = $cat_id
-			? $this->helper->route('arcadewelten_arcade_cat', ['cat_id' => $cat_id] + ($search !== '' ? ['q' => $search] : []))
-			: $this->helper->route('arcadewelten_arcade_index', $search !== '' ? ['q' => $search] : []);
+			? $this->helper->route('arcadewelten_arcade_cat', ['cat_id' => $cat_id] + $params)
+			: $this->helper->route('arcadewelten_arcade_index', $params);
+
+		foreach (array_keys(games::SORTS) as $key)
+		{
+			if ($key === 'rating' && !$this->ratings->enabled())
+			{
+				continue;
+			}
+
+			$this->template->assign_block_vars('sorts', [
+				'KEY'		=> $key,
+				'LABEL'		=> $this->language->lang('AW_ARCADE_SORT_' . strtoupper($key)),
+				'S_SEL'		=> $key === $sort,
+			]);
+		}
 		$this->pagination->generate_template_pagination($base_url, 'pagination', 'start', $total, $per_page, $start);
 
 		$this->template->assign_vars([
 			'AW_CAT_NAME'		=> $cat ? $cat['cat_name'] : '',
 			'AW_SEARCH'			=> $search,
+			'AW_SORT'			=> $sort,
 			'AW_TOTAL_GAMES'	=> $total,
 			'AW_ALL_GAMES'		=> $all_games,
 			'AW_MESSAGE'		=> $this->request->variable('guest_done', 0) ? $this->language->lang('AW_ARCADE_MSG_GUEST') : '',
@@ -265,6 +292,7 @@ class main
 		$this->games->count_play($game['game_id']);
 
 		add_form_key('aw_arcade_play');
+		$this->assign_rating($game);
 
 		$board_url = generate_board_url() . '/';
 		$type = (int) $game['game_type'];
@@ -339,6 +367,10 @@ class main
 		{
 			$message = $this->language->lang('AW_ARCADE_MSG_NOSESSION');
 		}
+		else if ($this->request->variable('rated', 0))
+		{
+			$message = $this->language->lang('AW_ARCADE_MSG_RATED');
+		}
 		else if ($saved)
 		{
 			$last = $this->request->variable('last', '');
@@ -352,6 +384,7 @@ class main
 		}
 
 		$rank = $this->is_member() ? $this->scores->get_rank($game, $this->user->data['user_id']) : 0;
+		$this->assign_rating($game);
 
 		$this->template->assign_vars([
 			'AW_GAME_NAME'		=> $game['game_name'],
@@ -462,6 +495,119 @@ class main
 				'last'		=> (string) round($score, 2),
 			] + ($earned > 0 ? ['earned' => (string) $earned] : []), false),
 		]);
+	}
+
+	/* ---------------------------------------------------------------
+	 * Ratings
+	 * ------------------------------------------------------------- */
+
+	/**
+	 * Store a rating. AJAX: JSON answer; without JavaScript: back to the scores page.
+	 */
+	public function rate($game_id)
+	{
+		$ajax = $this->request->is_ajax();
+		$game = $this->ratings->enabled() ? $this->games->get_game($game_id) : false;
+		$error = '';
+
+		if (!$game)
+		{
+			$error = 'AW_ARCADE_NO_GAME';
+		}
+		else if (!$this->is_member())
+		{
+			$error = 'AW_ARCADE_RATE_LOGIN';
+		}
+		else if (!check_form_key('aw_arcade_rate', 4 * 3600))
+		{
+			$error = 'FORM_INVALID';
+		}
+		else if ($game['cat_id'] && !$this->access->has_access(['cat_id' => $game['cat_id'], 'cat_password' => $game['cat_password']]))
+		{
+			$error = 'AW_ARCADE_NO_GAME';
+		}
+		else if (!$this->ratings->can_rate($game['game_id'], $this->user->data['user_id']))
+		{
+			$error = 'AW_ARCADE_RATE_PLAY_FIRST';
+		}
+
+		$rating = $this->request->variable('rating', 0);
+
+		if ($error === '' && ($rating < 1 || $rating > ratings::MAX))
+		{
+			$error = 'AW_ARCADE_RATE_INVALID';
+		}
+
+		if ($error !== '')
+		{
+			if ($ajax)
+			{
+				return new JsonResponse(['ok' => false, 'error' => $this->language->lang($error)], 400);
+			}
+
+			trigger_error($error, E_USER_WARNING);
+		}
+
+		$totals = $this->ratings->rate($game['game_id'], $this->user->data['user_id'], $rating);
+
+		if ($ajax)
+		{
+			$row = ['game_rating_sum' => $totals['sum'], 'game_rating_count' => $totals['count']];
+
+			return new JsonResponse([
+				'ok'		=> true,
+				'rating'	=> (int) $rating,
+				'stars'		=> $this->stars($row),
+				'summary'	=> $this->language->lang('AW_ARCADE_RATING_SUMMARY', $this->format_rating($row), $totals['count']),
+				'message'	=> $this->language->lang('AW_ARCADE_MSG_RATED'),
+			]);
+		}
+
+		redirect($this->helper->route('arcadewelten_arcade_scores', ['game_id' => (int) $game['game_id'], 'rated' => 1], false) . '#aw-rating');
+	}
+
+	/**
+	 * Rating box on the play and scores pages.
+	 */
+	protected function assign_rating(array $game)
+	{
+		if (!$this->ratings->enabled())
+		{
+			return;
+		}
+
+		$is_member = $this->is_member();
+		$mine = $is_member ? $this->ratings->get_user_rating($game['game_id'], $this->user->data['user_id']) : 0;
+		$can_rate = $is_member && ($mine || $this->ratings->can_rate($game['game_id'], $this->user->data['user_id']));
+
+		if ($can_rate)
+		{
+			add_form_key('aw_arcade_rate', '_AW_RATE');
+		}
+
+		$this->template->assign_vars([
+			'S_AW_RATINGS'		=> true,
+			'S_AW_CAN_RATE'		=> $can_rate,
+			'AW_RATING_STARS'	=> $this->stars($game),
+			'AW_RATING_COUNT'	=> (int) $game['game_rating_count'],
+			'AW_RATING_SUMMARY'	=> $this->language->lang('AW_ARCADE_RATING_SUMMARY', $this->format_rating($game), (int) $game['game_rating_count']),
+			'AW_MY_RATING'		=> $mine,
+			'AW_RATING_MAX'		=> ratings::MAX,
+			'U_AW_RATE'			=> $this->helper->route('arcadewelten_arcade_rate', ['game_id' => (int) $game['game_id']]),
+		]);
+	}
+
+	/**
+	 * Average rounded to half stars, for the star display (0–5).
+	 */
+	protected function stars(array $game)
+	{
+		return round(ratings::average($game) * 2) / 2;
+	}
+
+	protected function format_rating(array $game)
+	{
+		return number_format(ratings::average($game), 1, $this->language->lang('AW_ARCADE_DEC_POINT'), '');
 	}
 
 	/* ---------------------------------------------------------------

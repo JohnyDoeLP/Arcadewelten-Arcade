@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.0-beta (2026-11-07)
+
+- Game ratings: members rate games with 1–5 stars (one changeable rating per game, only after playing it). Average and number of ratings on the play page, the highscores page and in the game list; without JavaScript the rating works as a normal form.
+- Game list can be sorted by name, best rating, most played and newest
+- ACP: ratings can be switched off (on by default), rating column in the game list, ratings of a game can be reset when editing it
+- Ratings of deleted members are removed and the averages recalculated; the privacy section mentions ratings while they are switched on
+
 ## 0.11.0-beta (2026-11-07)
 
 - Privacy policy: an “Arcade” section is appended automatically to the board’s privacy policy (`ucp.php?mode=privacy`). The text follows the settings (guest play, plausibility check, category passwords, Ultimate Points, diagnostic mode). On by default, can be switched off in the ACP settings.

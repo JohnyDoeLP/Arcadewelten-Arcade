@@ -34,6 +34,8 @@ class main_module
 	protected $access;
 	/** @var \arcadewelten\arcade\core\points */
 	protected $points;
+	/** @var \arcadewelten\arcade\core\ratings */
+	protected $ratings;
 	/** @var \arcadewelten\arcade\core\season */
 	protected $season;
 	/** @var \phpbb\user */
@@ -55,6 +57,7 @@ class main_module
 		$this->access = $phpbb_container->get('arcadewelten.arcade.access');
 		$this->points = $phpbb_container->get('arcadewelten.arcade.points');
 		$this->season = $phpbb_container->get('arcadewelten.arcade.season');
+		$this->ratings = $phpbb_container->get('arcadewelten.arcade.ratings');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
 
@@ -137,6 +140,7 @@ class main_module
 			$this->config->set('aw_arcade_debug', $this->request->variable('aw_debug', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_credit', $this->request->variable('aw_credit', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_privacy', $this->request->variable('aw_privacy', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_ratings', $this->request->variable('aw_ratings', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_min_time', max(0, min(600, $this->request->variable('aw_min_time', 5))));
 			$this->config->set('aw_arcade_games_per_page', max(5, min(200, $this->request->variable('aw_games_per_page', 30))));
 			$this->config->set('aw_arcade_scores_per_page', max(5, min(200, $this->request->variable('aw_scores_per_page', 25))));
@@ -163,6 +167,7 @@ class main_module
 			'AW_DEBUG'				=> (bool) $this->config['aw_arcade_debug'],
 			'AW_CREDIT'				=> (bool) $this->config['aw_arcade_credit'],
 			'AW_PRIVACY'			=> (bool) $this->config['aw_arcade_privacy'],
+			'AW_RATINGS'			=> (bool) $this->config['aw_arcade_ratings'],
 			'U_AW_PRIVACY'			=> generate_board_url() . '/ucp.php?mode=privacy#' . \arcadewelten\arcade\core\privacy::ANCHOR,
 			'AW_MIN_TIME'			=> (int) $this->config['aw_arcade_min_time'],
 			'AW_GAMES_PER_PAGE'		=> (int) $this->config['aw_arcade_games_per_page'],
@@ -354,6 +359,7 @@ class main_module
 			if (confirm_box(true))
 			{
 				$this->scores->delete_game_scores($game_id);
+				$this->ratings->delete_game($game_id);
 				$this->games->delete_game($game_id);
 				trigger_error($this->language->lang('ACP_AW_ARCADE_GAME_DELETED') . adm_back_link($this->u_action));
 			}
@@ -391,6 +397,7 @@ class main_module
 				'CAT'			=> $row['cat_name'],
 				'SAVE_TYPE'		=> $this->language->lang('ACP_AW_ARCADE_SAVE_' . (int) $row['game_save_type']),
 				'PLAYS'			=> (int) $row['game_plays'],
+				'RATING'		=> $this->rating_text($row),
 				'S_ACTIVE'		=> (bool) $row['game_active'],
 				'S_GUEST'		=> (bool) $row['game_guest'],
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;g=' . (int) $row['game_id'],
@@ -441,6 +448,19 @@ class main_module
 		]);
 	}
 
+	/**
+	 * "4,3 (12)" or "–" for unrated games.
+	 */
+	protected function rating_text(array $game)
+	{
+		if (!(int) $game['game_rating_count'])
+		{
+			return '–';
+		}
+
+		return number_format(\arcadewelten\arcade\core\ratings::average($game), 1, $this->language->lang('AW_ARCADE_DEC_POINT'), '') . ' (' . (int) $game['game_rating_count'] . ')';
+	}
+
 	protected function edit_game($game_id)
 	{
 		$game = $this->games->get_game($game_id, false);
@@ -478,6 +498,11 @@ class main_module
 				$this->games->reset_plays($game_id);
 			}
 
+			if ($this->request->variable('reset_ratings', 0))
+			{
+				$this->ratings->delete_game($game_id);
+			}
+
 			$this->scores->purge_cache();
 
 			trigger_error($this->language->lang('ACP_AW_ARCADE_UPDATED') . adm_back_link($this->u_action));
@@ -510,6 +535,8 @@ class main_module
 			'S_GAME_GUEST'		=> (bool) $game['game_guest'],
 			'GAME_MIN_TIME'		=> (int) $game['game_min_time'],
 			'GAME_MAX_SCORE'	=> (float) $game['game_max_score'] + 0,
+			'GAME_RATING'		=> $this->rating_text($game),
+			'S_AW_RATINGS'		=> (bool) $this->config['aw_arcade_ratings'],
 			'AW_MIN_TIME'		=> (int) $this->config['aw_arcade_min_time'],
 			'U_EDIT_ACTION'		=> $this->u_action . '&amp;action=edit&amp;g=' . (int) $game['game_id'],
 			'U_BACK'			=> $this->u_action,

@@ -64,10 +64,19 @@
 		<form method="get" action="{{ U_AW_SEARCH }}">
 			<fieldset>
 				<input class="inputbox search tiny" type="search" name="q" value="{{ AW_SEARCH }}" placeholder="{{ lang('AW_ARCADE_SEARCH') }}" maxlength="100">
+				{% if AW_SORT != 'name' %}<input type="hidden" name="sort" value="{{ AW_SORT }}">{% endif %}
 				<button class="button button-search" type="submit" title="{{ lang('SEARCH') }}"><i class="icon fa-search fa-fw" aria-hidden="true"></i></button>
 			</fieldset>
 		</form>
 	</div>
+	{% if loops.sorts|length and AW_TOTAL_GAMES > 1 %}
+	<form method="get" action="{{ U_AW_SEARCH }}" class="aw-sort">
+		{% if AW_SEARCH %}<input type="hidden" name="q" value="{{ AW_SEARCH }}">{% endif %}
+		<label for="aw-sort">{{ lang('AW_ARCADE_SORT') }}{{ lang('COLON') }}</label>
+		<select id="aw-sort" name="sort" onchange="this.form.submit();">{% for s in loops.sorts %}<option value="{{ s.KEY }}"{% if s.S_SEL %} selected{% endif %}>{{ s.LABEL }}</option>{% endfor %}</select>
+		<noscript><button class="button" type="submit">{{ lang('GO') }}</button></noscript>
+	</form>
+	{% endif %}
 	<div class="pagination">
 		{{ lang('AW_ARCADE_GAME_COUNT', AW_TOTAL_GAMES) }}
 		{% if loops.pagination|length %} &bull; {% include 'pagination.html' %}{% endif %}
@@ -84,6 +93,7 @@
 		<div class="aw-card-body">
 			<a class="aw-game-name" href="{{ game.U_PLAY }}">{{ game.NAME }}</a>
 			{% if not AW_CAT_NAME and game.CAT_NAME %}<div class="aw-small">{{ game.CAT_NAME }}</div>{% endif %}
+			{% if game.RATING_COUNT %}<div class="aw-small aw-stars" title="{{ lang('AW_ARCADE_RATING_SUMMARY', game.RATING_AVG, game.RATING_COUNT) }}">{% for i in 1..5 %}<i class="icon fa-fw {% if game.RATING_STARS >= i %}fa-star{% elseif game.RATING_STARS >= i - 0.5 %}fa-star-half-o{% else %}fa-star-o{% endif %}" aria-hidden="true"></i>{% endfor %} <span class="aw-rating-num">{{ game.RATING_AVG }} ({{ game.RATING_COUNT }})</span></div>{% endif %}
 			{% if game.COST %}<div class="aw-small aw-cost"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ game.COST }}</div>{% endif %}
 			<div class="aw-small">
 				{% if game.S_GUEST %}{{ lang('AW_ARCADE_GUEST_RELEASED') }}

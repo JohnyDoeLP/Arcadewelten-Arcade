@@ -1,0 +1,72 @@
+{% if S_AW_RATINGS %}
+<div class="panel aw-col aw-rating-box" id="aw-rating">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_RATING') }}</h3>
+		<p class="aw-rating-line">
+			<span class="aw-stars" data-aw-stars title="{{ AW_RATING_SUMMARY }}">{% for i in 1..5 %}<i class="icon fa-fw {% if AW_RATING_STARS >= i %}fa-star{% elseif AW_RATING_STARS >= i - 0.5 %}fa-star-half-o{% else %}fa-star-o{% endif %}" aria-hidden="true"></i>{% endfor %}</span>
+			<span data-aw-summary>{% if AW_RATING_COUNT %}{{ AW_RATING_SUMMARY }}{% else %}{{ lang('AW_ARCADE_NOT_RATED') }}{% endif %}</span>
+		</p>
+		{% if S_AW_CAN_RATE %}
+		<form method="post" action="{{ U_AW_RATE }}" class="aw-rate-form" id="aw-rate-form">
+			<span>{{ lang('AW_ARCADE_YOUR_RATING') }}{{ lang('COLON') }}</span>
+			<span class="aw-rate-buttons">{% for i in 1..AW_RATING_MAX %}<button type="submit" name="rating" value="{{ i }}" class="aw-rate-star{% if i <= AW_MY_RATING %} aw-on{% endif %}" title="{{ lang('AW_ARCADE_RATE_N', i) }}" aria-label="{{ lang('AW_ARCADE_RATE_N', i) }}"><i class="icon fa-star fa-fw" aria-hidden="true"></i></button>{% endfor %}</span>
+			<span class="aw-rate-msg" role="status" aria-live="polite"></span>
+			{{ S_FORM_TOKEN_AW_RATE }}
+		</form>
+		<script>
+		(function () {
+			'use strict';
+			var form = document.getElementById('aw-rate-form');
+			if (!form || !window.fetch || !window.FormData) { return; }
+
+			var box = document.getElementById('aw-rating');
+			var msg = form.querySelector('.aw-rate-msg');
+			var buttons = form.querySelectorAll('.aw-rate-star');
+
+			function drawStars(value) {
+				var icons = box.querySelectorAll('[data-aw-stars] .icon');
+				for (var i = 0; i < icons.length; i++) {
+					var n = i + 1;
+					icons[i].classList.remove('fa-star', 'fa-star-half-o', 'fa-star-o');
+					icons[i].classList.add(value >= n ? 'fa-star' : (value >= n - 0.5 ? 'fa-star-half-o' : 'fa-star-o'));
+				}
+			}
+
+			Array.prototype.forEach.call(buttons, function (button) {
+				button.addEventListener('click', function (e) {
+					e.preventDefault();
+					var data = new FormData(form);
+					data.append('rating', button.value);
+					msg.textContent = '';
+
+					fetch(form.action, {
+						method: 'POST',
+						body: data,
+						credentials: 'same-origin',
+						headers: { 'X-Requested-With': 'XMLHttpRequest' }
+					}).then(function (r) { return r.json(); }).then(function (res) {
+						if (!res.ok) { msg.textContent = res.error || ''; return; }
+						Array.prototype.forEach.call(buttons, function (b) {
+							b.classList.toggle('aw-on', parseInt(b.value, 10) <= res.rating);
+						});
+						drawStars(res.stars);
+						box.querySelector('[data-aw-summary]').textContent = res.summary;
+						box.querySelector('[data-aw-stars]').title = res.summary;
+						msg.textContent = res.message;
+					}).catch(function () {
+						// Fallback: normal form post with the chosen value.
+						var input = document.createElement('input');
+						input.type = 'hidden'; input.name = 'rating'; input.value = button.value;
+						form.appendChild(input);
+						form.submit();
+					});
+				});
+			});
+		})();
+		</script>
+		{% elseif S_USER_LOGGED_IN and not S_IS_BOT %}
+		<p class="aw-small">{{ lang('AW_ARCADE_RATE_PLAY_FIRST') }}</p>
+		{% endif %}
+	</div>
+</div>
+{% endif %}

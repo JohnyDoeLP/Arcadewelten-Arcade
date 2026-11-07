@@ -109,4 +109,25 @@ $lang = array_merge($lang, [
 
 	'AW_ARCADE_DEC_POINT'		=> '.',
 	'AW_ARCADE_THOUSANDS_SEP'	=> ',',
+
+	'AW_ARCADE_RATING'			=> 'Rating',
+	'AW_ARCADE_NOT_RATED'		=> 'Not rated yet',
+	'AW_ARCADE_RATING_SUMMARY'	=> [
+		1 => '%1$s out of 5 (%2$d rating)',
+		2 => '%1$s out of 5 (%2$d ratings)',
+	],
+	'AW_ARCADE_YOUR_RATING'		=> 'Your rating',
+	'AW_ARCADE_RATE_N'			=> [
+		1 => '%d star',
+		2 => '%d stars',
+	],
+	'AW_ARCADE_RATE_PLAY_FIRST'	=> 'Play the game to be able to rate it.',
+	'AW_ARCADE_RATE_LOGIN'		=> 'Only logged-in members can rate games.',
+	'AW_ARCADE_RATE_INVALID'	=> 'Please choose 1 to 5 stars.',
+	'AW_ARCADE_MSG_RATED'		=> 'Thanks for your rating!',
+	'AW_ARCADE_SORT'			=> 'Sort by',
+	'AW_ARCADE_SORT_NAME'		=> 'Name',
+	'AW_ARCADE_SORT_RATING'		=> 'Best rated',
+	'AW_ARCADE_SORT_PLAYS'		=> 'Most played',
+	'AW_ARCADE_SORT_NEW'		=> 'Newest',
 ]);

@@ -91,3 +91,18 @@
 .aw-tile-name { font-weight: bold; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .aw-tile-meta { font-size: 0.85em; opacity: 0.85; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .aw-tile-champ a { font-weight: bold; }
+
+/* Ratings */
+.aw-stars { white-space: nowrap; }
+.aw-stars .icon { color: #e0a800; margin: 0 -1px; }
+.aw-rating-line { font-size: 1.1em; }
+.aw-rating-line [data-aw-summary] { margin-left: 4px; }
+.aw-rate-form { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 6px; }
+.aw-rate-buttons { display: inline-flex; }
+.aw-rate-star { background: none; border: 0; padding: 2px; cursor: pointer; font-size: 1.4em; color: #b8b8b8; line-height: 1; }
+.aw-rate-star.aw-on { color: #e0a800; }
+.aw-rate-buttons:hover .aw-rate-star { color: #e0a800; }
+.aw-rate-buttons .aw-rate-star:hover ~ .aw-rate-star { color: #b8b8b8; }
+.aw-rate-star:focus-visible { outline: 2px solid #105289; border-radius: 3px; }
+.aw-rate-msg { font-weight: bold; }
+.aw-sort { float: left; margin: 0 8px; line-height: 2.2em; }

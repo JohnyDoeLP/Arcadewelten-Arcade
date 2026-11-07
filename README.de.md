@@ -1,6 +1,6 @@
 # Arcadewelten Arcade für phpBB 3.3
 
-**Version 0.11.0-beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen.**
+**Version 0.12.0-beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen.**
 
 Selbst gehostete Spielhalle für phpBB 3.3: Spieleliste mit Kategorien, Bestenlisten, Pokale und Ruhmeshalle.
 Keine Verbindungen nach außen, keine Werbung, kein Lizenzserver, keine Spiel-Limits. Open Source unter der GPL-2.0.
@@ -10,6 +10,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 ## Funktionen
 
 - Spieleliste mit Kategorie-Kacheln (Bild, Spielanzahl, Kategorie-Champion), Suche und Seitenaufteilung; optional Passwort pro Kategorie; 18 mitgelieferte Kategorie-Bilder, eigene Bilder einfach in `images/arcade/cats/` ablegen
+- Spiele bewerten: 1–5 Sterne pro Mitglied und Spiel (nur nach dem Spielen, änderbar), Durchschnitt in der Spieleliste; Spieleliste sortierbar nach Name, Bewertung, Beliebtheit und Neuheit
 - Bestenliste pro Spiel mit Pokalen für Platz 1–3, Ruhmeshalle (Siegertreppchen mit Avataren)
 - Rekorde im Forum: neben Beiträgen, im Profil, neueste Rekorde auf der Startseite
 - Gäste sehen nur Spiele, die du für sie freigibst; keine Bestenlisten und keine geschützten Kategorien für Gäste
@@ -18,7 +19,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 - Optional: Anbindung an [Ultimate Points](https://github.com/dmzx/Ultimate-Points-Extension) – Kosten pro Spiel, Belohnung pro Runde, Saisonprämien für Platz 1–3, monatlicher Saisonabschluss mit Vorschau
 - Plausibilitätsprüfung gegen manipulierte Punkte: Mindestspielzeit und Höchstpunktzahl; verdächtige Ergebnisse landen in einer Prüfliste im ACP
 - ACP: Einstellungen, Spiele, Kategorien, Prüfliste, Saisonabschluss, Spielezähler zurücksetzen, Diagnose-Protokoll
-- DSGVO-freundlich: gespeichert werden je Mitglied und Spiel nur beste Punktzahl, Zeitpunkt und Anzahl der Versuche; Daten gelöschter Mitglieder werden mitgelöscht
+- DSGVO-freundlich: gespeichert werden je Mitglied und Spiel nur beste Punktzahl, Zeitpunkt und Anzahl der Versuche; Daten gelöschter Mitglieder werden mitgelöscht; passender Abschnitt in der Datenschutzerklärung des Forums wird automatisch ergänzt
 
 ## Unterstützte Punkte-Schnittstellen
 

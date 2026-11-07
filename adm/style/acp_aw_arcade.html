@@ -93,6 +93,13 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_RATINGS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_RATINGS_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_ratings" value="1"{% if AW_RATINGS %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_ratings" value="0"{% if not AW_RATINGS %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_DEBUG') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_DEBUG_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="aw_debug" value="1"{% if AW_DEBUG %} checked{% endif %}> {{ lang('YES') }}</label>
@@ -217,6 +224,10 @@
 			<dt><label for="reset_plays">{{ lang('ACP_AW_ARCADE_PLAYS_RESET') }}{{ lang('COLON') }}</label></dt>
 			<dd><label><input type="checkbox" id="reset_plays" name="reset_plays" value="1"> {{ lang('ACP_AW_ARCADE_RESET_PLAYS_GAME') }}</label></dd>
 		</dl>
+		<dl>
+			<dt><label for="reset_ratings">{{ lang('ACP_AW_ARCADE_RATING') }}{{ lang('COLON') }}</label><br><span>{{ GAME_RATING }}</span></dt>
+			<dd><label><input type="checkbox" id="reset_ratings" name="reset_ratings" value="1"> {{ lang('ACP_AW_ARCADE_RESET_RATINGS') }}</label></dd>
+		</dl>
 	</fieldset>
 	<fieldset class="submit-buttons">
 		<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}">
@@ -242,6 +253,7 @@
 					<th>{{ lang('ACP_AW_ARCADE_CAT') }}</th>
 					<th>{{ lang('ACP_AW_ARCADE_SAVE_TYPE') }}</th>
 					<th>{{ lang('ACP_AW_ARCADE_PLAYS') }}</th>
+					<th>{{ lang('ACP_AW_ARCADE_RATING') }}</th>
 					<th>{{ lang('ACP_AW_ARCADE_ACTIVE') }}</th>
 					<th>{{ lang('ACP_AW_ARCADE_GUEST') }}</th>
 					<th>{{ lang('ACTION') }}</th>
@@ -255,6 +267,7 @@
 					<td>{{ g.CAT }}</td>
 					<td>{{ g.SAVE_TYPE }}</td>
 					<td>{{ g.PLAYS }}</td>
+					<td>{{ g.RATING }}</td>
 					<td>{% if g.S_ACTIVE %}{{ lang('YES') }}{% else %}<strong class="error">{{ lang('NO') }}</strong>{% endif %}</td>
 					<td>{% if g.S_GUEST %}{{ lang('YES') }}{% else %}–{% endif %}</td>
 					<td class="actions"><a href="{{ g.U_EDIT }}">{{ ICON_EDIT }}</a> <a href="{{ g.U_DELETE }}">{{ ICON_DELETE }}</a></td>
