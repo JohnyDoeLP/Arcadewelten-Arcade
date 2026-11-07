@@ -1,0 +1,62 @@
+name: Release
+
+# Builds the installable ZIP and publishes a GitHub release
+# whenever a version tag (e.g. v0.11.0-beta) is pushed.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Build installable ZIP (arcadewelten/arcade/...)
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p build/arcadewelten/arcade
+          git archive HEAD | tar -x -C build/arcadewelten/arcade
+          rm -rf build/arcadewelten/arcade/.github build/arcadewelten/arcade/.gitignore
+          cd build
+          zip -qr "../arcadewelten_arcade_${VERSION}.zip" arcadewelten
+          cd ..
+          ls -l "arcadewelten_arcade_${VERSION}.zip"
+
+      - name: Write release notes from CHANGELOG.md
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v v="$VERSION" '
+            /^## / { if (found) exit; if (index($0, "## " v) == 1) { found = 1; next } }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          {
+            echo ""
+            echo "**Requirements:** phpBB 3.3, PHP 8.2 or newer."
+            echo ""
+            echo "**Installation:** download \`arcadewelten_arcade_${VERSION}.zip\` below, upload the folder \`arcadewelten\` into \`ext/\` and enable the extension in the ACP. When updating: disable the extension (do not delete its data), replace the folder, enable it again and purge the cache. Step-by-step guide: INSTALL.en.md / INSTALL.de.md."
+            echo ""
+            echo "Please use \`arcadewelten_arcade_${VERSION}.zip\` – not \"Source code\", which lacks the required folder structure."
+            echo ""
+            echo "Free HTML5 starter pack: https://arcadewelten.eu/phpBB2/dlext/details?df_id=17"
+          } >> notes.md
+          cat notes.md
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          PRE=""
+          case "$GITHUB_REF_NAME" in
+            *alpha*|*beta*|*rc*) PRE="--prerelease" ;;
+          esac
+          gh release create "$GITHUB_REF_NAME" "arcadewelten_arcade_${VERSION}.zip" \
+            --title "Arcadewelten Arcade ${VERSION}" \
+            --notes-file notes.md $PRE
