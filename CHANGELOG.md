@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- ACP → Extensions: the version check now finds new versions of the arcade (via `version.json` on GitHub; only when you open the extension details or click “Re-check version”)
+
 ## 0.14.1-beta (2026-11-07)
 
 - Search engines can use the arcade again, as before 0.14: the permission “Can use the arcade” is now also granted to the group “Bots” (they see exactly what guests see – no highscores, no protected or group-limited categories). Remove it there if you want to keep search engines out.

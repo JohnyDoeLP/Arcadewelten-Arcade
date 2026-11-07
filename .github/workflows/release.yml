@@ -34,6 +34,15 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Check version numbers (composer.json, version.json)
+        run: |
+          VERSION="${TAG#v}"
+          C=$(python3 -c "import json;print(json.load(open('composer.json'))['version'])")
+          V=$(python3 -c "import json;d=json.load(open('version.json'));print(' '.join(b['current'] for s in d.values() if isinstance(s,dict) for b in s.values()))")
+          echo "tag: $VERSION, composer.json: $C, version.json: $V"
+          [ "$C" = "$VERSION" ] || { echo "composer.json has version $C, expected $VERSION"; exit 1; }
+          echo " $V " | grep -q " $VERSION " || { echo "version.json does not list $VERSION (needed for the ACP update check)"; exit 1; }
+
       - name: Build installable ZIP (arcadewelten/arcade/...)
         run: |
           VERSION="${TAG#v}"
