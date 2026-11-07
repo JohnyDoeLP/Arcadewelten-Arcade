@@ -1,0 +1,17 @@
+# Ruffle (Flash emulator) – correct MIME type and long browser caching.
+# core.ruffle.<hash>.js and <hash>.wasm carry a content hash in their name,
+# so they never change under the same name and may be cached for a year.
+# ruffle.js has no hash and is cached for one day only, so updates arrive.
+
+<IfModule mod_mime.c>
+	AddType application/wasm .wasm
+</IfModule>
+
+<IfModule mod_headers.c>
+	<FilesMatch "\.(wasm|js|map)$">
+		Header set Cache-Control "public, max-age=31536000, immutable"
+	</FilesMatch>
+	<Files "ruffle.js">
+		Header set Cache-Control "public, max-age=86400"
+	</Files>
+</IfModule>
