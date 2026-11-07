@@ -1,0 +1,12 @@
+{
+	"stable": {},
+	"unstable": {
+		"0": {
+			"current": "0.14.1-beta",
+			"announcement": "https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/tag/v0.14.1-beta",
+			"download": "https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/tag/v0.14.1-beta",
+			"eol": null,
+			"security": false
+		}
+	}
+}

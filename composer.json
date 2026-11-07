@@ -5,7 +5,14 @@
 	"homepage": "https://arcadewelten.eu",
 	"version": "0.14.1-beta",
 	"time": "2026-11-07",
-	"keywords": ["phpbb", "extension", "arcade", "games", "highscores", "ruffle"],
+	"keywords": [
+		"phpbb",
+		"extension",
+		"arcade",
+		"games",
+		"highscores",
+		"ruffle"
+	],
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
@@ -22,6 +29,12 @@
 		"display-name": "Arcadewelten Arcade",
 		"soft-require": {
 			"phpbb/phpbb": ">=3.3.0,<4.0.0@dev"
+		},
+		"version-check": {
+			"host": "raw.githubusercontent.com",
+			"directory": "/JohnyDoeLP/Arcadewelten-Arcade/main",
+			"filename": "version.json",
+			"ssl": true
 		}
 	}
 }
