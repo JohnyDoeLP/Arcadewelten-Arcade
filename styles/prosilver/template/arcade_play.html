@@ -17,9 +17,13 @@
 		<iframe id="aw-frame" src="{{ AW_GAME_URL }}" title="{{ AW_GAME_NAME }}" allow="autoplay; fullscreen" allowfullscreen></iframe>
 		{% endif %}
 		<noscript><p class="error">{{ lang('AW_ARCADE_NEED_JS') }}</p></noscript>
+		{% if S_AW_TOUCH %}<button type="button" class="aw-touch-start" id="aw-touch-start" hidden><i class="icon fa-expand" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_TOUCH_START') }}</span></button>{% endif %}
+		<button type="button" class="aw-fs-close" id="aw-fs-close" title="{{ lang('AW_ARCADE_FULLSCREEN_EXIT') }}" aria-label="{{ lang('AW_ARCADE_FULLSCREEN_EXIT') }}"><i class="icon fa-times" aria-hidden="true"></i></button>
 	</div>
+	<p class="aw-touch-hint" id="aw-touch-hint" hidden><i class="icon fa-keyboard-o fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_NOT_TOUCH_HINT') }}</p>
 	<div class="aw-play-tools">
 		<button type="button" class="button" id="aw-fullscreen"><i class="icon fa-arrows-alt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_FULLSCREEN') }}</span></button>
+		<button type="button" class="button" id="aw-cinema" aria-pressed="false" data-on="{{ lang('AW_ARCADE_LIGHTS_ON') }}" data-off="{{ lang('AW_ARCADE_LIGHTS_OFF') }}"><i class="icon fa-lightbulb-o fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_LIGHTS_OFF') }}</span></button>
 		{% if not S_AW_GUEST %}<a class="button" href="{{ U_AW_SCORES }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_HIGHSCORES') }}</span></a>{% endif %}
 	</div>
 </div>
@@ -129,24 +133,81 @@
 		}
 	});
 
-	/* Fullscreen: the whole stage (Ruffle player or game iframe) fills the screen. */
-	document.getElementById('aw-fullscreen').addEventListener('click', function () {
-		var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-		if (fsEl) {
-			(document.exitFullscreen || document.webkitExitFullscreen).call(document);
-			return;
-		}
+	/* Fullscreen: the whole stage (Ruffle player or game iframe) fills the screen.
+	 * Browsers without element fullscreen (iPhone Safari) get a CSS fallback
+	 * that covers the window, with a close button. */
+	var focusStage = function () {
+		var game = stage.querySelector('ruffle-player, iframe');
+		if (game) { game.focus(); }
+	};
+	var pseudoFs = function (on) {
+		stage.classList.toggle('aw-pseudo-fs', on);
+		document.documentElement.classList.toggle('aw-no-scroll', on);
+		if (on) { focusStage(); }
+	};
+	var isFs = function () {
+		return (document.fullscreenElement || document.webkitFullscreenElement) === stage || stage.classList.contains('aw-pseudo-fs');
+	};
+	var enterFs = function (landscape) {
 		var req = stage.requestFullscreen || stage.webkitRequestFullscreen;
-		if (req) {
-			var res = req.call(stage);
-			if (res && res.then) {
-				res.then(function () {
-					var game = stage.querySelector('ruffle-player, iframe');
-					if (game) { game.focus(); }
-				}).catch(function () {});
+		var done = function () {
+			focusStage();
+			// Wide games on phones: try landscape (only allowed in fullscreen, ignored elsewhere).
+			if (landscape && screen.orientation && screen.orientation.lock) {
+				screen.orientation.lock('landscape').catch(function () {});
 			}
+		};
+		if (!req) { pseudoFs(true); return; }
+		try {
+			var res = req.call(stage);
+			if (res && res.then) { res.then(done).catch(function () { pseudoFs(true); }); } else { done(); }
+		} catch (e) { pseudoFs(true); }
+	};
+	var exitFs = function () {
+		if (stage.classList.contains('aw-pseudo-fs')) { pseudoFs(false); return; }
+		if (document.fullscreenElement || document.webkitFullscreenElement) {
+			(document.exitFullscreen || document.webkitExitFullscreen).call(document);
 		}
+	};
+	var wide = {{ AW_GAME_WIDTH }} > {{ AW_GAME_HEIGHT }};
+
+	document.getElementById('aw-fullscreen').addEventListener('click', function () {
+		if (isFs()) { exitFs(); } else { enterFs(false); }
 	});
+	document.getElementById('aw-fs-close').addEventListener('click', exitFs);
+
+	/* Phones and tablets: touch games start with a big "play in fullscreen" button
+	 * (fullscreen needs a tap); other games show a hint that they need a keyboard. */
+	var touchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+	if (touchDevice) {
+		var touchStart = document.getElementById('aw-touch-start');
+		if (touchStart) {
+			touchStart.hidden = false;
+			touchStart.addEventListener('click', function () {
+				touchStart.hidden = true;
+				enterFs(wide);
+			});
+		} else {
+			document.getElementById('aw-touch-hint').hidden = false;
+		}
+	}
+
+	/* Cinema mode ("lights off"): darkens the whole forum around the game. */
+	var cinemaBtn = document.getElementById('aw-cinema');
+	var shade = document.createElement('div');
+	shade.className = 'aw-shade';
+	shade.addEventListener('click', function () { cinema(false); });
+	document.body.appendChild(shade);
+	var cinema = function (on) {
+		document.documentElement.classList.toggle('aw-cinema', on);
+		cinemaBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+		cinemaBtn.querySelector('span').textContent = cinemaBtn.getAttribute(on ? 'data-on' : 'data-off');
+		try { window.localStorage.setItem('awArcadeCinema', on ? '1' : '0'); } catch (e) {}
+	};
+	cinemaBtn.addEventListener('click', function () {
+		cinema(!document.documentElement.classList.contains('aw-cinema'));
+	});
+	try { if (window.localStorage.getItem('awArcadeCinema') === '1') { cinema(true); } } catch (e) {}
 
 	{% if S_AW_FLASH %}
 	window.RufflePlayer = window.RufflePlayer || {};

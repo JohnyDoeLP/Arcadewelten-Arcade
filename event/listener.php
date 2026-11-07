@@ -15,6 +15,7 @@ class listener implements EventSubscriberInterface
 	protected $legacy;
 	protected $scores;
 	protected $ratings;
+	protected $recent;
 	protected $helper;
 	protected $template;
 	protected $request;
@@ -25,7 +26,7 @@ class listener implements EventSubscriberInterface
 	/** @var array|null user_id => number of records */
 	protected $record_counts;
 
-	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config)
+	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config)
 	{
 		$this->config = $config;
 		$this->user = $user;
@@ -33,6 +34,7 @@ class listener implements EventSubscriberInterface
 		$this->legacy = $legacy;
 		$this->scores = $scores;
 		$this->ratings = $ratings;
+		$this->recent = $recent;
 		$this->helper = $helper;
 		$this->template = $template;
 		$this->request = $request;
@@ -107,6 +109,7 @@ class listener implements EventSubscriberInterface
 	{
 		$this->scores->delete_users($event['user_ids']);
 		$this->ratings->delete_users($event['user_ids']);
+		$this->recent->delete_users($event['user_ids']);
 	}
 
 	/* ---------------------------------------------------------------

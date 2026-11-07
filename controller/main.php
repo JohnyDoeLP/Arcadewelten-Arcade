@@ -19,6 +19,7 @@ class main
 	protected $access;
 	protected $points;
 	protected $ratings;
+	protected $recent;
 	protected $config;
 	protected $helper;
 	protected $template;
@@ -28,13 +29,14 @@ class main
 	protected $pagination;
 	protected $root_path;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
 		$this->access = $access;
 		$this->points = $points;
 		$this->ratings = $ratings;
+		$this->recent = $recent;
 		$this->config = $config;
 		$this->helper = $helper;
 		$this->template = $template;
@@ -165,6 +167,7 @@ class main
 				'CHAMPION'		=> $champ ? get_username_string('full', $champ['user_id'], $champ['username'], $champ['user_colour']) : '',
 				'CHAMP_SCORE'	=> $champ ? $this->format_score($champ['score']) : '',
 				'S_NO_SCORES'	=> (int) $row['game_save_type'] === games::SAVE_NONE,
+				'S_TOUCH'		=> (bool) $row['game_touch'],
 				'S_GUEST'		=> $is_guest,
 				'RATING_COUNT'	=> $this->ratings->enabled() ? (int) $row['game_rating_count'] : 0,
 				'RATING_STARS'	=> $this->stars($row),
@@ -180,6 +183,26 @@ class main
 					'PLACE'	=> $i + 1,
 					'USER'	=> get_username_string('full', $t['user_id'], $t['username'], $t['user_colour']),
 					'SCORE'	=> $this->format_score($t['score']),
+				]);
+			}
+		}
+
+		if (!$is_guest && !$cat_id && $search === '' && !$start && $this->recent->enabled())
+		{
+			$shown = 0;
+			foreach ($this->recent->get($this->user->data['user_id'], \arcadewelten\arcade\core\recent::KEEP) as $row)
+			{
+				if ($shown >= 6 || ($row['cat_id'] && !$this->access->has_access($row)))
+				{
+					continue;
+				}
+				$shown++;
+
+				$this->template->assign_block_vars('recent', [
+					'NAME'		=> $row['game_name'],
+					'IMAGE'		=> $this->game_web_path($row, $row['game_image']),
+					'S_TOUCH'	=> (bool) $row['game_touch'],
+					'U_PLAY'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $row['game_id']]),
 				]);
 			}
 		}
@@ -289,6 +312,11 @@ class main
 		}
 
 		$play_id = $is_member ? $this->scores->start_play($this->user->data['user_id'], $game['game_id']) : '';
+
+		if ($is_member)
+		{
+			$this->recent->add($this->user->data['user_id'], $game['game_id']);
+		}
 		$this->games->count_play($game['game_id']);
 
 		add_form_key('aw_arcade_play');
@@ -308,6 +336,7 @@ class main
 			'AW_PLAY_ID'		=> $play_id,
 			'S_AW_FLASH'		=> $type === games::TYPE_FLASH,
 			'S_AW_HTML5'		=> $type === games::TYPE_HTML5,
+			'S_AW_TOUCH'		=> (bool) $game['game_touch'],
 			'S_AW_GUEST'		=> !$is_member,
 			'S_AW_NO_SCORES'	=> (int) $game['game_save_type'] === games::SAVE_NONE,
 			'AW_POINTS_INFO'	=> $this->points_info($game),

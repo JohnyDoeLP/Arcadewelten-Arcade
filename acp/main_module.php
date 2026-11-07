@@ -36,6 +36,8 @@ class main_module
 	protected $points;
 	/** @var \arcadewelten\arcade\core\ratings */
 	protected $ratings;
+	/** @var \arcadewelten\arcade\core\recent */
+	protected $recent;
 	/** @var \arcadewelten\arcade\core\season */
 	protected $season;
 	/** @var \phpbb\user */
@@ -58,6 +60,7 @@ class main_module
 		$this->points = $phpbb_container->get('arcadewelten.arcade.points');
 		$this->season = $phpbb_container->get('arcadewelten.arcade.season');
 		$this->ratings = $phpbb_container->get('arcadewelten.arcade.ratings');
+		$this->recent = $phpbb_container->get('arcadewelten.arcade.recent');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
 
@@ -141,6 +144,7 @@ class main_module
 			$this->config->set('aw_arcade_credit', $this->request->variable('aw_credit', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_privacy', $this->request->variable('aw_privacy', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_ratings', $this->request->variable('aw_ratings', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_recent', $this->request->variable('aw_recent', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_min_time', max(0, min(600, $this->request->variable('aw_min_time', 5))));
 			$this->config->set('aw_arcade_games_per_page', max(5, min(200, $this->request->variable('aw_games_per_page', 30))));
 			$this->config->set('aw_arcade_scores_per_page', max(5, min(200, $this->request->variable('aw_scores_per_page', 25))));
@@ -168,6 +172,7 @@ class main_module
 			'AW_CREDIT'				=> (bool) $this->config['aw_arcade_credit'],
 			'AW_PRIVACY'			=> (bool) $this->config['aw_arcade_privacy'],
 			'AW_RATINGS'			=> (bool) $this->config['aw_arcade_ratings'],
+			'AW_RECENT'				=> (bool) $this->config['aw_arcade_recent'],
 			'U_AW_PRIVACY'			=> generate_board_url() . '/ucp.php?mode=privacy#' . \arcadewelten\arcade\core\privacy::ANCHOR,
 			'AW_MIN_TIME'			=> (int) $this->config['aw_arcade_min_time'],
 			'AW_GAMES_PER_PAGE'		=> (int) $this->config['aw_arcade_games_per_page'],
@@ -337,6 +342,14 @@ class main_module
 						$this->games->update_game($id, ['game_guest' => 0]);
 					break;
 
+					case 'touch_on':
+						$this->games->update_game($id, ['game_touch' => 1]);
+					break;
+
+					case 'touch_off':
+						$this->games->update_game($id, ['game_touch' => 0]);
+					break;
+
 					case 'move':
 						$this->games->update_game($id, ['cat_id' => $cat_id]);
 					break;
@@ -360,6 +373,7 @@ class main_module
 			{
 				$this->scores->delete_game_scores($game_id);
 				$this->ratings->delete_game($game_id);
+				$this->recent->delete_game($game_id);
 				$this->games->delete_game($game_id);
 				trigger_error($this->language->lang('ACP_AW_ARCADE_GAME_DELETED') . adm_back_link($this->u_action));
 			}
@@ -400,6 +414,7 @@ class main_module
 				'RATING'		=> $this->rating_text($row),
 				'S_ACTIVE'		=> (bool) $row['game_active'],
 				'S_GUEST'		=> (bool) $row['game_guest'],
+				'S_TOUCH'		=> (bool) $row['game_touch'],
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;g=' . (int) $row['game_id'],
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;g=' . (int) $row['game_id'],
 			]);
@@ -484,6 +499,7 @@ class main_module
 				'game_save_type'	=> min(4, max(0, $this->request->variable('game_save_type', 0))),
 				'game_active'		=> $this->request->variable('game_active', 0) ? 1 : 0,
 				'game_guest'		=> $this->request->variable('game_guest', 0) ? 1 : 0,
+				'game_touch'		=> $this->request->variable('game_touch', 0) ? 1 : 0,
 				'game_min_time'		=> max(0, min(3600, $this->request->variable('game_min_time', 0))),
 				'game_max_score'	=> max(0, (float) str_replace(',', '.', $this->request->variable('game_max_score', '0'))),
 			] + $this->read_point_fields('game'));
@@ -533,6 +549,7 @@ class main_module
 			'S_LOW_WINS'		=> (int) $game['game_scoretype'] === games::SCORE_LOW,
 			'S_GAME_ACTIVE'		=> (bool) $game['game_active'],
 			'S_GAME_GUEST'		=> (bool) $game['game_guest'],
+			'S_GAME_TOUCH'		=> (bool) $game['game_touch'],
 			'GAME_MIN_TIME'		=> (int) $game['game_min_time'],
 			'GAME_MAX_SCORE'	=> (float) $game['game_max_score'] + 0,
 			'GAME_RATING'		=> $this->rating_text($game),

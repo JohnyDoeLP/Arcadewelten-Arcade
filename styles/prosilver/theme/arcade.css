@@ -106,3 +106,33 @@
 .aw-rate-star:focus-visible { outline: 2px solid #105289; border-radius: 3px; }
 .aw-rate-msg { font-weight: bold; }
 .aw-sort { float: left; margin: 0 8px; line-height: 2.2em; }
+
+/* Touch / mobile games */
+.aw-touch { opacity: 0.8; }
+.aw-touch-start { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; width: 100%; border: 0; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 1.4em; font-weight: bold; cursor: pointer; }
+.aw-touch-start .icon { font-size: 2.4em; }
+.aw-touch-start[hidden] { display: none; }
+.aw-touch-hint { text-align: center; font-size: 0.95em; opacity: 0.85; margin: 6px 0 0; }
+.aw-touch-hint[hidden] { display: none; }
+
+/* Fullscreen fallback for browsers without element fullscreen (iPhone) */
+.aw-fs-close { display: none; position: absolute; top: 8px; right: 8px; z-index: 6; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 20px; cursor: pointer; }
+.aw-stage.aw-pseudo-fs { position: fixed !important; inset: 0; z-index: 100000; max-width: none !important; aspect-ratio: auto !important; width: 100vw; height: 100vh; height: 100dvh; margin: 0; }
+.aw-stage.aw-pseudo-fs .aw-fs-close { display: block; }
+html.aw-no-scroll, html.aw-no-scroll body { overflow: hidden; }
+
+/* Cinema mode ("lights off") */
+.aw-shade { display: none; }
+html.aw-cinema .aw-shade { display: block; position: fixed; inset: 0; z-index: 9000; background: rgba(0, 0, 0, 0.92); cursor: pointer; }
+html.aw-cinema .aw-play-wrap { position: relative; z-index: 9001; }
+html.aw-cinema .aw-stage { box-shadow: 0 0 60px rgba(255, 255, 255, 0.12); }
+html.aw-cinema #aw-cinema { box-shadow: 0 0 0 2px #e0a800; }
+html.aw-cinema .aw-points-info, html.aw-cinema .aw-touch-hint { position: relative; z-index: 9001; color: #ddd; }
+
+/* Recently played */
+.aw-recent { margin: 10px 0; }
+.aw-recent h3 { margin: 0 0 6px; }
+.aw-recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.aw-recent-item { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 96px; padding: 6px; border: 1px solid #c7c3bf; border-radius: 6px; background: rgba(255, 255, 255, 0.35); text-decoration: none; text-align: center; }
+.aw-recent-item:hover { border-color: #105289; text-decoration: none; }
+.aw-recent-name { font-size: 0.9em; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

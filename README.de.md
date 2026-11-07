@@ -1,6 +1,6 @@
 # Arcadewelten Arcade für phpBB 3.3
 
-**Version 0.12.0-beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen.**
+**Version 0.13.0-beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen.**
 
 Selbst gehostete Spielhalle für phpBB 3.3: Spieleliste mit Kategorien, Bestenlisten, Pokale und Ruhmeshalle.
 Keine Verbindungen nach außen, keine Werbung, kein Lizenzserver, keine Spiel-Limits. Open Source unter der GPL-2.0.
@@ -10,6 +10,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 ## Funktionen
 
 - Spieleliste mit Kategorie-Kacheln (Bild, Spielanzahl, Kategorie-Champion), Suche und Seitenaufteilung; optional Passwort pro Kategorie; 18 mitgelieferte Kategorie-Bilder, eigene Bilder einfach in `images/arcade/cats/` ablegen
+- Kino-Modus („Licht aus“), Handy-/Touch-Spiele mit Vollbild-Start (auch auf dem iPhone), Leiste „Zuletzt gespielt“
 - Spiele bewerten: 1–5 Sterne pro Mitglied und Spiel (nur nach dem Spielen, änderbar), Durchschnitt in der Spieleliste; Spieleliste sortierbar nach Name, Bewertung, Beliebtheit und Neuheit
 - Bestenliste pro Spiel mit Pokalen für Platz 1–3, Ruhmeshalle (Siegertreppchen mit Avataren)
 - Rekorde im Forum: neben Beiträgen, im Profil, neueste Rekorde auf der Startseite
@@ -68,6 +69,10 @@ parent.awArcade.submitScore(endpunktzahl);
 ```
 
 Spielsitzung und Formular-Token erledigt die Spielseite der Spielhalle.
+
+## Geplant
+
+Was als Nächstes kommt, steht in `ROADMAP.md`.
 
 ## Datenschutz
 

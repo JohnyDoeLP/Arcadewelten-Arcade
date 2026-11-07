@@ -130,4 +130,12 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_SORT_RATING'		=> 'Beste Bewertung',
 	'AW_ARCADE_SORT_PLAYS'		=> 'Am meisten gespielt',
 	'AW_ARCADE_SORT_NEW'		=> 'Neueste',
+
+	'AW_ARCADE_RECENT'			=> 'Zuletzt gespielt',
+	'AW_ARCADE_TOUCH_GAME'		=> 'Auch auf dem Handy spielbar',
+	'AW_ARCADE_TOUCH_START'		=> 'Im Vollbild spielen',
+	'AW_ARCADE_FULLSCREEN_EXIT'	=> 'Vollbild beenden',
+	'AW_ARCADE_NOT_TOUCH_HINT'	=> 'Dieses Spiel braucht Tastatur oder Maus und ist auf Handy und Tablet eventuell nicht spielbar.',
+	'AW_ARCADE_LIGHTS_OFF'		=> 'Licht aus',
+	'AW_ARCADE_LIGHTS_ON'		=> 'Licht an',
 ]);

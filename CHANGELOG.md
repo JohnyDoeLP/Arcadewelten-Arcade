@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.0-beta (2026-11-07)
+
+- Cinema mode: "Lights off" button on the play page darkens the whole forum around the game; the choice is remembered in the browser. Click on the dark area or the button switches the light back on.
+- Mobile/touch games: new switch per game (and as bulk action) in the ACP. Such games get a phone icon in the game list; on phones and tablets they start with a big "Play in fullscreen" button, wide games try to switch to landscape. Other games show a hint on touch devices that they need a keyboard or mouse.
+- Fullscreen also works on browsers without element fullscreen (iPhone): the game then covers the whole window and gets a close button.
+- "Recently played" bar at the top of the arcade for members (the last 6 games; at most 10 are stored per member, only visible to the member). Can be switched off in the ACP; included in the privacy section.
+- Ratings: games in the "recently played" list count as played
+- New `ROADMAP.md` with the planned features
+
 ## 0.12.0-beta (2026-11-07)
 
 - Game ratings: members rate games with 1–5 stars (one changeable rating per game, only after playing it). Average and number of ratings on the play page, the highscores page and in the game list; without JavaScript the rating works as a normal form.

@@ -12,7 +12,8 @@ namespace arcadewelten\arcade\core;
  * Game ratings: 1–5 stars, one rating per member and game (changeable).
  *
  * Only members who played the game may rate it: they have a highscore, an
- * open play session (e.g. games without scores) or rated it before.
+ * entry in the recently played list, an open play session (e.g. games
+ * without scores) or rated it before.
  * Sum and count are mirrored in the games table for lists and sorting.
  */
 class ratings
@@ -25,8 +26,9 @@ class ratings
 	protected $games_table;
 	protected $scores_table;
 	protected $sessions_table;
+	protected $recent_table;
 
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, $ratings_table, $games_table, $scores_table, $sessions_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, $ratings_table, $games_table, $scores_table, $sessions_table, $recent_table)
 	{
 		$this->db = $db;
 		$this->config = $config;
@@ -34,6 +36,7 @@ class ratings
 		$this->games_table = $games_table;
 		$this->scores_table = $scores_table;
 		$this->sessions_table = $sessions_table;
+		$this->recent_table = $recent_table;
 	}
 
 	public function enabled()
@@ -73,7 +76,7 @@ class ratings
 	{
 		$where = ' WHERE game_id = ' . (int) $game_id . ' AND user_id = ' . (int) $user_id;
 
-		foreach ([$this->ratings_table, $this->scores_table, $this->sessions_table] as $table)
+		foreach ([$this->ratings_table, $this->scores_table, $this->recent_table, $this->sessions_table] as $table)
 		{
 			$result = $this->db->sql_query_limit('SELECT user_id FROM ' . $table . $where, 1);
 			$found = (bool) $this->db->sql_fetchrow($result);

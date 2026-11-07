@@ -59,6 +59,20 @@
 </div>
 {% endif %}
 
+{% if loops.recent|length %}
+<div class="aw-recent">
+	<h3>{{ lang('AW_ARCADE_RECENT') }}</h3>
+	<div class="aw-recent-list">
+		{% for r in loops.recent %}
+		<a class="aw-recent-item" href="{{ r.U_PLAY }}" title="{{ r.NAME }}">
+			<span class="aw-thumb">{% if r.IMAGE %}<img src="{{ r.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}</span>
+			<span class="aw-recent-name">{% if r.S_TOUCH %}<i class="icon fa-mobile aw-touch" aria-hidden="true"></i> {% endif %}{{ r.NAME }}</span>
+		</a>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
+
 <div class="action-bar bar-top">
 	<div class="search-box" role="search">
 		<form method="get" action="{{ U_AW_SEARCH }}">
@@ -91,7 +105,7 @@
 			{% if game.IMAGE %}<img src="{{ game.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}
 		</a>
 		<div class="aw-card-body">
-			<a class="aw-game-name" href="{{ game.U_PLAY }}">{{ game.NAME }}</a>
+			<a class="aw-game-name" href="{{ game.U_PLAY }}">{% if game.S_TOUCH %}<i class="icon fa-mobile fa-fw aw-touch" aria-hidden="true" title="{{ lang('AW_ARCADE_TOUCH_GAME') }}"></i><span class="sr-only">{{ lang('AW_ARCADE_TOUCH_GAME') }}: </span>{% endif %}{{ game.NAME }}</a>
 			{% if not AW_CAT_NAME and game.CAT_NAME %}<div class="aw-small">{{ game.CAT_NAME }}</div>{% endif %}
 			{% if game.RATING_COUNT %}<div class="aw-small aw-stars" title="{{ lang('AW_ARCADE_RATING_SUMMARY', game.RATING_AVG, game.RATING_COUNT) }}">{% for i in 1..5 %}<i class="icon fa-fw {% if game.RATING_STARS >= i %}fa-star{% elseif game.RATING_STARS >= i - 0.5 %}fa-star-half-o{% else %}fa-star-o{% endif %}" aria-hidden="true"></i>{% endfor %} <span class="aw-rating-num">{{ game.RATING_AVG }} ({{ game.RATING_COUNT }})</span></div>{% endif %}
 			{% if game.COST %}<div class="aw-small aw-cost"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ game.COST }}</div>{% endif %}

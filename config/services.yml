@@ -5,6 +5,7 @@ parameters:
     arcadewelten.arcade.tables.sessions: '%core.table_prefix%aw_arcade_sessions'
     arcadewelten.arcade.tables.flagged: '%core.table_prefix%aw_arcade_flagged'
     arcadewelten.arcade.tables.ratings: '%core.table_prefix%aw_arcade_ratings'
+    arcadewelten.arcade.tables.recent: '%core.table_prefix%aw_arcade_recent'
 
 services:
     arcadewelten.arcade.games:
@@ -60,6 +61,16 @@ services:
             - '%arcadewelten.arcade.tables.games%'
             - '%arcadewelten.arcade.tables.scores%'
             - '%arcadewelten.arcade.tables.sessions%'
+            - '%arcadewelten.arcade.tables.recent%'
+
+    arcadewelten.arcade.recent:
+        class: arcadewelten\arcade\core\recent
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '%arcadewelten.arcade.tables.recent%'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.cats%'
 
     arcadewelten.arcade.privacy:
         class: arcadewelten\arcade\core\privacy
@@ -69,6 +80,7 @@ services:
             - '@language'
             - '@arcadewelten.arcade.points'
             - '@arcadewelten.arcade.ratings'
+            - '@arcadewelten.arcade.recent'
             - '%arcadewelten.arcade.tables.games%'
             - '%arcadewelten.arcade.tables.cats%'
 
@@ -104,6 +116,7 @@ services:
             - '@arcadewelten.arcade.access'
             - '@arcadewelten.arcade.points'
             - '@arcadewelten.arcade.ratings'
+            - '@arcadewelten.arcade.recent'
             - '@config'
             - '@controller.helper'
             - '@template'
@@ -119,6 +132,7 @@ services:
             - '@arcadewelten.arcade.legacy'
             - '@arcadewelten.arcade.scores'
             - '@arcadewelten.arcade.ratings'
+            - '@arcadewelten.arcade.recent'
             - '@controller.helper'
             - '@template'
             - '@request'
