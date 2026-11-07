@@ -87,6 +87,8 @@ ACP → Erweiterungen → Spielhalle → **Einstellungen**:
 Pro Kategorie kannst du ein **Bild** (Pfad relativ zum Forum, z. B. `images/arcade/puzzle.png`) und ein **Passwort** setzen.
 Pro Spiel kannst du **Mindestspielzeit**, **Höchstpunktzahl** und Punkte-Werte festlegen.
 
+**Rechte:** Wer die Spielhalle benutzen darf, regelt das Benutzerrecht **„Kann die Spielhalle benutzen“** (ACP → Berechtigungen → Benutzer- oder Gruppenrechte, Reiter „Diverses“). Nach der Installation haben Gäste und registrierte Benutzer dieses Recht – es ändert sich also nichts, bis du es selbst anpasst. Eine Kategorie lässt sich außerdem auf bestimmte **Benutzergruppen** beschränken (z. B. eine Ü18-Kategorie nur für die Gruppe „Verifiziert“); alle anderen sehen sie dann gar nicht.
+
 ## 8. Datenschutzerklärung ergänzen
 
 Ab Werk hängt die Spielhalle an die Datenschutzerklärung des Forums (`ucp.php?mode=privacy`) automatisch einen passenden Abschnitt an – du musst nichts tun. Abschalten kannst du ihn unter **Einstellungen → Abschnitt „Spielhalle“ in der Datenschutzerklärung**. Pflegst du eine eigene Datenschutzerklärung, findest du einen fertigen Textbaustein in `contrib/privacy.de.txt`.

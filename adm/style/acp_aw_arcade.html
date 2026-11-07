@@ -378,6 +378,7 @@
 		<tr>
 			<th>{{ lang('ACP_AW_ARCADE_CAT') }}</th>
 			<th>{{ lang('ACP_AW_ARCADE_GAMES') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_CAT_VISIBLE_FOR') }}</th>
 			<th>{{ lang('PASSWORD') }}</th>
 			<th>{{ lang('ACTION') }}</th>
 		</tr>
@@ -387,6 +388,7 @@
 		<tr>
 			<td><strong>{{ c.NAME }}</strong>{% if c.DESC %}<br><span class="small">{{ c.DESC }}</span>{% endif %}</td>
 			<td>{{ c.COUNT }}</td>
+			<td>{% if c.GROUPS %}{{ c.GROUPS }}{% else %}{{ lang('ACP_AW_ARCADE_CAT_EVERYBODY') }}{% endif %}</td>
 			<td>{% if c.S_PROTECTED %}{{ lang('YES') }}{% else %}{{ lang('NO') }}{% endif %}</td>
 			<td class="actions">
 				{% if not loop.first %}<a href="{{ c.U_UP }}">{{ ICON_MOVE_UP }}</a>{% else %}{{ ICON_MOVE_UP_DISABLED }}{% endif %}
@@ -396,7 +398,7 @@
 			</td>
 		</tr>
 	{% else %}
-		<tr><td colspan="4">{{ lang('ACP_AW_ARCADE_NO_CATS') }}</td></tr>
+		<tr><td colspan="5">{{ lang('ACP_AW_ARCADE_NO_CATS') }}</td></tr>
 	{% endfor %}
 	</tbody>
 </table>

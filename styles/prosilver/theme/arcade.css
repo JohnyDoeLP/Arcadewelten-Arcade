@@ -136,3 +136,4 @@ html.aw-cinema .aw-points-info, html.aw-cinema .aw-touch-hint { position: relati
 .aw-recent-item { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 96px; padding: 6px; border: 1px solid #c7c3bf; border-radius: 6px; background: rgba(255, 255, 255, 0.35); text-decoration: none; text-align: center; }
 .aw-recent-item:hover { border-color: #105289; text-decoration: none; }
 .aw-recent-name { font-size: 0.9em; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aw-tile-groups { right: auto; left: 3px; }

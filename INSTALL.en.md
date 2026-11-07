@@ -87,6 +87,8 @@ ACP → Extensions → Arcade → **Settings**:
 Per category you can set an **image** (path relative to the board, e.g. `images/arcade/puzzle.png`) and a **password**.
 Per game you can set **minimum play time**, **maximum score** and point values.
 
+**Permissions:** who may use the arcade is set with the user permission **“Can use the arcade”** (ACP → Permissions → user or group permissions, tab “Misc”). After installation guests and registered users have it – nothing changes until you adjust it. A category can also be limited to certain **user groups** (e.g. an 18+ category only for the group “Verified”); everybody else does not see it at all.
+
 ## 8. Update your privacy policy
 
 By default the arcade automatically appends a matching section to the board’s privacy policy (`ucp.php?mode=privacy`) – nothing to do. You can switch it off under **Settings → “Arcade” section in the privacy policy**. If you maintain your own privacy policy, a ready-made text block is in `contrib/privacy.en.txt`.

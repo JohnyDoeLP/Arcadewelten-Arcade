@@ -31,6 +31,14 @@
 })();
 </script>
 <dl>
+	<dt><label for="cat_groups">{{ lang('ACP_AW_ARCADE_CAT_GROUPS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_GROUPS_EXPLAIN') }}</span></dt>
+	<dd>
+		<select id="cat_groups" name="cat_groups[]" multiple size="8">
+			{% for g in loops.cat_groups %}<option value="{{ g.ID }}"{% if g.S_SEL %} selected{% endif %}>{{ g.NAME }}</option>{% endfor %}
+		</select>
+	</dd>
+</dl>
+<dl>
 	<dt><label for="cat_password">{{ lang('PASSWORD') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_PASSWORD_EXPLAIN') }}</span></dt>
 	<dd>
 		<input class="text medium" type="password" id="cat_password" name="cat_password" value="" autocomplete="new-password">

@@ -599,10 +599,10 @@ class scores
 	/**
 	 * Most recent records.
 	 */
-	public function latest_records($n = 5)
+	public function latest_records($n = 5, array $hidden_cats = [])
 	{
-		$champions = array_values(array_filter($this->all_champions(), function ($row) {
-			return empty($row['cat_protected']);
+		$champions = array_values(array_filter($this->all_champions(), function ($row) use ($hidden_cats) {
+			return empty($row['cat_protected']) && !in_array((int) $row['cat_id'], $hidden_cats, true);
 		}));
 
 		usort($champions, function ($a, $b) {

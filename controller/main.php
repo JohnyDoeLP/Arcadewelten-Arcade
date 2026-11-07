@@ -55,10 +55,13 @@ class main
 
 	public function index($cat_id)
 	{
+		$this->check_use();
+
 		$cat_id = (int) $cat_id;
 		$cat = $cat_id ? $this->games->get_cat($cat_id) : false;
+		$hidden = $this->access->hidden_cats();
 
-		if ($cat_id && !$cat)
+		if ($cat_id && (!$cat || in_array($cat_id, $hidden, true)))
 		{
 			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_CAT');
 		}
@@ -92,6 +95,12 @@ class main
 		{
 			$is_locked = !$this->access->has_access($c);
 			$cid = (int) $c['cat_id'];
+
+			// Limited to user groups the member is not in: the category does not exist for them.
+			if (in_array($cid, $hidden, true))
+			{
+				continue;
+			}
 
 			if ($is_guest && ($this->access->is_protected($c) || !(int) $c['game_count']))
 			{
@@ -133,6 +142,7 @@ class main
 				'U_CAT'			=> $this->helper->route('arcadewelten_arcade_cat', ['cat_id' => $cid]),
 				'S_ACTIVE'		=> $cid === $cat_id,
 				'S_PROTECTED'	=> $this->access->is_protected($c),
+				'S_GROUPS'		=> (bool) $this->access->get_cat_groups($cid),
 				'S_LOCKED'		=> $is_locked,
 			]);
 		}
@@ -145,7 +155,7 @@ class main
 		}
 		$start = max(0, $this->request->variable('start', 0));
 		$per_page = max(1, (int) $this->config['aw_arcade_games_per_page']);
-		$exclude = $cat_id ? [] : $locked;
+		$exclude = array_merge($cat_id ? [] : $locked, $hidden);
 
 		$guests_blocked = $is_guest && !$this->config['aw_arcade_guest_play'];
 		$total = $guests_blocked ? 0 : $this->games->count_games($cat_id, true, $search, $exclude);
@@ -192,7 +202,7 @@ class main
 			$shown = 0;
 			foreach ($this->recent->get($this->user->data['user_id'], \arcadewelten\arcade\core\recent::KEEP) as $row)
 			{
-				if ($shown >= 6 || ($row['cat_id'] && !$this->access->has_access($row)))
+				if ($shown >= 6 || ($row['cat_id'] && (!$this->access->can_see_cat($row['cat_id']) || !$this->access->has_access($row))))
 				{
 					continue;
 				}
@@ -270,9 +280,10 @@ class main
 
 	public function play($game_id)
 	{
+		$this->check_use();
 		$game = $this->games->get_game($game_id);
 
-		if (!$game)
+		if (!$game || !$this->access->can_see_cat($game['cat_id']))
 		{
 			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_GAME');
 		}
@@ -361,6 +372,8 @@ class main
 
 	public function scores($game_id)
 	{
+		$this->check_use();
+
 		if (!$this->is_member())
 		{
 			login_box('', $this->language->lang('AW_ARCADE_LOGIN_FOR_SCORES'));
@@ -368,7 +381,7 @@ class main
 
 		$game = $this->games->get_game($game_id);
 
-		if (!$game)
+		if (!$game || !$this->access->can_see_cat($game['cat_id']))
 		{
 			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_GAME');
 		}
@@ -437,6 +450,8 @@ class main
 
 	public function user($user_id)
 	{
+		$this->check_use();
+
 		if (!$this->is_member())
 		{
 			login_box('', $this->language->lang('AW_ARCADE_LOGIN_FOR_SCORES'));
@@ -451,6 +466,11 @@ class main
 
 		foreach ($this->scores->user_records((int) $user_id) as $row)
 		{
+			if (!$this->access->can_see_cat($row['cat_id']))
+			{
+				continue;
+			}
+
 			$this->template->assign_block_vars('records', [
 				'GAME'		=> $row['game_name'],
 				'SCORE'		=> $this->format_score($row['score']),
@@ -490,9 +510,9 @@ class main
 		}
 
 		$play = $this->scores->get_play($this->user->data['user_id'], 0, $this->request->variable('play_id', ''));
-		$game = $play ? $this->games->get_game($play['game_id']) : false;
+		$game = ($play && $this->access->can_use()) ? $this->games->get_game($play['game_id']) : false;
 
-		if (!$game)
+		if (!$game || !$this->access->can_see_cat($game['cat_id']))
 		{
 			return new JsonResponse(['ok' => false, 'error' => 'session'], 400);
 		}
@@ -536,10 +556,10 @@ class main
 	public function rate($game_id)
 	{
 		$ajax = $this->request->is_ajax();
-		$game = $this->ratings->enabled() ? $this->games->get_game($game_id) : false;
+		$game = ($this->ratings->enabled() && $this->access->can_use()) ? $this->games->get_game($game_id) : false;
 		$error = '';
 
-		if (!$game)
+		if (!$game || !$this->access->can_see_cat($game['cat_id']))
 		{
 			$error = 'AW_ARCADE_NO_GAME';
 		}
@@ -817,6 +837,24 @@ class main
 		global $phpEx;
 
 		return $phpEx;
+	}
+
+	/**
+	 * Permission "Can use the arcade": guests are asked to log in, members get an error.
+	 */
+	protected function check_use()
+	{
+		if ($this->access->can_use())
+		{
+			return;
+		}
+
+		if (!$this->is_member())
+		{
+			login_box('', $this->language->lang('AW_ARCADE_LOGIN_TO_PLAY'));
+		}
+
+		throw new \phpbb\exception\http_exception(403, 'AW_ARCADE_NO_PERMISSION');
 	}
 
 	protected function is_member()

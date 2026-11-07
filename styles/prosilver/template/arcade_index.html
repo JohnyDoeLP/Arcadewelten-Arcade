@@ -27,6 +27,7 @@
 	<a class="aw-tile{% if cat.S_ACTIVE %} aw-tile-active{% endif %}{% if cat.S_LOCKED %} aw-tile-locked{% endif %}" href="{{ cat.U_CAT }}" title="{{ cat.DESC }}">
 		<span class="aw-tile-img">
 			{% if cat.IMAGE %}<img src="{{ cat.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}
+			{% if cat.S_GROUPS %}<span class="aw-tile-lock aw-tile-groups" title="{{ lang('AW_ARCADE_CAT_GROUPS_ONLY') }}"><i class="icon fa-users" aria-hidden="true"></i></span>{% endif %}
 			{% if cat.S_PROTECTED %}<span class="aw-tile-lock"><i class="icon fa-{% if cat.S_LOCKED %}lock{% else %}unlock{% endif %}" aria-hidden="true"></i></span>{% endif %}
 		</span>
 		<span class="aw-tile-name">{{ cat.NAME }}</span>

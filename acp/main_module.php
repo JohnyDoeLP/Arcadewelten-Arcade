@@ -648,6 +648,7 @@ class main_module
 			if ($cat && confirm_box(true))
 			{
 				$this->games->delete_cat($cat_id);
+				$this->access->delete_cat($cat_id);
 				trigger_error($this->language->lang('ACP_AW_ARCADE_UPDATED') . adm_back_link($this->u_action));
 			}
 
@@ -689,6 +690,7 @@ class main_module
 
 			$this->assign_point_fields($cat, 'cat');
 			$this->assign_cat_images($cat['cat_image']);
+			$this->assign_group_options($this->access->get_cat_groups($cat_id));
 
 			$this->template->assign_vars([
 				'S_AW_CAT_EDIT'		=> true,
@@ -712,6 +714,7 @@ class main_module
 				'DESC'			=> $cat['cat_desc'],
 				'COUNT'			=> (int) $cat['game_count'],
 				'S_PROTECTED'	=> $cat['cat_password'] !== '',
+				'GROUPS'		=> $this->group_names($this->access->get_cat_groups($id)),
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;c=' . $id,
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;c=' . $id,
 				'U_UP'			=> $this->u_action . '&amp;action=up&amp;c=' . $id . '&amp;hash=' . $hash,
@@ -721,6 +724,7 @@ class main_module
 
 		$this->assign_point_fields([], 'cat');
 		$this->assign_cat_images('');
+		$this->assign_group_options([]);
 		$this->template->assign_var('U_CAT_ADD', $this->u_action . '&amp;action=add');
 	}
 
@@ -806,6 +810,58 @@ class main_module
 		}
 
 		$this->games->update_cat($cat_id, $data);
+		$this->access->set_cat_groups($cat_id, $this->request->variable('cat_groups', [0]));
+	}
+
+	/**
+	 * Group choice for a category (multi-select; nothing selected = everybody).
+	 */
+	protected function assign_group_options(array $selected)
+	{
+		global $phpbb_container;
+
+		$group_helper = $phpbb_container->get('group_helper');
+		$db = $phpbb_container->get('dbal.conn');
+
+		$sql = 'SELECT group_id, group_name, group_type FROM ' . GROUPS_TABLE . "
+			WHERE group_name <> 'BOTS'
+			ORDER BY group_type DESC, group_name ASC";
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('cat_groups', [
+				'ID'		=> (int) $row['group_id'],
+				'NAME'		=> $group_helper->get_name($row['group_name']),
+				'S_SEL'		=> in_array((int) $row['group_id'], $selected, true),
+			]);
+		}
+		$db->sql_freeresult($result);
+	}
+
+	/**
+	 * Names of the groups a category is limited to, for the category list.
+	 */
+	protected function group_names(array $group_ids)
+	{
+		global $phpbb_container;
+
+		if (!$group_ids)
+		{
+			return '';
+		}
+
+		$group_helper = $phpbb_container->get('group_helper');
+		$db = $phpbb_container->get('dbal.conn');
+
+		$names = [];
+		$result = $db->sql_query('SELECT group_name FROM ' . GROUPS_TABLE . ' WHERE ' . $db->sql_in_set('group_id', $group_ids) . ' ORDER BY group_name');
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$names[] = $group_helper->get_name($row['group_name']);
+		}
+		$db->sql_freeresult($result);
+
+		return implode(', ', $names);
 	}
 
 	protected function assign_cat_options($selected)

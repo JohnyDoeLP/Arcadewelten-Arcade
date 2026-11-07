@@ -138,4 +138,7 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_NOT_TOUCH_HINT'	=> 'This game needs a keyboard or mouse and may not be playable on phones and tablets.',
 	'AW_ARCADE_LIGHTS_OFF'		=> 'Lights off',
 	'AW_ARCADE_LIGHTS_ON'		=> 'Lights on',
+
+	'AW_ARCADE_NO_PERMISSION'	=> 'You are not permitted to use the arcade.',
+	'AW_ARCADE_CAT_GROUPS_ONLY'	=> 'Only visible for certain user groups',
 ]);

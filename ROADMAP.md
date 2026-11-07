@@ -8,16 +8,16 @@ Suggestions are welcome – the list grows with the community.
 - 0.11 – automatic arcade section in the board's privacy policy
 - 0.12 – game ratings (1–5 stars), sortable game list
 - 0.13 – cinema mode ("lights off"), mobile/touch games with fullscreen start, "recently played" bar
+- 0.14 – permission "Can use the arcade", categories visible only for selected user groups
 
 ## Next
 
-1. **Category permissions** via the phpBB permission system: which user groups may see and play a category (e.g. an 18+ category only for verified members)
-2. **Challenges / duels**: member A challenges member B in a game; B gets a phpBB notification (optionally by e-mail) and has X days to beat A's score
-3. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
-4. **Comments on games**: one forum topic per game, created automatically – moderation, reporting and notifications come from phpBB
-5. **Statistics page** per member: favourite game, play time, best ranks
-6. **New records in a forum topic or shoutbox**
-7. **Highscore certificates** for season winners (image, generated with GD)
+1. **Challenges / duels**: member A challenges member B in a game; B gets a phpBB notification (optionally by e-mail) and has X days to beat A's score
+2. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
+3. **Comments on games**: one forum topic per game, created automatically – moderation, reporting and notifications come from phpBB
+4. **Statistics page** per member: favourite game, play time, best ranks
+5. **New records in a forum topic or shoutbox**
+6. **Highscore certificates** for season winners (image, generated with GD)
 
 ## Later / optional
 

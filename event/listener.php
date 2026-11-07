@@ -16,6 +16,7 @@ class listener implements EventSubscriberInterface
 	protected $scores;
 	protected $ratings;
 	protected $recent;
+	protected $access;
 	protected $helper;
 	protected $template;
 	protected $request;
@@ -26,7 +27,7 @@ class listener implements EventSubscriberInterface
 	/** @var array|null user_id => number of records */
 	protected $record_counts;
 
-	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config)
+	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\access $access, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config)
 	{
 		$this->config = $config;
 		$this->user = $user;
@@ -35,6 +36,7 @@ class listener implements EventSubscriberInterface
 		$this->scores = $scores;
 		$this->ratings = $ratings;
 		$this->recent = $recent;
+		$this->access = $access;
 		$this->helper = $helper;
 		$this->template = $template;
 		$this->request = $request;
@@ -45,6 +47,7 @@ class listener implements EventSubscriberInterface
 		return [
 			'core.common'				=> 'legacy_scores',
 			'core.user_setup'			=> 'load_language',
+			'core.permissions'			=> 'add_permissions',
 			'core.page_header'			=> 'page_header',
 			'core.delete_user_after'	=> 'delete_users',
 			'core.viewtopic_modify_post_row'	=> 'post_records',
@@ -90,6 +93,16 @@ class listener implements EventSubscriberInterface
 		$event['lang_set_ext'] = $lang_set_ext;
 	}
 
+	/**
+	 * Permission "Can use the arcade" in the ACP (user permissions, tab "Misc").
+	 */
+	public function add_permissions($event)
+	{
+		$permissions = $event['permissions'];
+		$permissions['u_aw_arcade_play'] = ['lang' => 'ACL_U_AW_ARCADE_PLAY', 'cat' => 'misc'];
+		$event['permissions'] = $permissions;
+	}
+
 	public function page_header()
 	{
 		// Remove expired play sessions at most once per hour (privacy: no data kept longer than needed).
@@ -101,6 +114,7 @@ class listener implements EventSubscriberInterface
 
 		$this->template->assign_vars([
 			'U_AW_ARCADE'	=> $this->helper->route('arcadewelten_arcade_index'),
+			'S_AW_ARCADE_ALLOWED'	=> $this->access->can_use(),
 			'S_AW_CREDIT'	=> !empty($this->config['aw_arcade_credit']),
 		]);
 	}
@@ -161,12 +175,12 @@ class listener implements EventSubscriberInterface
 
 	public function latest_records()
 	{
-		if (!$this->is_member())
+		if (!$this->is_member() || !$this->access->can_use())
 		{
 			return;
 		}
 
-		foreach ($this->scores->latest_records(5) as $row)
+		foreach ($this->scores->latest_records(5, $this->access->hidden_cats()) as $row)
 		{
 			$this->template->assign_block_vars('aw_latest_records', [
 				'USER'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),

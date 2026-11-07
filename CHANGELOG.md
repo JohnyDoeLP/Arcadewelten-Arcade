@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0-beta (2026-11-07)
+
+- New phpBB permission **“Can use the arcade”** (user permissions, tab “Misc”). Granted to guests, registered users and the usual user roles on installation, so nothing changes until you adjust it. Without it the arcade link is hidden, guests are asked to log in and members get a notice.
+- Categories can be limited to **user groups** (ACP → Categories, “Visible for groups”). For everybody else the category and its games do not exist: no tile, not in the game list or search, not in “recently played”, the records page or the latest records on the board index; direct links answer “not found”. Administrators always see everything. Members of the groups see a small group icon on the tile.
+- Category list in the ACP shows who can see each category
+
 ## 0.13.0-beta (2026-11-07)
 
 - Cinema mode: "Lights off" button on the play page darkens the whole forum around the game; the choice is remembered in the browser. Click on the dark area or the button switches the light back on.

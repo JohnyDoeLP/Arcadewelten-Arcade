@@ -138,4 +138,7 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_NOT_TOUCH_HINT'	=> 'Dieses Spiel braucht Tastatur oder Maus und ist auf Handy und Tablet eventuell nicht spielbar.',
 	'AW_ARCADE_LIGHTS_OFF'		=> 'Licht aus',
 	'AW_ARCADE_LIGHTS_ON'		=> 'Licht an',
+
+	'AW_ARCADE_NO_PERMISSION'	=> 'Du hast keine Berechtigung, die Spielhalle zu benutzen.',
+	'AW_ARCADE_CAT_GROUPS_ONLY'	=> 'Nur für bestimmte Benutzergruppen sichtbar',
 ]);
