@@ -12,12 +12,13 @@ Suggestions are welcome – the list grows with the community.
 
 ## Next
 
-1. **Challenges / duels**: member A challenges member B in a game; B gets a phpBB notification (optionally by e-mail) and has X days to beat A's score
-2. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
-3. **Comments on games**: one forum topic per game, created automatically – moderation, reporting and notifications come from phpBB
-4. **Statistics page** per member: favourite game, play time, best ranks
-5. **New records in a forum topic or shoutbox**
-6. **Highscore certificates** for season winners (image, generated with GD)
+1. **"NEW" badge** for recently installed games: shown for X days (ACP setting, 0 = off), optional "3 new" on category tiles, bulk actions "remove new mark" / "mark as new" (e.g. after a big import)
+2. **Challenges / duels**: member A challenges member B in a game; B gets a phpBB notification (optionally by e-mail) and has X days to beat A's score
+3. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
+4. **Comments on games**: one forum topic per game, created automatically – moderation, reporting and notifications come from phpBB
+5. **Statistics page** per member: favourite game, play time, best ranks
+6. **New records in a forum topic or shoutbox**
+7. **Highscore certificates** for season winners (image, generated with GD)
 
 ## Later / optional
 
