@@ -1,7 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.14.1-beta (2026-11-07)
 
+- Search engines can use the arcade again, as before 0.14: the permission “Can use the arcade” is now also granted to the group “Bots” (they see exactly what guests see – no highscores, no protected or group-limited categories). Remove it there if you want to keep search engines out.
+- Visits of search engines no longer increase the “played x times” counter
 - ACP: explanation on the categories page mentions the group visibility
 
 ## 0.14.0-beta (2026-11-07)

@@ -328,7 +328,11 @@ class main
 		{
 			$this->recent->add($this->user->data['user_id'], $game['game_id']);
 		}
-		$this->games->count_play($game['game_id']);
+		// Search engines may look at the page, but they do not count as a play.
+		if (empty($this->user->data['is_bot']))
+		{
+			$this->games->count_play($game['game_id']);
+		}
 
 		add_form_key('aw_arcade_play');
 		$this->assign_rating($game);
