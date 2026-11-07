@@ -50,6 +50,16 @@ services:
             - '@language'
             - '@?dmzx.ultimatepoints.api'
 
+    arcadewelten.arcade.privacy:
+        class: arcadewelten\arcade\core\privacy
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@language'
+            - '@arcadewelten.arcade.points'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.cats%'
+
     arcadewelten.arcade.season:
         class: arcadewelten\arcade\core\season
         arguments:
@@ -101,5 +111,15 @@ services:
             - '@user'
             - '@language'
             - '@config'
+        tags:
+            - { name: event.listener }
+
+    arcadewelten.arcade.privacy_listener:
+        class: arcadewelten\arcade\event\privacy_listener
+        arguments:
+            - '@arcadewelten.arcade.privacy'
+            - '@template'
+            - '@request'
+            - '@user'
         tags:
             - { name: event.listener }

@@ -1,6 +1,6 @@
 # Arcadewelten Arcade for phpBB 3.3
 
-**Version 0.10.5-beta – in development, please test on a copy of your board first.**
+**Version 0.11.0-beta – in development, please test on a copy of your board first.**
 
 A self-hosted arcade for phpBB 3.3: game list with categories, highscores, trophies and a hall of fame.
 No external connections, no ads, no licence server, no play limits. Open source under the GPL-2.0.
@@ -70,7 +70,7 @@ The arcade page takes care of the session and the form token.
 
 ## Privacy
 
-See `contrib/privacy.en.txt` for a text block for your privacy policy.
+The arcade automatically appends an “Arcade” section to the board’s privacy policy (`ucp.php?mode=privacy`). The text follows the settings (guests, plausibility check, category passwords, points, diagnostics) and can be switched off in the ACP. If you maintain your own privacy policy, use the text block in `contrib/privacy.en.txt`.
 
 ## Known limitations
 

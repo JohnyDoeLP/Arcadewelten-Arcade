@@ -136,6 +136,7 @@ class main_module
 			$this->config->set('aw_arcade_guest_play', $this->request->variable('aw_guest_play', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_debug', $this->request->variable('aw_debug', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_credit', $this->request->variable('aw_credit', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_privacy', $this->request->variable('aw_privacy', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_min_time', max(0, min(600, $this->request->variable('aw_min_time', 5))));
 			$this->config->set('aw_arcade_games_per_page', max(5, min(200, $this->request->variable('aw_games_per_page', 30))));
 			$this->config->set('aw_arcade_scores_per_page', max(5, min(200, $this->request->variable('aw_scores_per_page', 25))));
@@ -161,6 +162,8 @@ class main_module
 			'AW_GUEST_PLAY'			=> (bool) $this->config['aw_arcade_guest_play'],
 			'AW_DEBUG'				=> (bool) $this->config['aw_arcade_debug'],
 			'AW_CREDIT'				=> (bool) $this->config['aw_arcade_credit'],
+			'AW_PRIVACY'			=> (bool) $this->config['aw_arcade_privacy'],
+			'U_AW_PRIVACY'			=> generate_board_url() . '/ucp.php?mode=privacy#' . \arcadewelten\arcade\core\privacy::ANCHOR,
 			'AW_MIN_TIME'			=> (int) $this->config['aw_arcade_min_time'],
 			'AW_GAMES_PER_PAGE'		=> (int) $this->config['aw_arcade_games_per_page'],
 			'AW_SCORES_PER_PAGE'	=> (int) $this->config['aw_arcade_scores_per_page'],

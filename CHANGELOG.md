@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.11.0-beta (2026-11-07)
+
+- Privacy policy: an “Arcade” section is appended automatically to the board’s privacy policy (`ucp.php?mode=privacy`). The text follows the settings (guest play, plausibility check, category passwords, Ultimate Points, diagnostic mode). On by default, can be switched off in the ACP settings.
+- Text blocks in `contrib/privacy.*.txt`: optional paragraph for the cookie of password-protected categories
+
 ## 0.10.5-beta (2026-11-07)
 
 - Category tiles wrap into rows instead of a horizontal scroll bar

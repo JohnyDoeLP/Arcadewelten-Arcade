@@ -12,3 +12,5 @@ Die Spiele und der dafür nötige Flash-Emulator (Ruffle) werden ausschließlich
 Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Nutzung der Spielhalle als Teil unseres Forenangebots). Wird dein Benutzerkonto gelöscht, werden auch deine Spielhallen-Daten gelöscht.
 
 [Nur falls Punkte (Ultimate Points) aktiv sind:] Für das Spielen können Forenpunkte abgezogen und für Ergebnisse gutgeschrieben werden; diese Buchungen werden in deinem Punktekonto im Forum gespeichert.
+
+[Nur falls Kategorien mit Passwort geschützt sind:] Gibst du das Passwort einer geschützten Kategorie richtig ein, setzen wir ein technisch notwendiges Cookie, das die Kategorie für dich freischaltet. Es enthält keine personenbezogenen Daten im Klartext und wird beim Schließen des Browsers gelöscht.

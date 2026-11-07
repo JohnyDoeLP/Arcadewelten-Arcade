@@ -12,3 +12,5 @@ The games and the Flash emulator they need (Ruffle) are loaded exclusively from 
 The legal basis is Art. 6(1)(b) GDPR (use of the arcade as part of our forum). If your account is deleted, your arcade data is deleted as well.
 
 [Only if points (Ultimate Points) are enabled:] Forum points may be deducted for playing and credited for results; these transactions are stored in your points account in the forum.
+
+[Only if categories are password protected:] When you enter the password of a protected category correctly, we set a technically necessary cookie that unlocks the category for you. It contains no personal data in plain text and is deleted when you close your browser.

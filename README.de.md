@@ -1,6 +1,6 @@
 # Arcadewelten Arcade für phpBB 3.3
 
-**Version 0.10.5-beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen.**
+**Version 0.11.0-beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen.**
 
 Selbst gehostete Spielhalle für phpBB 3.3: Spieleliste mit Kategorien, Bestenlisten, Pokale und Ruhmeshalle.
 Keine Verbindungen nach außen, keine Werbung, kein Lizenzserver, keine Spiel-Limits. Open Source unter der GPL-2.0.
@@ -70,7 +70,7 @@ Spielsitzung und Formular-Token erledigt die Spielseite der Spielhalle.
 
 ## Datenschutz
 
-Einen Textbaustein für die Datenschutzerklärung findest du in `contrib/privacy.de.txt`.
+Die Spielhalle hängt an die Datenschutzerklärung des Forums (`ucp.php?mode=privacy`) automatisch einen Abschnitt „Spielhalle“ an. Der Text passt sich den Einstellungen an (Gäste, Plausibilitätsprüfung, Kategorie-Passwörter, Punkte, Diagnose) und lässt sich im ACP abschalten. Wer eine eigene Datenschutzerklärung pflegt, findet einen Textbaustein in `contrib/privacy.de.txt`.
 
 ## Bekannte Einschränkungen
 

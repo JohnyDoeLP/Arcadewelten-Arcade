@@ -89,7 +89,7 @@ Pro Spiel kannst du **Mindestspielzeit**, **Höchstpunktzahl** und Punkte-Werte 
 
 ## 8. Datenschutzerklärung ergänzen
 
-Einen fertigen Textbaustein findest du in `contrib/privacy.de.txt`.
+Ab Werk hängt die Spielhalle an die Datenschutzerklärung des Forums (`ucp.php?mode=privacy`) automatisch einen passenden Abschnitt an – du musst nichts tun. Abschalten kannst du ihn unter **Einstellungen → Abschnitt „Spielhalle“ in der Datenschutzerklärung**. Pflegst du eine eigene Datenschutzerklärung, findest du einen fertigen Textbaustein in `contrib/privacy.de.txt`.
 
 ## 9. Testen
 

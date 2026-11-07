@@ -89,7 +89,7 @@ Per game you can set **minimum play time**, **maximum score** and point values.
 
 ## 8. Update your privacy policy
 
-A ready-made text block is in `contrib/privacy.en.txt`.
+By default the arcade automatically appends a matching section to the board’s privacy policy (`ucp.php?mode=privacy`) – nothing to do. You can switch it off under **Settings → “Arcade” section in the privacy policy**. If you maintain your own privacy policy, a ready-made text block is in `contrib/privacy.en.txt`.
 
 ## 9. Test
 
