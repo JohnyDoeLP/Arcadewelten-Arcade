@@ -229,6 +229,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CAT_NAME_EMPTY'		=> 'Please enter a name.',
 	'ACP_AW_ARCADE_CAT_GROUPS'			=> 'Visible for groups',
 	'ACP_AW_ARCADE_CAT_GROUPS_EXPLAIN'	=> 'Only members of these user groups see the category and its games; for everybody else it does not exist (not in search, “recently played” or record lists either). Nothing selected = visible for everybody. Select several with Ctrl or Cmd. Administrators always see everything.<br>Who may use the arcade at all is set with the user permission “Can use the arcade” (user permissions, tab “Misc”).',
+	'ACP_AW_ARCADE_CAT_GROUPS_CLEAR'		=> 'Clear selection (visible for everybody)',
 	'ACP_AW_ARCADE_CAT_VISIBLE_FOR'		=> 'Visible for',
 	'ACP_AW_ARCADE_CAT_EVERYBODY'		=> 'everybody',
 	'ACP_AW_ARCADE_CAT_PASSWORD_EXPLAIN'	=> 'Leave empty to keep the current setting or to set no lock. The password is only stored as a hash.',

@@ -36,6 +36,7 @@
 		<select id="cat_groups" name="cat_groups[]" multiple size="8">
 			{% for g in loops.cat_groups %}<option value="{{ g.ID }}"{% if g.S_SEL %} selected{% endif %}>{{ g.NAME }}</option>{% endfor %}
 		</select>
+		<br><a href="#" onclick="var s = document.getElementById('cat_groups'); for (var i = 0; i < s.options.length; i++) { s.options[i].selected = false; } return false;">{{ lang('ACP_AW_ARCADE_CAT_GROUPS_CLEAR') }}</a>
 	</dd>
 </dl>
 <dl>

@@ -229,6 +229,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CAT_NAME_EMPTY'		=> 'Bitte einen Namen angeben.',
 	'ACP_AW_ARCADE_CAT_GROUPS'			=> 'Sichtbar für Gruppen',
 	'ACP_AW_ARCADE_CAT_GROUPS_EXPLAIN'	=> 'Nur Mitglieder dieser Benutzergruppen sehen die Kategorie und ihre Spiele; für alle anderen existiert sie nicht (auch nicht in Suche, „Zuletzt gespielt“ und Rekordlisten). Nichts ausgewählt = für alle sichtbar. Mehrfachauswahl mit Strg bzw. Cmd. Administratoren sehen immer alles.<br>Wer die Spielhalle überhaupt benutzen darf, regelst du über das Benutzerrecht „Kann die Spielhalle benutzen“ (Benutzerrechte, Reiter „Diverses“).',
+	'ACP_AW_ARCADE_CAT_GROUPS_CLEAR'		=> 'Auswahl aufheben (für alle sichtbar)',
 	'ACP_AW_ARCADE_CAT_VISIBLE_FOR'		=> 'Sichtbar für',
 	'ACP_AW_ARCADE_CAT_EVERYBODY'		=> 'alle',
 	'ACP_AW_ARCADE_CAT_PASSWORD_EXPLAIN'	=> 'Leer lassen, um nichts zu ändern bzw. keine Sperre zu setzen. Das Passwort wird nur verschlüsselt gespeichert.',

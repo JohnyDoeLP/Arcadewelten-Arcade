@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- ACP → Categories: link “Clear selection (visible for everybody)” below the group selection
 - ACP → Categories: the news forum choice shows which forum the “default news forum” is (or that none is chosen yet)
 
 ## 0.16.1-beta (2026-11-08)
