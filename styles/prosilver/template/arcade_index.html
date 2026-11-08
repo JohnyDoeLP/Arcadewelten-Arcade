@@ -31,7 +31,7 @@
 			{% if cat.S_PROTECTED %}<span class="aw-tile-lock"><i class="icon fa-{% if cat.S_LOCKED %}lock{% else %}unlock{% endif %}" aria-hidden="true"></i></span>{% endif %}
 		</span>
 		<span class="aw-tile-name">{{ cat.NAME }}</span>
-		<span class="aw-tile-meta">{{ lang('AW_ARCADE_GAME_COUNT', cat.COUNT) }}</span>
+		<span class="aw-tile-meta">{{ lang('AW_ARCADE_GAME_COUNT', cat.COUNT) }}{% if cat.NEW_COUNT %} <span class="aw-new-count">{{ lang('AW_ARCADE_NEW_COUNT', cat.NEW_COUNT) }}</span>{% endif %}</span>
 		{% if cat.CHAMPION %}<span class="aw-tile-meta aw-tile-champ"><i class="icon fa-trophy aw-cup-1" aria-hidden="true"></i> {{ cat.CHAMPION }} ({{ cat.CHAMP_RECORDS }})</span>{% endif %}
 	</a>
 	{% endfor %}
@@ -74,6 +74,10 @@
 </div>
 {% endif %}
 
+{% if U_AW_DUELS %}
+<p class="aw-duel-link"><a class="button" href="{{ U_AW_DUELS }}"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUELS') }}</span>{% if AW_DUELS_OPEN %} <strong class="badge">{{ AW_DUELS_OPEN }}</strong>{% endif %}</a></p>
+{% endif %}
+
 <div class="action-bar bar-top">
 	<div class="search-box" role="search">
 		<form method="get" action="{{ U_AW_SEARCH }}">
@@ -104,6 +108,7 @@
 	<div class="aw-card">
 		<a class="aw-thumb" href="{{ game.U_PLAY }}">
 			{% if game.IMAGE %}<img src="{{ game.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}
+			{% if game.S_NEW %}<span class="aw-new-badge">{{ lang('AW_ARCADE_NEW') }}</span>{% endif %}
 		</a>
 		<div class="aw-card-body">
 			<a class="aw-game-name" href="{{ game.U_PLAY }}">{% if game.S_TOUCH %}<i class="icon fa-mobile fa-fw aw-touch" aria-hidden="true" title="{{ lang('AW_ARCADE_TOUCH_GAME') }}"></i><span class="sr-only">{{ lang('AW_ARCADE_TOUCH_GAME') }}: </span>{% endif %}{{ game.NAME }}</a>

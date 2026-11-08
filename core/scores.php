@@ -34,8 +34,12 @@ class scores
 	/** @var \phpbb\config\config */
 	protected $config;
 
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\driver\driver_interface $cache, $scores_table, $games_table, $sessions_table, $cats_table, $flagged_table, \phpbb\config\config $config)
+	/** @var duels */
+	protected $duels;
+
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\driver\driver_interface $cache, $scores_table, $games_table, $sessions_table, $cats_table, $flagged_table, \phpbb\config\config $config, duels $duels)
 	{
+		$this->duels = $duels;
 		$this->cats_table = $cats_table;
 		$this->flagged_table = $flagged_table;
 		$this->config = $config;
@@ -197,7 +201,7 @@ class scores
 	/**
 	 * Store a score; only the personal best per game is kept.
 	 *
-	 * @return array ['improved' => bool, 'best' => float]
+	 * @return array ['improved' => bool, 'best' => float, 'duels_won' => int]
 	 */
 	public function save_score(array $game, $user_id, $score)
 	{
@@ -223,7 +227,7 @@ class scores
 
 			$this->cache->destroy(self::CACHE_KEY);
 
-			return ['improved' => true, 'best' => $score];
+			return ['improved' => true, 'best' => $score, 'duels_won' => $this->duels->on_score($game, $user_id, $score)];
 		}
 
 		$old = (float) $row['score'];
@@ -241,7 +245,8 @@ class scores
 		$this->db->sql_query('UPDATE ' . $this->scores_table . ' SET ' . $this->db->sql_build_array('UPDATE', $data) . '
 			WHERE game_id = ' . (int) $game['game_id'] . ' AND user_id = ' . (int) $user_id);
 
-		return ['improved' => $improved, 'best' => $improved ? $score : $old];
+		// Every genuine result counts for open duels, not only a new personal best.
+		return ['improved' => $improved, 'best' => $improved ? $score : $old, 'duels_won' => $this->duels->on_score($game, $user_id, $score)];
 	}
 
 	/**

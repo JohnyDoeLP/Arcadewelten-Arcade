@@ -7,6 +7,10 @@
 <div class="panel aw-message"><div class="inner"><p>{{ lang('AW_ARCADE_GUEST_HINT') }}</p></div></div>
 {% endif %}
 
+{% for d in loops.duels_here %}
+<div class="panel aw-message aw-duel-banner"><div class="inner"><p><i class="icon fa-bolt fa-fw" aria-hidden="true"></i> {{ d.TEXT }}</p></div></div>
+{% endfor %}
+
 {% if AW_POINTS_INFO %}
 <p class="aw-points-info"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ AW_POINTS_INFO }}</p>
 {% endif %}

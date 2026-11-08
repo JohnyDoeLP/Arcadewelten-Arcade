@@ -24,10 +24,11 @@ class privacy
 	protected $points;
 	protected $ratings;
 	protected $recent;
+	protected $duels;
 	protected $games_table;
 	protected $cats_table;
 
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\language\language $language, points $points, ratings $ratings, recent $recent, $games_table, $cats_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\language\language $language, points $points, ratings $ratings, recent $recent, duels $duels, $games_table, $cats_table)
 	{
 		$this->db = $db;
 		$this->config = $config;
@@ -35,6 +36,7 @@ class privacy
 		$this->points = $points;
 		$this->ratings = $ratings;
 		$this->recent = $recent;
+		$this->duels = $duels;
 		$this->games_table = $games_table;
 		$this->cats_table = $cats_table;
 	}
@@ -67,6 +69,11 @@ class privacy
 		if ($this->recent->enabled())
 		{
 			$paragraphs[] = ['AW_ARCADE_PRIVACY_RECENT', \arcadewelten\arcade\core\recent::KEEP];
+		}
+
+		if ($this->duels->enabled())
+		{
+			$paragraphs[] = ['AW_ARCADE_PRIVACY_DUELS'];
 		}
 
 		if ($this->ratings->enabled())
@@ -112,7 +119,7 @@ class privacy
 		{
 			$key = array_shift($args);
 			$args = array_map(function ($arg) {
-				return htmlspecialchars((string) $arg, ENT_COMPAT, 'UTF-8');
+				return utf8_htmlspecialchars((string) $arg);
 			}, $args);
 			$parts[] = $this->language->lang($key, ...$args);
 		}

@@ -20,6 +20,7 @@ class main
 	protected $points;
 	protected $ratings;
 	protected $recent;
+	protected $duels;
 	protected $config;
 	protected $helper;
 	protected $template;
@@ -29,7 +30,7 @@ class main
 	protected $pagination;
 	protected $root_path;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -37,6 +38,7 @@ class main
 		$this->points = $points;
 		$this->ratings = $ratings;
 		$this->recent = $recent;
+		$this->duels = $duels;
 		$this->config = $config;
 		$this->helper = $helper;
 		$this->template = $template;
@@ -91,6 +93,8 @@ class main
 		$covers = $this->games->cat_cover_images();
 		$cat_champs = $is_guest ? [] : $this->scores->category_champions();
 
+		$new_counts = $this->games->count_new_by_cat();
+
 		foreach ($cats as $c)
 		{
 			$is_locked = !$this->access->has_access($c);
@@ -136,6 +140,7 @@ class main
 				'NAME'			=> $c['cat_name'],
 				'DESC'			=> $c['cat_desc'],
 				'COUNT'			=> (int) $c['game_count'],
+				'NEW_COUNT'		=> (!$is_locked && isset($new_counts[$cid])) ? $new_counts[$cid] : 0,
 				'IMAGE'			=> $image,
 				'CHAMPION'		=> $champ ? get_username_string('no_profile', $champ['user_id'], $champ['username'], $champ['user_colour']) : '',
 				'CHAMP_RECORDS'	=> $champ ? $champ['records'] : 0,
@@ -178,6 +183,7 @@ class main
 				'CHAMP_SCORE'	=> $champ ? $this->format_score($champ['score']) : '',
 				'S_NO_SCORES'	=> (int) $row['game_save_type'] === games::SAVE_NONE,
 				'S_TOUCH'		=> (bool) $row['game_touch'],
+				'S_NEW'			=> $this->games->is_new($row),
 				'S_GUEST'		=> $is_guest,
 				'RATING_COUNT'	=> $this->ratings->enabled() ? (int) $row['game_rating_count'] : 0,
 				'RATING_STARS'	=> $this->stars($row),
@@ -257,6 +263,8 @@ class main
 		$this->template->assign_vars([
 			'AW_CAT_NAME'		=> $cat ? $cat['cat_name'] : '',
 			'AW_SEARCH'			=> $search,
+			'AW_DUELS_OPEN'		=> (!$is_guest && $this->duels->enabled()) ? $this->duels->count_incoming($this->user->data['user_id']) : 0,
+			'U_AW_DUELS'		=> (!$is_guest && $this->duels->enabled()) ? $this->helper->route('arcadewelten_arcade_duels') : '',
 			'AW_SORT'			=> $sort,
 			'AW_TOTAL_GAMES'	=> $total,
 			'AW_ALL_GAMES'		=> $all_games,
@@ -327,6 +335,19 @@ class main
 		if ($is_member)
 		{
 			$this->recent->add($this->user->data['user_id'], $game['game_id']);
+
+			if ($this->duels->enabled())
+			{
+				foreach ($this->duels->incoming_for_game($this->user->data['user_id'], $game['game_id']) as $duel)
+				{
+					$this->template->assign_block_vars('duels_here', [
+						'TEXT'	=> $this->language->lang('AW_ARCADE_DUEL_BANNER',
+							get_username_string('full', $duel['challenger_id'], $duel['challenger_name'], $duel['challenger_colour']),
+							$this->format_score($duel['challenger_score']),
+							$this->user->format_date($duel['deadline'])),
+					]);
+				}
+			}
 		}
 		// Search engines may look at the page, but they do not count as a play.
 		if (empty($this->user->data['is_bot']))
@@ -427,7 +448,18 @@ class main
 			{
 				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_EARNED', $this->points->format($earned), $this->points->name());
 			}
+
+			if (($won = $this->request->variable('duel', 0)) > 0)
+			{
+				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_DUEL_WON', $won);
+			}
 		}
+		else if ($this->request->variable('challenged', 0))
+		{
+			$message = $this->language->lang('AW_ARCADE_MSG_CHALLENGED', $this->request->variable('opponent', '', true));
+		}
+
+		$this->assign_duel_form($game);
 
 		$rank = $this->is_member() ? $this->scores->get_rank($game, $this->user->data['user_id']) : 0;
 		$this->assign_rating($game);
@@ -546,7 +578,249 @@ class main
 				'game_id'	=> (int) $game['game_id'],
 				'saved'		=> $result['improved'] ? 2 : 1,
 				'last'		=> (string) round($score, 2),
-			] + ($earned > 0 ? ['earned' => (string) $earned] : []), false),
+			] + ($earned > 0 ? ['earned' => (string) $earned] : []) + (!empty($result['duels_won']) ? ['duel' => (int) $result['duels_won']] : []), false),
+		]);
+	}
+
+	/* ---------------------------------------------------------------
+	 * Duels
+	 * ------------------------------------------------------------- */
+
+	/**
+	 * Overview: duels to answer, own challenges, recent results.
+	 */
+	public function duels()
+	{
+		$this->check_use();
+
+		if (!$this->is_member())
+		{
+			login_box('', $this->language->lang('AW_ARCADE_LOGIN_FOR_DUELS'));
+		}
+
+		if (!$this->duels->enabled())
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_DUELS_OFF');
+		}
+
+		// Close what is overdue right away, without waiting for the cron.
+		$this->duels->expire();
+
+		$me = (int) $this->user->data['user_id'];
+		$lists = $this->duels->for_user($me);
+		add_form_key('aw_arcade_duel');
+
+		foreach ($lists as $block => $rows)
+		{
+			foreach ($rows as $duel)
+			{
+				if (!$this->access->can_see_cat($duel['cat_id']))
+				{
+					continue;
+				}
+
+				$i_am_challenger = (int) $duel['challenger_id'] === $me;
+				$other = $i_am_challenger
+					? get_username_string('full', $duel['opponent_id'], $duel['opponent_name'], $duel['opponent_colour'])
+					: get_username_string('full', $duel['challenger_id'], $duel['challenger_name'], $duel['challenger_colour']);
+
+				$result = '';
+				if ((int) $duel['duel_status'] === \arcadewelten\arcade\core\duels::DECLINED)
+				{
+					$result = $this->language->lang('AW_ARCADE_DUEL_DECLINED');
+				}
+				else if ((int) $duel['duel_status'] === \arcadewelten\arcade\core\duels::FINISHED)
+				{
+					$result = $this->language->lang((int) $duel['winner_id'] === $me ? 'AW_ARCADE_DUEL_WON' : 'AW_ARCADE_DUEL_LOST');
+				}
+
+				$this->template->assign_block_vars($block, [
+					'GAME'			=> $duel['game_name'],
+					'GAME_IMAGE'	=> $this->game_web_path($duel, $duel['game_image']),
+					'OTHER'			=> $other,
+					'TO_BEAT'		=> $this->format_score($duel['challenger_score']),
+					'OPP_SCORE'		=> $duel['opponent_played'] ? $this->format_score($duel['opponent_score']) : '–',
+					'DEADLINE'		=> $this->user->format_date($duel['deadline']),
+					'END'			=> $duel['end_time'] ? $this->user->format_date($duel['end_time']) : '',
+					'RESULT'		=> $result,
+					'S_WON'			=> (int) $duel['winner_id'] === $me,
+					'U_PLAY'		=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $duel['game_id']]),
+					'U_SCORES'		=> $this->helper->route('arcadewelten_arcade_scores', ['game_id' => (int) $duel['game_id']]),
+					'U_DECLINE'		=> $this->helper->route('arcadewelten_arcade_duel_decline', ['duel_id' => (int) $duel['duel_id']]),
+				]);
+			}
+		}
+
+		$message = '';
+		if ($this->request->variable('declined', 0))
+		{
+			$message = $this->language->lang('AW_ARCADE_MSG_DUEL_DECLINED');
+		}
+
+		$this->template->assign_vars([
+			'AW_MESSAGE'		=> $message,
+			'AW_DUEL_DAYS'		=> $this->duels->max_days(),
+			'S_AW_LOW_WINS'		=> false,
+		]);
+
+		$this->template->assign_block_vars('navlinks', [
+			'FORUM_NAME'	=> $this->language->lang('AW_ARCADE'),
+			'U_VIEW_FORUM'	=> $this->helper->route('arcadewelten_arcade_index'),
+		]);
+		$this->template->assign_block_vars('navlinks', [
+			'FORUM_NAME'	=> $this->language->lang('AW_ARCADE_DUELS'),
+			'U_VIEW_FORUM'	=> $this->helper->route('arcadewelten_arcade_duels'),
+		]);
+
+		return $this->helper->render('@arcadewelten_arcade/arcade_duels.html', $this->language->lang('AW_ARCADE_DUELS'));
+	}
+
+	/**
+	 * Challenge another member with the own personal best (form on the highscores page).
+	 */
+	public function duel_new($game_id)
+	{
+		$this->check_use();
+		$game = $this->games->get_game($game_id);
+
+		if (!$this->is_member() || !$this->duels->enabled() || !$game || !$this->access->can_see_cat($game['cat_id']))
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_GAME');
+		}
+
+		$back = $this->helper->route('arcadewelten_arcade_scores', ['game_id' => (int) $game['game_id']]);
+		$fail = function ($key, ...$args) use ($back) {
+			trigger_error($this->language->lang($key, ...$args) . '<br><br><a href="' . $back . '">' . $this->language->lang('AW_ARCADE_BACK_TO_SCORES') . '</a>', E_USER_WARNING);
+		};
+
+		if (!check_form_key('aw_arcade_duel'))
+		{
+			$fail('FORM_INVALID');
+		}
+
+		$me = (int) $this->user->data['user_id'];
+		$score = $this->duels->best_score($game['game_id'], $me);
+
+		if ((int) $game['game_save_type'] === games::SAVE_NONE || $score === null)
+		{
+			$fail('AW_ARCADE_DUEL_NEED_SCORE');
+		}
+
+		global $db;
+
+		$name = trim($this->request->variable('opponent', '', true));
+		$sql = 'SELECT user_id, username, user_type FROM ' . USERS_TABLE . "
+			WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($name)) . "'";
+		$result = $db->sql_query($sql);
+		$opponent = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		if (!$opponent || !in_array((int) $opponent['user_type'], [USER_NORMAL, USER_FOUNDER], true))
+		{
+			$fail('AW_ARCADE_DUEL_NO_USER');
+		}
+
+		$opp = (int) $opponent['user_id'];
+
+		if ($opp === $me)
+		{
+			$fail('AW_ARCADE_DUEL_SELF');
+		}
+
+		if (!$this->access->user_can_use($opp) || !$this->access->user_can_see_cat($opp, $game['cat_id']))
+		{
+			$fail('AW_ARCADE_DUEL_NOT_ALLOWED', $opponent['username']);
+		}
+
+		if ($this->duels->exists_open($game['game_id'], $me, $opp))
+		{
+			$fail('AW_ARCADE_DUEL_EXISTS', $opponent['username']);
+		}
+
+		if ($this->duels->count_open_by($me) >= $this->duels->max_open())
+		{
+			$fail('AW_ARCADE_DUEL_MAX', $this->duels->max_open());
+		}
+
+		$days = max(1, min($this->duels->max_days(), $this->request->variable('days', $this->duels->max_days())));
+		$this->duels->create($game, $me, $opp, $score, $days);
+
+		redirect($this->helper->route('arcadewelten_arcade_scores', [
+			'game_id'		=> (int) $game['game_id'],
+			'challenged'	=> 1,
+			'opponent'		=> $opponent['username'],
+		], false));
+	}
+
+	/**
+	 * The challenged member declines.
+	 */
+	public function duel_decline($duel_id)
+	{
+		$this->check_use();
+		$duel = $this->duels->get($duel_id);
+
+		if (!$this->is_member() || !$duel || (int) $duel['opponent_id'] !== (int) $this->user->data['user_id'] || (int) $duel['duel_status'] !== \arcadewelten\arcade\core\duels::OPEN)
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_DUEL_NOT_FOUND');
+		}
+
+		if (!check_form_key('aw_arcade_duel'))
+		{
+			trigger_error('FORM_INVALID', E_USER_WARNING);
+		}
+
+		$this->duels->decline($duel);
+
+		redirect($this->helper->route('arcadewelten_arcade_duels', ['declined' => 1], false));
+	}
+
+	/**
+	 * Challenge form on the highscores page (only with an own score).
+	 */
+	protected function assign_duel_form(array $game)
+	{
+		if (!$this->duels->enabled() || !$this->is_member() || (int) $game['game_save_type'] === games::SAVE_NONE)
+		{
+			return;
+		}
+
+		$score = $this->duels->best_score($game['game_id'], $this->user->data['user_id']);
+
+		if ($score === null)
+		{
+			return;
+		}
+
+		add_form_key('aw_arcade_duel', '_AW_DUEL');
+
+		$days = [];
+		foreach ([1, 3, 7, 14, 30] as $d)
+		{
+			if ($d <= $this->duels->max_days())
+			{
+				$days[] = $d;
+			}
+		}
+		if (!in_array($this->duels->max_days(), $days, true))
+		{
+			$days[] = $this->duels->max_days();
+		}
+
+		foreach ($days as $d)
+		{
+			$this->template->assign_block_vars('duel_days', [
+				'DAYS'	=> $d,
+				'S_SEL'	=> $d === min(7, $this->duels->max_days()),
+			]);
+		}
+
+		$this->template->assign_vars([
+			'S_AW_DUEL_FORM'	=> true,
+			'AW_DUEL_MY_SCORE'	=> $this->format_score($score),
+			'U_AW_DUEL_NEW'		=> $this->helper->route('arcadewelten_arcade_duel_new', ['game_id' => (int) $game['game_id']]),
+			'U_AW_DUELS'		=> $this->helper->route('arcadewelten_arcade_duels'),
+			'U_AW_FIND_USER'	=> append_sid($this->root_path . 'memberlist.' . $this->php_ext(), 'mode=searchuser&amp;form=aw_duel&amp;field=opponent&amp;select_single=true'),
 		]);
 	}
 

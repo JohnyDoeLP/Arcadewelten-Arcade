@@ -1,8 +1,17 @@
 # Changelog
 
-## Unreleased
+## 0.15.0-beta (2026-11-08)
 
+- **Duels:** members challenge others from the highscores page of a game in which they have a score. Their personal best is frozen; the opponent has to beat it with a genuine result (same play session and plausibility check as the highscores, “lower wins” games included) before the deadline – otherwise the challenger wins. The opponent may decline.
+  - phpBB notifications for the challenge and the result (bell; e-mail if chosen in the UCP, new group “Arcade notifications”)
+  - new page “Duels” with challenges to answer, own challenges and finished duels; counter on the arcade page and a banner on the play page
+  - duels past their deadline are closed by phpBB's cron (and whenever the duels page is opened)
+  - only opponents who may use the arcade and see the game's category can be challenged; one open duel per pair and game; limit of open challenges per member
+  - ACP: switch (on by default), longest duration (default 7 days), open challenges per member (default 5)
+  - duels of deleted members or games are removed; the privacy section mentions duels while they are switched on
+- **“New” badge** on games installed in the last X days (ACP, default 14, 0 = off); category tiles show “3 new”. Bulk actions in the game list: “mark as new” and “remove ‘New’ badge” (e.g. after a big import)
 - ACP → Extensions: the version check now finds new versions of the arcade (via `version.json` on GitHub; only when you open the extension details or click “Re-check version”)
+- Code checked with EPV, the phpBB extension coding standard (PHP_CodeSniffer), PHPCompatibility (PHP 8.2+) and a YAML check: no errors
 
 ## 0.14.1-beta (2026-11-07)
 

@@ -50,12 +50,12 @@ class recent
 		$game_id = (int) $game_id;
 
 		$this->db->sql_query('UPDATE ' . $this->recent_table . ' SET play_time = ' . time() . '
-			WHERE user_id = ' . $user_id . ' AND game_id = ' . $game_id);
+			WHERE user_id = ' . (int) $user_id . ' AND game_id = ' . (int) $game_id);
 
 		if (!$this->db->sql_affectedrows())
 		{
 			// Affected rows can be 0 for an unchanged row within the same second.
-			$result = $this->db->sql_query('SELECT game_id FROM ' . $this->recent_table . ' WHERE user_id = ' . $user_id . ' AND game_id = ' . $game_id);
+			$result = $this->db->sql_query('SELECT game_id FROM ' . $this->recent_table . ' WHERE user_id = ' . (int) $user_id . ' AND game_id = ' . (int) $game_id);
 			$exists = (bool) $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
 
@@ -71,7 +71,7 @@ class recent
 
 		// Drop everything beyond the newest KEEP entries.
 		$sql = 'SELECT game_id FROM ' . $this->recent_table . '
-			WHERE user_id = ' . $user_id . '
+			WHERE user_id = ' . (int) $user_id . '
 			ORDER BY play_time DESC, game_id DESC';
 		$result = $this->db->sql_query_limit($sql, 1000, self::KEEP);
 		$old = [];
@@ -83,7 +83,7 @@ class recent
 
 		if ($old)
 		{
-			$this->db->sql_query('DELETE FROM ' . $this->recent_table . ' WHERE user_id = ' . $user_id . ' AND ' . $this->db->sql_in_set('game_id', $old));
+			$this->db->sql_query('DELETE FROM ' . $this->recent_table . ' WHERE user_id = ' . (int) $user_id . ' AND ' . $this->db->sql_in_set('game_id', $old));
 		}
 	}
 

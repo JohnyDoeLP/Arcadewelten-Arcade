@@ -1,0 +1,14 @@
+Subject: Duell-Herausforderung in der Spielhalle: {GAME_NAME}
+
+Hallo {USERNAME},
+
+{OTHER_NAME} fordert dich in der Spielhalle von „{SITENAME}“ zum Duell heraus.
+
+Spiel: {GAME_NAME}
+Zu schlagen: {SCORE}
+Läuft bis: {DEADLINE}
+
+Schlägst du das Ergebnis bis dahin, gewinnst du – sonst gewinnt {OTHER_NAME}.
+Deine Duelle: {U_DUELS}
+
+{EMAIL_SIG}

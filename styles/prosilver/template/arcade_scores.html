@@ -20,6 +20,25 @@
 
 {% include '@arcadewelten_arcade/arcade_rating.html' %}
 
+{% if S_AW_DUEL_FORM %}
+<div class="panel aw-duel-box" id="aw-duel">
+	<div class="inner">
+		<h3><i class="icon fa-bolt fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_DUEL_CHALLENGE') }}</h3>
+		<p>{{ lang('AW_ARCADE_DUEL_FORM_EXPLAIN', AW_DUEL_MY_SCORE) }}</p>
+		<form method="post" action="{{ U_AW_DUEL_NEW }}" id="aw_duel" class="aw-duel-form">
+			<label for="aw_opponent">{{ lang('AW_ARCADE_DUEL_OPPONENT') }}{{ lang('COLON') }}</label>
+			<input class="inputbox autowidth" type="text" id="aw_opponent" name="opponent" maxlength="255" required autocomplete="off">
+			<a href="{{ U_AW_FIND_USER }}" onclick="find_username(this.href); return false;">{{ lang('FIND_USERNAME') }}</a>
+			<label for="aw_days">{{ lang('AW_ARCADE_DUEL_DURATION') }}{{ lang('COLON') }}</label>
+			<select id="aw_days" name="days">{% for d in loops.duel_days %}<option value="{{ d.DAYS }}"{% if d.S_SEL %} selected{% endif %}>{{ lang('AW_ARCADE_DUEL_DAYS_N', d.DAYS) }}</option>{% endfor %}</select>
+			<button type="submit" class="button"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUEL_SEND') }}</span></button>
+			{{ S_FORM_TOKEN_AW_DUEL }}
+		</form>
+		<p class="aw-small"><a href="{{ U_AW_DUELS }}">{{ lang('AW_ARCADE_DUELS_MINE') }}</a></p>
+	</div>
+</div>
+{% endif %}
+
 {% if loops.scores|length %}
 <div class="forumbg">
 	<div class="inner">

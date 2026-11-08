@@ -38,6 +38,8 @@ class main_module
 	protected $ratings;
 	/** @var \arcadewelten\arcade\core\recent */
 	protected $recent;
+	/** @var \arcadewelten\arcade\core\duels */
+	protected $duels;
 	/** @var \arcadewelten\arcade\core\season */
 	protected $season;
 	/** @var \phpbb\user */
@@ -61,6 +63,7 @@ class main_module
 		$this->season = $phpbb_container->get('arcadewelten.arcade.season');
 		$this->ratings = $phpbb_container->get('arcadewelten.arcade.ratings');
 		$this->recent = $phpbb_container->get('arcadewelten.arcade.recent');
+		$this->duels = $phpbb_container->get('arcadewelten.arcade.duels');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
 
@@ -145,6 +148,10 @@ class main_module
 			$this->config->set('aw_arcade_privacy', $this->request->variable('aw_privacy', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_ratings', $this->request->variable('aw_ratings', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_recent', $this->request->variable('aw_recent', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_new_days', max(0, min(365, $this->request->variable('aw_new_days', 14))));
+			$this->config->set('aw_arcade_duels', $this->request->variable('aw_duels', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_duel_days', max(1, min(30, $this->request->variable('aw_duel_days', 7))));
+			$this->config->set('aw_arcade_duel_max', max(1, min(50, $this->request->variable('aw_duel_max', 5))));
 			$this->config->set('aw_arcade_min_time', max(0, min(600, $this->request->variable('aw_min_time', 5))));
 			$this->config->set('aw_arcade_games_per_page', max(5, min(200, $this->request->variable('aw_games_per_page', 30))));
 			$this->config->set('aw_arcade_scores_per_page', max(5, min(200, $this->request->variable('aw_scores_per_page', 25))));
@@ -173,6 +180,10 @@ class main_module
 			'AW_PRIVACY'			=> (bool) $this->config['aw_arcade_privacy'],
 			'AW_RATINGS'			=> (bool) $this->config['aw_arcade_ratings'],
 			'AW_RECENT'				=> (bool) $this->config['aw_arcade_recent'],
+			'AW_NEW_DAYS'			=> (int) $this->config['aw_arcade_new_days'],
+			'AW_DUELS'				=> (bool) $this->config['aw_arcade_duels'],
+			'AW_DUEL_DAYS'			=> (int) $this->config['aw_arcade_duel_days'],
+			'AW_DUEL_MAX'			=> (int) $this->config['aw_arcade_duel_max'],
 			'U_AW_PRIVACY'			=> generate_board_url() . '/ucp.php?mode=privacy#' . \arcadewelten\arcade\core\privacy::ANCHOR,
 			'AW_MIN_TIME'			=> (int) $this->config['aw_arcade_min_time'],
 			'AW_GAMES_PER_PAGE'		=> (int) $this->config['aw_arcade_games_per_page'],
@@ -350,6 +361,14 @@ class main_module
 						$this->games->update_game($id, ['game_touch' => 0]);
 					break;
 
+					case 'new_on':
+						$this->games->update_game($id, ['game_not_new' => 0, 'game_added' => time()]);
+					break;
+
+					case 'new_off':
+						$this->games->update_game($id, ['game_not_new' => 1]);
+					break;
+
 					case 'move':
 						$this->games->update_game($id, ['cat_id' => $cat_id]);
 					break;
@@ -374,6 +393,7 @@ class main_module
 				$this->scores->delete_game_scores($game_id);
 				$this->ratings->delete_game($game_id);
 				$this->recent->delete_game($game_id);
+				$this->duels->delete_game($game_id);
 				$this->games->delete_game($game_id);
 				trigger_error($this->language->lang('ACP_AW_ARCADE_GAME_DELETED') . adm_back_link($this->u_action));
 			}
@@ -415,6 +435,7 @@ class main_module
 				'S_ACTIVE'		=> (bool) $row['game_active'],
 				'S_GUEST'		=> (bool) $row['game_guest'],
 				'S_TOUCH'		=> (bool) $row['game_touch'],
+				'S_NEW'			=> $this->games->is_new($row),
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;g=' . (int) $row['game_id'],
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;g=' . (int) $row['game_id'],
 			]);

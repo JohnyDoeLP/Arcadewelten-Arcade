@@ -160,6 +160,54 @@ class games
 		return $rows;
 	}
 
+	/**
+	 * Start of the "new" period (0 = badge switched off).
+	 */
+	public function new_since()
+	{
+		$days = (int) $this->config['aw_arcade_new_days'];
+
+		return $days > 0 ? time() - $days * 86400 : 0;
+	}
+
+	public function is_new(array $game)
+	{
+		$since = $this->new_since();
+
+		return $since && empty($game['game_not_new']) && (int) $game['game_added'] >= $since;
+	}
+
+	/**
+	 * Number of new active games per category.
+	 *
+	 * @return array cat_id => count
+	 */
+	public function count_new_by_cat()
+	{
+		$since = $this->new_since();
+
+		if (!$since)
+		{
+			return [];
+		}
+
+		$sql = 'SELECT cat_id, COUNT(game_id) AS total
+			FROM ' . $this->games_table . '
+			WHERE game_active = 1
+				AND game_not_new = 0
+				AND game_added >= ' . (int) $since . '
+			GROUP BY cat_id';
+		$result = $this->db->sql_query($sql);
+		$counts = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$counts[(int) $row['cat_id']] = (int) $row['total'];
+		}
+		$this->db->sql_freeresult($result);
+
+		return $counts;
+	}
+
 	public function count_games($cat_id = 0, $only_active = true, $search = '', array $exclude_cats = [])
 	{
 		$sql = 'SELECT COUNT(g.game_id) AS total

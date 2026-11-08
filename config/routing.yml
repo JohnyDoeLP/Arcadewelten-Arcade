@@ -37,3 +37,21 @@ arcadewelten_arcade_rate:
     methods: [POST]
     requirements:
         game_id: \d+
+
+arcadewelten_arcade_duels:
+    path: /arcadehall/duels
+    defaults: { _controller: arcadewelten.arcade.controller.main:duels }
+
+arcadewelten_arcade_duel_new:
+    path: /arcadehall/duel/new/{game_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:duel_new }
+    methods: [POST]
+    requirements:
+        game_id: \d+
+
+arcadewelten_arcade_duel_decline:
+    path: /arcadehall/duel/{duel_id}/decline
+    defaults: { _controller: arcadewelten.arcade.controller.main:duel_decline }
+    methods: [POST]
+    requirements:
+        duel_id: \d+

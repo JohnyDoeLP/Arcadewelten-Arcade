@@ -1,0 +1,10 @@
+Subject: Duel decided: {GAME_NAME}
+
+Hello {USERNAME},
+
+{RESULT}
+{SCORES}
+
+Your duels: {U_DUELS}
+
+{EMAIL_SIG}

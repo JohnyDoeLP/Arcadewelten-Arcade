@@ -1,0 +1,14 @@
+Subject: Duel challenge in the arcade: {GAME_NAME}
+
+Hello {USERNAME},
+
+{OTHER_NAME} challenges you to a duel in the arcade of "{SITENAME}".
+
+Game: {GAME_NAME}
+To beat: {SCORE}
+Ends: {DEADLINE}
+
+If you beat the score by then, you win – otherwise {OTHER_NAME} wins.
+Your duels: {U_DUELS}
+
+{EMAIL_SIG}

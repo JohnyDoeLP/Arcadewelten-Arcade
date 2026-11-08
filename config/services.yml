@@ -7,6 +7,7 @@ parameters:
     arcadewelten.arcade.tables.ratings: '%core.table_prefix%aw_arcade_ratings'
     arcadewelten.arcade.tables.recent: '%core.table_prefix%aw_arcade_recent'
     arcadewelten.arcade.tables.cat_groups: '%core.table_prefix%aw_arcade_cat_groups'
+    arcadewelten.arcade.tables.duels: '%core.table_prefix%aw_arcade_duels'
 
 services:
     arcadewelten.arcade.games:
@@ -17,6 +18,46 @@ services:
             - '%core.root_path%'
             - '%arcadewelten.arcade.tables.games%'
             - '%arcadewelten.arcade.tables.cats%'
+
+    arcadewelten.arcade.duels:
+        class: arcadewelten\arcade\core\duels
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@notification_manager'
+            - '%arcadewelten.arcade.tables.duels%'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.scores%'
+
+    arcadewelten.arcade.cron.task.duels:
+        class: arcadewelten\arcade\cron\task\duels
+        arguments:
+            - '@arcadewelten.arcade.duels'
+            - '@config'
+        calls:
+            - [set_name, [cron.task.arcadewelten.arcade.duels]]
+        tags:
+            - { name: cron.task }
+
+    arcadewelten.arcade.notification.type.duel_challenge:
+        class: arcadewelten\arcade\notification\type\duel_challenge
+        shared: false
+        parent: notification.type.base
+        calls:
+            - [set_user_loader, ['@user_loader']]
+            - [set_helper, ['@controller.helper']]
+        tags:
+            - { name: notification.type }
+
+    arcadewelten.arcade.notification.type.duel_result:
+        class: arcadewelten\arcade\notification\type\duel_result
+        shared: false
+        parent: notification.type.base
+        calls:
+            - [set_user_loader, ['@user_loader']]
+            - [set_helper, ['@controller.helper']]
+        tags:
+            - { name: notification.type }
 
     arcadewelten.arcade.scores:
         class: arcadewelten\arcade\core\scores
@@ -29,6 +70,7 @@ services:
             - '%arcadewelten.arcade.tables.cats%'
             - '%arcadewelten.arcade.tables.flagged%'
             - '@config'
+            - '@arcadewelten.arcade.duels'
 
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer
@@ -84,6 +126,7 @@ services:
             - '@arcadewelten.arcade.points'
             - '@arcadewelten.arcade.ratings'
             - '@arcadewelten.arcade.recent'
+            - '@arcadewelten.arcade.duels'
             - '%arcadewelten.arcade.tables.games%'
             - '%arcadewelten.arcade.tables.cats%'
 
@@ -120,6 +163,7 @@ services:
             - '@arcadewelten.arcade.points'
             - '@arcadewelten.arcade.ratings'
             - '@arcadewelten.arcade.recent'
+            - '@arcadewelten.arcade.duels'
             - '@config'
             - '@controller.helper'
             - '@template'
@@ -137,6 +181,7 @@ services:
             - '@arcadewelten.arcade.ratings'
             - '@arcadewelten.arcade.recent'
             - '@arcadewelten.arcade.access'
+            - '@arcadewelten.arcade.duels'
             - '@controller.helper'
             - '@template'
             - '@request'

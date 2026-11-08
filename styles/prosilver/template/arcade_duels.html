@@ -1,0 +1,72 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+{% import _self as aw %}
+
+<h2 class="aw-title"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_DUELS') }}</h2>
+<p>{{ lang('AW_ARCADE_DUELS_EXPLAIN') }}</p>
+
+{% if AW_MESSAGE %}
+<div class="panel aw-message"><div class="inner"><p>{{ AW_MESSAGE }}</p></div></div>
+{% endif %}
+
+{% macro duel_table(rows, kind, token) %}
+<table class="table1 aw-duel-table">
+	<thead>
+		<tr>
+			<th>{{ lang('AW_ARCADE_GAME') }}</th>
+			<th>{{ kind == 'incoming' ? lang('AW_ARCADE_DUEL_FROM') : lang('AW_ARCADE_DUEL_AGAINST') }}</th>
+			<th>{{ lang('AW_ARCADE_DUEL_TO_BEAT') }}</th>
+			<th>{{ lang('AW_ARCADE_DUEL_OPP_SCORE') }}</th>
+			<th>{{ kind == 'finished' ? lang('AW_ARCADE_DUEL_ENDED') : lang('AW_ARCADE_DUEL_DEADLINE') }}</th>
+			<th>{{ kind == 'finished' ? lang('AW_ARCADE_DUEL_RESULT') : '' }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for d in rows %}
+		<tr class="{{ loop.index is odd ? 'bg1' : 'bg2' }}">
+			<td><a href="{{ d.U_SCORES }}">{{ d.GAME }}</a></td>
+			<td>{{ d.OTHER }}</td>
+			<td>{{ d.TO_BEAT }}</td>
+			<td>{{ d.OPP_SCORE }}</td>
+			<td>{{ kind == 'finished' ? d.END : d.DEADLINE }}</td>
+			<td>
+				{% if kind == 'incoming' %}
+				<a class="button" href="{{ d.U_PLAY }}"><i class="icon fa-play fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_PLAY_NOW') }}</span></a>
+				<form method="post" action="{{ d.U_DECLINE }}" class="aw-inline-form" onsubmit="return confirm('{{ lang('AW_ARCADE_DUEL_DECLINE_CONFIRM')|e('js') }}');">
+					<button type="submit" class="button"><i class="icon fa-times fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUEL_DECLINE') }}</span></button>
+					{{ token|raw }}
+				</form>
+				{% elseif kind == 'finished' %}
+				<strong class="{{ d.S_WON ? 'aw-duel-won' : 'aw-duel-lost' }}">{{ d.RESULT }}</strong>
+				{% endif %}
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endmacro %}
+
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_DUELS_INCOMING') }}</h3>
+		{% if loops.incoming|length %}{{ aw.duel_table(loops.incoming, 'incoming', S_FORM_TOKEN) }}{% else %}<p>{{ lang('AW_ARCADE_DUELS_NONE_INCOMING') }}</p>{% endif %}
+	</div>
+</div>
+
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_DUELS_OUTGOING') }}</h3>
+		{% if loops.outgoing|length %}{{ aw.duel_table(loops.outgoing, 'outgoing', S_FORM_TOKEN) }}{% else %}<p>{{ lang('AW_ARCADE_DUELS_NONE_OUTGOING') }}</p>{% endif %}
+	</div>
+</div>
+
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_DUELS_FINISHED') }}</h3>
+		{% if loops.finished|length %}{{ aw.duel_table(loops.finished, 'finished', S_FORM_TOKEN) }}{% else %}<p>{{ lang('AW_ARCADE_DUELS_NONE_FINISHED') }}</p>{% endif %}
+	</div>
+</div>
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

@@ -137,3 +137,20 @@ html.aw-cinema .aw-points-info, html.aw-cinema .aw-touch-hint { position: relati
 .aw-recent-item:hover { border-color: #105289; text-decoration: none; }
 .aw-recent-name { font-size: 0.9em; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .aw-tile-groups { right: auto; left: 3px; }
+
+/* NEW badge */
+.aw-thumb { position: relative; }
+.aw-new-badge { position: absolute; top: 4px; left: 4px; padding: 1px 6px; border-radius: 3px; background: #d31141; color: #fff; font-size: 0.8em; font-weight: bold; letter-spacing: 0.04em; text-transform: uppercase; }
+.aw-new-count { color: #d31141; font-weight: bold; }
+.aw-acp-new { color: #d31141; font-size: 0.85em; }
+
+/* Duels */
+.aw-duel-link { margin: 8px 0; }
+.aw-duel-link .badge { margin-left: 4px; }
+.aw-duel-form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.aw-duel-table td { vertical-align: middle; }
+.aw-inline-form { display: inline; }
+.aw-duel-won { color: #2a8a2a; }
+.aw-duel-lost { color: #b02020; }
+.aw-duel-banner .icon { color: #e0a800; }
+table.table1.aw-duel-table thead th { color: #333; font-weight: bold; background: none; text-transform: none; font-size: 1em; padding: 4px; }

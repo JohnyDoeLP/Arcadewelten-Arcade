@@ -86,7 +86,7 @@ class access
 	public function set_cat_groups($cat_id, array $group_ids)
 	{
 		$cat_id = (int) $cat_id;
-		$this->db->sql_query('DELETE FROM ' . $this->cat_groups_table . ' WHERE cat_id = ' . $cat_id);
+		$this->db->sql_query('DELETE FROM ' . $this->cat_groups_table . ' WHERE cat_id = ' . (int) $cat_id);
 
 		$rows = [];
 		foreach (array_unique(array_filter(array_map('intval', $group_ids))) as $group_id)
@@ -147,6 +147,52 @@ class access
 		}
 
 		return $this->hidden;
+	}
+
+	/**
+	 * Permission "Can use the arcade" for another member (duel opponents).
+	 */
+	public function user_can_use($user_id)
+	{
+		foreach (['u_aw_arcade_play', 'a_'] as $option)
+		{
+			$list = $this->auth->acl_get_list([(int) $user_id], $option);
+			if (!empty($list[0][$option]) && in_array((int) $user_id, array_map('intval', $list[0][$option]), true))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * May another member see a category (group limits; administrators always)?
+	 */
+	public function user_can_see_cat($user_id, $cat_id)
+	{
+		$groups = $this->get_cat_groups($cat_id);
+
+		if (!$groups)
+		{
+			return true;
+		}
+
+		$list = $this->auth->acl_get_list([(int) $user_id], 'a_');
+		if (!empty($list[0]['a_']))
+		{
+			return true;
+		}
+
+		$sql = 'SELECT group_id FROM ' . USER_GROUP_TABLE . '
+			WHERE user_id = ' . (int) $user_id . '
+				AND user_pending = 0
+				AND ' . $this->db->sql_in_set('group_id', $groups);
+		$result = $this->db->sql_query_limit($sql, 1);
+		$found = (bool) $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return $found;
 	}
 
 	public function can_see_cat($cat_id)
