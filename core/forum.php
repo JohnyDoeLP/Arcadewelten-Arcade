@@ -401,6 +401,9 @@ class forum
 			'enable_indexing'		=> true,
 			'force_approved_state'	=> ITEM_APPROVED,
 			'force_visibility'		=> ITEM_APPROVED,
+			// Some extensions read their own flags from these data without checking
+			// (e.g. "Markdown" by alfredoramos): bot posts use BBCode only.
+			'enable_markdown'		=> false,
 		];
 		$poll = [];
 
