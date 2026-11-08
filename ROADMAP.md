@@ -27,6 +27,8 @@ Suggestions are welcome – the list grows with the community.
 
 ## Later / optional
 
+- Points interface: other points systems can be connected (detected automatically when installed, or attached by other extensions through a phpBB event). The existing Ultimate Points support stays exactly as it is – nothing changes in Ultimate Points itself or in how the arcade uses it.
+- Shoutbox support: new records and duel results in mChat or AJAX Chat, only offered in the ACP when one of them is installed – built once somebody actually uses it
 - Group duels (group against group, average of the members) – only once the normal duels are well used; fairness with very different group sizes needs a good answer first
 - Game downloads, switchable by the board admin
 - ZIP upload of games in the ACP (only allowed file types, no PHP files in the web folder)
