@@ -127,8 +127,22 @@ services:
             - '@arcadewelten.arcade.ratings'
             - '@arcadewelten.arcade.recent'
             - '@arcadewelten.arcade.duels'
+            - '@arcadewelten.arcade.forum'
             - '%arcadewelten.arcade.tables.games%'
             - '%arcadewelten.arcade.tables.cats%'
+
+    arcadewelten.arcade.forum:
+        class: arcadewelten\arcade\core\forum
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@user'
+            - '@auth'
+            - '@language.loader'
+            - '@arcadewelten.arcade.games'
+            - '@arcadewelten.arcade.points'
+            - '%core.root_path%'
+            - '%core.php_ext%'
 
     arcadewelten.arcade.season:
         class: arcadewelten\arcade\core\season
@@ -140,6 +154,7 @@ services:
             - '@log'
             - '@user'
             - '@language'
+            - '@arcadewelten.arcade.forum'
 
     arcadewelten.arcade.legacy:
         class: arcadewelten\arcade\core\legacy
@@ -164,6 +179,7 @@ services:
             - '@arcadewelten.arcade.ratings'
             - '@arcadewelten.arcade.recent'
             - '@arcadewelten.arcade.duels'
+            - '@arcadewelten.arcade.forum'
             - '@config'
             - '@controller.helper'
             - '@template'

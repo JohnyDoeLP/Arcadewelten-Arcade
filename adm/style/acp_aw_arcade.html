@@ -162,7 +162,38 @@
 		<dl><dt><label for="aw_reward_3">{{ lang('ACP_AW_ARCADE_PT_REWARD_3') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_reward_3" name="aw_reward_3" value="{{ AW_REWARD_3 }}"> {{ AW_POINTS_NAME }}</dd></dl>
 		{% endif %}
 	</fieldset>
-	<fieldset class="submit-buttons">
+		<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_FORUM_LEGEND') }}</legend>
+		<p>{{ lang('ACP_AW_ARCADE_FORUM_EXPLAIN') }}</p>
+		<dl>
+			<dt><label for="aw_bot">{{ lang('ACP_AW_ARCADE_BOT') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_BOT_EXPLAIN') }}</span></dt>
+			<dd><input class="inputbox autowidth" type="text" id="aw_bot" name="aw_bot" value="{{ AW_BOT }}" maxlength="255"> <a href="{{ U_AW_FIND_BOT }}" onclick="find_username(this.href); return false;">{{ lang('FIND_USERNAME') }}</a></dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_news_forum">{{ lang('ACP_AW_ARCADE_NEWS_FORUM') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_NEWS_FORUM_EXPLAIN') }}</span></dt>
+			<dd><select id="aw_news_forum" name="aw_news_forum"><option value="0">{{ lang('ACP_AW_ARCADE_NO_FORUM') }}</option>{% for f in loops.news_forums %}<option value="{{ f.ID }}"{% if f.S_SEL %} selected{% endif %}{% if not f.S_POST %} disabled{% endif %}>{{ f.NAME }}</option>{% endfor %}</select></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_POST_GAMES') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_POST_GAMES_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_post_games" value="1"{% if AW_POST_GAMES %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_post_games" value="0"{% if not AW_POST_GAMES %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_post_batch">{{ lang('ACP_AW_ARCADE_POST_BATCH') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_POST_BATCH_EXPLAIN') }}</span></dt>
+			<dd><input type="number" id="aw_post_batch" name="aw_post_batch" min="0" max="100" value="{{ AW_POST_BATCH }}"></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_POST_SEASON') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_POST_SEASON_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_post_season" value="1"{% if AW_POST_SEASON %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_post_season" value="0"{% if not AW_POST_SEASON %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+	</fieldset>
+
+<fieldset class="submit-buttons">
 		<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}">
 		{{ S_FORM_TOKEN }}
 	</fieldset>
@@ -320,6 +351,7 @@
 				<option value="touch_off">{{ lang('ACP_AW_ARCADE_TOUCH_OFF') }}</option>
 				<option value="new_on">{{ lang('ACP_AW_ARCADE_NEW_ON') }}</option>
 				<option value="new_off">{{ lang('ACP_AW_ARCADE_NEW_OFF') }}</option>
+				<option value="post_topic">{{ lang('ACP_AW_ARCADE_POST_TOPIC') }}</option>
 				<option value="move">{{ lang('ACP_AW_ARCADE_MOVE_TO') }}</option>
 			</select>
 			<select name="bulk_cat"><option value="0">{{ lang('ACP_AW_ARCADE_NO_CAT') }}</option>{% for c in loops.cat_options %}<option value="{{ c.ID }}">{{ c.NAME }}</option>{% endfor %}</select>

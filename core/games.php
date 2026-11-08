@@ -63,6 +63,16 @@ class games
 	/**
 	 * Games folder relative to the board root, always with trailing slash.
 	 */
+	public function games_table()
+	{
+		return $this->games_table;
+	}
+
+	public function cats_table()
+	{
+		return $this->cats_table;
+	}
+
 	public function games_path()
 	{
 		$path = trim(str_replace('\\', '/', (string) $this->config['aw_arcade_games_path']), '/');

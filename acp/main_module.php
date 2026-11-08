@@ -40,6 +40,8 @@ class main_module
 	protected $recent;
 	/** @var \arcadewelten\arcade\core\duels */
 	protected $duels;
+	/** @var \arcadewelten\arcade\core\forum */
+	protected $forum;
 	/** @var \arcadewelten\arcade\core\season */
 	protected $season;
 	/** @var \phpbb\user */
@@ -64,6 +66,7 @@ class main_module
 		$this->ratings = $phpbb_container->get('arcadewelten.arcade.ratings');
 		$this->recent = $phpbb_container->get('arcadewelten.arcade.recent');
 		$this->duels = $phpbb_container->get('arcadewelten.arcade.duels');
+		$this->forum = $phpbb_container->get('arcadewelten.arcade.forum');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
 
@@ -152,6 +155,22 @@ class main_module
 			$this->config->set('aw_arcade_duels', $this->request->variable('aw_duels', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_duel_days', max(1, min(30, $this->request->variable('aw_duel_days', 7))));
 			$this->config->set('aw_arcade_duel_max', max(1, min(50, $this->request->variable('aw_duel_max', 5))));
+			$this->config->set('aw_arcade_news_forum', $this->request->variable('aw_news_forum', 0));
+			$this->config->set('aw_arcade_post_games', $this->request->variable('aw_post_games', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_post_season', $this->request->variable('aw_post_season', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_post_batch', max(0, min(100, $this->request->variable('aw_post_batch', 5))));
+
+			$bot_name = trim($this->request->variable('aw_bot', '', true));
+			$bot_id = 0;
+			if ($bot_name !== '')
+			{
+				$bot_id = $this->user_id_by_name($bot_name);
+				if (!$bot_id)
+				{
+					trigger_error($this->language->lang('ACP_AW_ARCADE_BOT_UNKNOWN', $bot_name) . adm_back_link($this->u_action), E_USER_WARNING);
+				}
+			}
+			$this->config->set('aw_arcade_bot_id', $bot_id);
 			$this->config->set('aw_arcade_min_time', max(0, min(600, $this->request->variable('aw_min_time', 5))));
 			$this->config->set('aw_arcade_games_per_page', max(5, min(200, $this->request->variable('aw_games_per_page', 30))));
 			$this->config->set('aw_arcade_scores_per_page', max(5, min(200, $this->request->variable('aw_scores_per_page', 25))));
@@ -169,6 +188,8 @@ class main_module
 			trigger_error($this->language->lang('CONFIG_UPDATED') . adm_back_link($this->u_action));
 		}
 
+		$this->assign_forum_options('news_forums', (int) $this->config['aw_arcade_news_forum']);
+
 		$this->template->assign_vars([
 			'AW_GAMES_PATH'			=> $this->games->games_path(),
 			'AW_GAMES_PATH_OK'		=> is_dir($this->games->games_fs_path()),
@@ -184,6 +205,11 @@ class main_module
 			'AW_DUELS'				=> (bool) $this->config['aw_arcade_duels'],
 			'AW_DUEL_DAYS'			=> (int) $this->config['aw_arcade_duel_days'],
 			'AW_DUEL_MAX'			=> (int) $this->config['aw_arcade_duel_max'],
+			'AW_BOT'				=> ($bot = $this->forum->bot()) ? $bot['username'] : '',
+			'AW_POST_GAMES'			=> (bool) $this->config['aw_arcade_post_games'],
+			'AW_POST_SEASON'		=> (bool) $this->config['aw_arcade_post_season'],
+			'AW_POST_BATCH'			=> (int) $this->config['aw_arcade_post_batch'],
+			'U_AW_FIND_BOT'			=> append_sid($this->phpbb_root_path_web() . 'memberlist.php', 'mode=searchuser&amp;form=aw_settings&amp;field=aw_bot&amp;select_single=true'),
 			'U_AW_PRIVACY'			=> generate_board_url() . '/ucp.php?mode=privacy#' . \arcadewelten\arcade\core\privacy::ANCHOR,
 			'AW_MIN_TIME'			=> (int) $this->config['aw_arcade_min_time'],
 			'AW_GAMES_PER_PAGE'		=> (int) $this->config['aw_arcade_games_per_page'],
@@ -320,8 +346,9 @@ class main_module
 			}
 
 			$count = $this->importer->import(array_filter($dirs), $cat_id, true);
+			$topics = $this->forum->announce_games($this->importer->last_imported);
 
-			trigger_error($this->language->lang('ACP_AW_ARCADE_IMPORTED', $count) . adm_back_link($this->u_action));
+			trigger_error($this->language->lang('ACP_AW_ARCADE_IMPORTED', $count) . ($topics ? ' ' . $this->language->lang('ACP_AW_ARCADE_POSTED', $topics) : '') . adm_back_link($this->u_action));
 		}
 
 		// Bulk actions on installed games
@@ -332,6 +359,12 @@ class main_module
 			$ids = array_map('intval', $this->request->variable('game_ids', [0]));
 			$bulk_action = $this->request->variable('bulk_action', '');
 			$cat_id = $this->request->variable('bulk_cat', 0);
+
+			if ($bulk_action === 'post_topic')
+			{
+				$topics = $this->forum->announce_games(array_filter($ids), true);
+				trigger_error($this->language->lang('ACP_AW_ARCADE_POSTED', $topics) . adm_back_link($this->u_action), $this->forum->enabled() ? E_USER_NOTICE : E_USER_WARNING);
+			}
 
 			foreach (array_filter($ids) as $id)
 			{
@@ -712,6 +745,7 @@ class main_module
 			$this->assign_point_fields($cat, 'cat');
 			$this->assign_cat_images($cat['cat_image']);
 			$this->assign_group_options($this->access->get_cat_groups($cat_id));
+			$this->assign_forum_options('cat_forums', (int) $cat['cat_news_forum']);
 
 			$this->template->assign_vars([
 				'S_AW_CAT_EDIT'		=> true,
@@ -746,6 +780,7 @@ class main_module
 		$this->assign_point_fields([], 'cat');
 		$this->assign_cat_images('');
 		$this->assign_group_options([]);
+		$this->assign_forum_options('cat_forums', 0);
 		$this->template->assign_var('U_CAT_ADD', $this->u_action . '&amp;action=add');
 	}
 
@@ -818,7 +853,11 @@ class main_module
 			trigger_error($this->language->lang('ACP_AW_ARCADE_CAT_IMAGE_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
-		$data = ['cat_desc' => $this->request->variable('cat_desc', '', true), 'cat_image' => $image] + $this->read_point_fields('cat');
+		$data = [
+			'cat_desc'			=> $this->request->variable('cat_desc', '', true),
+			'cat_image'			=> $image,
+			'cat_news_forum'	=> $this->request->variable('cat_news_forum', 0),
+		] + $this->read_point_fields('cat');
 		$password = $this->request->variable('cat_password', '', true);
 
 		if ($this->request->variable('cat_password_remove', 0))
@@ -832,6 +871,49 @@ class main_module
 
 		$this->games->update_cat($cat_id, $data);
 		$this->access->set_cat_groups($cat_id, $this->request->variable('cat_groups', [0]));
+	}
+
+	/**
+	 * Postable forums as a select list (template block $block).
+	 */
+	protected function user_id_by_name($name)
+	{
+		global $db;
+
+		$sql = 'SELECT user_id FROM ' . USERS_TABLE . "
+			WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($name)) . "'
+				AND user_id <> " . ANONYMOUS;
+		$result = $db->sql_query($sql);
+		$user_id = (int) $db->sql_fetchfield('user_id');
+		$db->sql_freeresult($result);
+
+		return $user_id;
+	}
+
+	protected function phpbb_root_path_web()
+	{
+		global $phpbb_root_path;
+
+		return $phpbb_root_path;
+	}
+
+	protected function assign_forum_options($block, $selected)
+	{
+		if (!function_exists('make_forum_select'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include $phpbb_root_path . 'includes/functions_admin.' . $phpEx;
+		}
+
+		foreach (make_forum_select(false, false, true, true, true, false, true) as $forum)
+		{
+			$this->template->assign_block_vars($block, [
+				'ID'		=> (int) $forum['forum_id'],
+				'NAME'		=> $forum['padding'] . $forum['forum_name'],
+				'S_SEL'		=> (int) $forum['forum_id'] === (int) $selected,
+				'S_POST'	=> (int) $forum['forum_type'] === FORUM_POST,
+			]);
+		}
 	}
 
 	/**

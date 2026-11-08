@@ -208,4 +208,6 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_NOTIFICATION_DUEL_LOST'			=> '<strong>Duell verloren:</strong> gegen %1$s in „%2$s“',
 	'AW_ARCADE_NOTIFICATION_DUEL_DECLINED'		=> '<strong>Duell abgelehnt:</strong> %1$s hat deine Herausforderung in „%2$s“ abgelehnt',
 	'AW_ARCADE_NOTIFICATION_DUEL_SCORES'		=> 'Vorgelegt: %1$s – Gegner: %2$s',
+
+	'AW_ARCADE_DISCUSS'			=> 'Tipps &amp; Diskussion',
 ]);

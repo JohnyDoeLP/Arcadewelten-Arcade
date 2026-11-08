@@ -21,6 +21,7 @@ class main
 	protected $ratings;
 	protected $recent;
 	protected $duels;
+	protected $forum;
 	protected $config;
 	protected $helper;
 	protected $template;
@@ -30,7 +31,7 @@ class main
 	protected $pagination;
 	protected $root_path;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -39,6 +40,7 @@ class main
 		$this->ratings = $ratings;
 		$this->recent = $recent;
 		$this->duels = $duels;
+		$this->forum = $forum;
 		$this->config = $config;
 		$this->helper = $helper;
 		$this->template = $template;
@@ -373,6 +375,7 @@ class main
 			'S_AW_FLASH'		=> $type === games::TYPE_FLASH,
 			'S_AW_HTML5'		=> $type === games::TYPE_HTML5,
 			'S_AW_TOUCH'		=> (bool) $game['game_touch'],
+			'U_AW_TOPIC'		=> $this->forum->topic_url($game),
 			'S_AW_GUEST'		=> !$is_member,
 			'S_AW_NO_SCORES'	=> (int) $game['game_save_type'] === games::SAVE_NONE,
 			'AW_POINTS_INFO'	=> $this->points_info($game),
@@ -473,6 +476,7 @@ class main
 			'AW_MY_RANK'		=> $rank,
 			'S_AW_LOW_WINS'		=> (int) $game['game_scoretype'] === games::SCORE_LOW,
 			'U_AW_PLAY'			=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $game['game_id']]),
+			'U_AW_TOPIC'		=> $this->forum->topic_url($game),
 		]);
 
 		$this->breadcrumbs($game['cat_id'] ? ['cat_id' => $game['cat_id'], 'cat_name' => $game['cat_name']] : false, $game);

@@ -21,8 +21,12 @@ class season
 	protected $user;
 	protected $language;
 
-	public function __construct(games $games, scores $scores, points $points, \phpbb\config\config $config, \phpbb\log\log_interface $log, \phpbb\user $user, \phpbb\language\language $language)
+	/** @var forum */
+	protected $forum;
+
+	public function __construct(games $games, scores $scores, points $points, \phpbb\config\config $config, \phpbb\log\log_interface $log, \phpbb\user $user, \phpbb\language\language $language, forum $forum)
 	{
+		$this->forum = $forum;
 		$this->language = $language;
 		$this->games = $games;
 		$this->scores = $scores;
@@ -98,6 +102,18 @@ class season
 				$this->points->add($user_id, $amount);
 				$paid += $amount;
 			}
+		}
+
+		// Top 10 into the news forum, before the highscores are reset.
+		if ($this->forum->posts_season())
+		{
+			$users = [];
+			foreach ($this->scores->all_champions() as $row)
+			{
+				$users[(int) $row['user_id']] = $row;
+			}
+
+			$this->forum->announce_season($this->scores->record_counts(), $users, $this->points->active() ? $plan['users'] : [], (int) $this->config['aw_arcade_season_start']);
 		}
 
 		if ($reset)

@@ -14,6 +14,7 @@
 			<p>{{ lang('AW_ARCADE_PLAYS', AW_GAME_PLAYS) }} &bull; {{ lang('AW_ARCADE_PLAYERS', AW_TOTAL_SCORES) }}{% if S_AW_LOW_WINS %} &bull; {{ lang('AW_ARCADE_LOW_WINS') }}{% endif %}</p>
 			{% if AW_MY_RANK %}<p>{{ lang('AW_ARCADE_MY_RANK', AW_MY_RANK) }}</p>{% endif %}
 			<a class="button" href="{{ U_AW_PLAY }}"><i class="icon fa-play fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_PLAY_NOW') }}</span></a>
+			{% if U_AW_TOPIC %}<a class="button" href="{{ U_AW_TOPIC }}"><i class="icon fa-comments fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DISCUSS') }}</span></a>{% endif %}
 		</div>
 	</div>
 </div>

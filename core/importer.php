@@ -14,6 +14,9 @@ namespace arcadewelten\arcade\core;
  */
 class importer
 {
+	/** @var int[] ids of the games added by the last import() */
+	public $last_imported = [];
+
 	/** Fixed location old v3/v32 games load their data from. */
 	const GAMEDATA_PATH = 'arcade/gamedata/';
 
@@ -265,6 +268,7 @@ class importer
 	 */
 	public function import(array $dirs, $cat_id = 0, $active = true)
 	{
+		$this->last_imported = [];
 		$scan = $this->scan();
 		$count = 0;
 
@@ -279,7 +283,7 @@ class importer
 
 			try
 			{
-				$this->games->add_game([
+				$this->last_imported[] = $this->games->add_game([
 					'cat_id'			=> (int) $cat_id,
 					'game_name'			=> utf8_normalize_nfc($g['name']),
 					'game_desc'			=> utf8_normalize_nfc($g['desc']),

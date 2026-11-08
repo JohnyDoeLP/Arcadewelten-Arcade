@@ -1,6 +1,6 @@
 # Arcadewelten Arcade for phpBB 3.3
 
-**Version 0.15.0-beta – in development, please test on a copy of your board first.**
+**Version 0.16.0-beta – in development, please test on a copy of your board first.**
 
 A self-hosted arcade for phpBB 3.3: game list with categories, highscores, trophies and a hall of fame.
 No external connections, no ads, no licence server, no play limits. Open source under the GPL-2.0.
@@ -12,6 +12,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 - phpBB permissions: user permission “Can use the arcade”, categories visible only for selected user groups (e.g. 18+)
 - Game list with category tiles (image, number of games, category champion), search and pagination; optional password per category; 18 bundled category images, own images can simply be put into `images/arcade/cats/`
 - Cinema mode (“lights off”), mobile/touch games with fullscreen start (iPhone included), “recently played” bar
+- Forum integration (ArcadeBot): new games and the season top 10 posted automatically, game topic as discussion thread, own news forum per category
 - Duels: members challenge each other with their record, with phpBB notifications; “New” badge for recently installed games
 - Game ratings: 1–5 stars per member and game (only after playing, changeable), average shown in the game list; game list sortable by name, rating, popularity and newest
 - Highscores per game with trophies for places 1–3, hall of fame (podium with avatars)

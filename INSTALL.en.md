@@ -87,6 +87,8 @@ ACP → Extensions → Arcade → **Settings**:
 Per category you can set an **image** (path relative to the board, e.g. `images/arcade/puzzle.png`) and a **password**.
 Per game you can set **minimum play time**, **maximum score** and point values.
 
+**Forum integration (ArcadeBot):** under **Settings → Forum integration** enter a bot user (e.g. “ArcadeBot”) and a news forum. New games and the season result are then posted as topics automatically; categories can have their own news forum (e.g. for 18+). Games installed earlier can be posted with the bulk action “post to the forum” in the game list.
+
 **Permissions:** who may use the arcade is set with the user permission **“Can use the arcade”** (ACP → Permissions → user or group permissions, tab “Misc”). After installation guests, registered users and search engines (group “Bots”, they only see what guests see) have it – nothing changes until you adjust it. A category can also be limited to certain **user groups** (e.g. an 18+ category only for the group “Verified”); everybody else does not see it at all.
 
 ## 8. Update your privacy policy

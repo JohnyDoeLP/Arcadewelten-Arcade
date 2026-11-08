@@ -87,6 +87,8 @@ ACP → Erweiterungen → Spielhalle → **Einstellungen**:
 Pro Kategorie kannst du ein **Bild** (Pfad relativ zum Forum, z. B. `images/arcade/puzzle.png`) und ein **Passwort** setzen.
 Pro Spiel kannst du **Mindestspielzeit**, **Höchstpunktzahl** und Punkte-Werte festlegen.
 
+**Foren-Anbindung (ArcadeBot):** Unter **Einstellungen → Foren-Anbindung** trägst du einen Bot-Benutzer (z. B. „ArcadeBot“) und ein News-Forum ein. Dann werden neue Spiele und das Saisonergebnis automatisch als Themen gepostet; bei Kategorien kannst du ein eigenes News-Forum wählen (z. B. für Ü18). Bereits installierte Spiele postest du in der Spieleliste per Massenaktion „ins Forum posten“.
+
 **Rechte:** Wer die Spielhalle benutzen darf, regelt das Benutzerrecht **„Kann die Spielhalle benutzen“** (ACP → Berechtigungen → Benutzer- oder Gruppenrechte, Reiter „Diverses“). Nach der Installation haben Gäste, registrierte Benutzer und Suchmaschinen (Gruppe „Bots“, sie sehen nur, was Gäste sehen) dieses Recht – es ändert sich also nichts, bis du es selbst anpasst. Eine Kategorie lässt sich außerdem auf bestimmte **Benutzergruppen** beschränken (z. B. eine Ü18-Kategorie nur für die Gruppe „Verifiziert“); alle anderen sehen sie dann gar nicht.
 
 ## 8. Datenschutzerklärung ergänzen

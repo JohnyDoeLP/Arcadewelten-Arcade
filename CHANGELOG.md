@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.16.0-beta (2026-11-08)
+
+- **Forum integration (ArcadeBot):** a user chosen in the ACP posts arcade news as normal forum posts (subscriptions, notifications, search and feeds work as usual; stored as finished text in the board's default language, no placeholders)
+  - “[Game installed] – name”: one topic per installed game with image, category, description, size, dimensions and links to play and to the highscores. The topic doubles as the game's discussion thread: “Tips & discussion” button on the play page and the highscores page (only for members who may read that forum)
+  - collective topic “[Games installed] – x new games” when one import installs many games (ACP, default from 5 games, 0 = always single topics)
+  - “[Top 10 of the arcade] – date” at every season close: top 10 players by records with their season prizes – an archive of monthly winners
+  - default news forum plus an own news forum per category (e.g. an 18+ forum only the 18+ group can read)
+  - bulk action “post to the forum” for games installed earlier
+  - every post type can be switched off; the privacy section mentions the season ranking while it is posted
+
 ## 0.15.0-beta (2026-11-08)
 
 - **Duels:** members challenge others from the highscores page of a game in which they have a score. Their personal best is frozen; the opponent has to beat it with a genuine result (same play session and plausibility check as the highscores, “lower wins” games included) before the deadline – otherwise the challenger wins. The opponent may decline.

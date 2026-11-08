@@ -27,6 +27,7 @@
 	<p class="aw-touch-hint" id="aw-touch-hint" hidden><i class="icon fa-keyboard-o fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_NOT_TOUCH_HINT') }}</p>
 	<div class="aw-play-tools">
 		<button type="button" class="button" id="aw-fullscreen"><i class="icon fa-arrows-alt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_FULLSCREEN') }}</span></button>
+		{% if U_AW_TOPIC %}<a class="button" href="{{ U_AW_TOPIC }}"><i class="icon fa-comments fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DISCUSS') }}</span></a>{% endif %}
 		<button type="button" class="button" id="aw-cinema" aria-pressed="false" data-on="{{ lang('AW_ARCADE_LIGHTS_ON') }}" data-off="{{ lang('AW_ARCADE_LIGHTS_OFF') }}"><i class="icon fa-lightbulb-o fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_LIGHTS_OFF') }}</span></button>
 		{% if not S_AW_GUEST %}<a class="button" href="{{ U_AW_SCORES }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_HIGHSCORES') }}</span></a>{% endif %}
 	</div>

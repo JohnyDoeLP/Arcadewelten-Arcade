@@ -1,0 +1,47 @@
+<?php
+/**
+ * Arcadewelten Arcade
+ *
+ * @copyright (c) 2026 Patrick Overmann, arcadewelten.eu
+ * @license GNU General Public License, version 2 (GPL-2.0-only)
+ */
+
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+	$lang = [];
+}
+
+// Texts of the forum posts written by the ArcadeBot (board default language).
+$lang = array_merge($lang, [
+	'AW_ARCADE_POST_GAME_TITLE'		=> '[Spiel installiert] – %s',
+	'AW_ARCADE_POST_GAMES_TITLE'	=> '[Spiele installiert] – %d neue Spiele',
+	'AW_ARCADE_POST_GAMES_INTRO'	=> 'In der Spielhalle sind %d neue Spiele dazugekommen:',
+	'AW_ARCADE_POST_GAME'			=> 'Spiel',
+	'AW_ARCADE_POST_CATEGORY'		=> 'Kategorie',
+	'AW_ARCADE_POST_DESC'			=> 'Beschreibung',
+	'AW_ARCADE_POST_INFO'			=> 'Infos',
+	'AW_ARCADE_POST_SIZE'			=> '%s',
+	'AW_ARCADE_POST_DIMENSIONS'		=> '%1$d × %2$d px',
+	'AW_ARCADE_POST_TOUCH'			=> 'auch auf dem Handy spielbar',
+	'AW_ARCADE_POST_NO_SCORES'		=> 'ohne Bestenliste',
+	'AW_ARCADE_POST_PLAY'			=> 'Jetzt spielen',
+	'AW_ARCADE_POST_SCORES'			=> 'Zur Bestenliste',
+	'AW_ARCADE_POST_DISCUSS'		=> 'Tipps, Tricks und Fragen zum Spiel gerne hier im Thema.',
+	'AW_ARCADE_POST_DISCUSS_MANY'	=> 'Tipps, Tricks und Fragen zu den Spielen gerne hier im Thema.',
+	'AW_ARCADE_POST_SEASON_TITLE'	=> '[Top 10 der Spielhalle] – %s',
+	'AW_ARCADE_POST_SEASON_INTRO'	=> 'Die Saison vom %1$s bis %2$s ist beendet. Die besten Spieler nach Anzahl der Rekorde:',
+	'AW_ARCADE_POST_RECORDS'		=> [
+		1 => '%d Rekord',
+		2 => '%d Rekorde',
+	],
+	'AW_ARCADE_POST_PRIZE'			=> 'Prämie: %1$s %2$s',
+	'AW_ARCADE_POST_SEASON_PRIZES'	=> 'Insgesamt wurden %1$s %2$s an %3$d Spieler ausgezahlt.',
+	'AW_ARCADE_POST_SEASON_EMPTY'	=> 'In dieser Saison wurden keine Rekorde aufgestellt.',
+	'AW_ARCADE_POST_SEASON_NEXT'	=> 'Die neue Saison läuft bereits – viel Glück!',
+	'AW_ARCADE_POST_TO_ARCADE'		=> 'Zur Spielhalle',
+]);

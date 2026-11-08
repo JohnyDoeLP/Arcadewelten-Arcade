@@ -39,6 +39,10 @@
 	</dd>
 </dl>
 <dl>
+	<dt><label for="cat_news_forum">{{ lang('ACP_AW_ARCADE_CAT_NEWS_FORUM') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_NEWS_FORUM_EXPLAIN') }}</span></dt>
+	<dd><select id="cat_news_forum" name="cat_news_forum"><option value="0">{{ lang('ACP_AW_ARCADE_CAT_NEWS_DEFAULT') }}</option>{% for f in loops.cat_forums %}<option value="{{ f.ID }}"{% if f.S_SEL %} selected{% endif %}{% if not f.S_POST %} disabled{% endif %}>{{ f.NAME }}</option>{% endfor %}</select></dd>
+</dl>
+<dl>
 	<dt><label for="cat_password">{{ lang('PASSWORD') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_PASSWORD_EXPLAIN') }}</span></dt>
 	<dd>
 		<input class="text medium" type="password" id="cat_password" name="cat_password" value="" autocomplete="new-password">
