@@ -1,7 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.16.2-beta (2026-11-08)
 
+- Old links of the previous (JV) arcade keep working: copy the new file `contrib/root/arcade.php` to the board root (next to `index.php`). `arcade.php?mode=stats&u=…` (player statistics, e.g. in the old “Top 10” posts) then leads to the member's records page, all other old arcade links to the arcade (permanent redirect, also tells search engines the new address)
+- “[Top 10 of the arcade]” posts link every player to their records page, in their group colour
 - ACP → Categories: link “Clear selection (visible for everybody)” below the group selection
 - ACP → Categories: the news forum choice shows which forum the “default news forum” is (or that none is chosen yet)
 

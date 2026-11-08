@@ -290,7 +290,9 @@ class forum
 		{
 			$place++;
 			$name = isset($users[$user_id]) ? $users[$user_id]['username'] : '?';
-			$entry = $place . '. [b]' . $name . '[/b] – ' . $lang->lang('AW_ARCADE_POST_RECORDS', (int) $count);
+			$colour = isset($users[$user_id]['user_colour']) ? (string) $users[$user_id]['user_colour'] : '';
+			$name = $colour !== '' ? '[color=#' . $colour . ']' . $name . '[/color]' : $name;
+			$entry = $place . '. [b][url=' . $this->url('arcadehall/user/' . (int) $user_id) . ']' . $name . '[/url][/b] – ' . $lang->lang('AW_ARCADE_POST_RECORDS', (int) $count);
 
 			if (!empty($prizes[$user_id]))
 			{

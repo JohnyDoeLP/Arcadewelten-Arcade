@@ -74,6 +74,11 @@ class listener implements EventSubscriberInterface
 		{
 			$response = $this->legacy->handle();
 		}
+		else if ($script === 'arcade.php')
+		{
+			// Old links of the JV arcade (arcade.php in the board root, e.g. in old forum posts).
+			$response = $this->old_arcade_link();
+		}
 		else
 		{
 			return;
@@ -83,6 +88,23 @@ class listener implements EventSubscriberInterface
 
 		garbage_collection();
 		exit_handler();
+	}
+
+	/**
+	 * Permanent redirect for old JV arcade links:
+	 * arcade.php?mode=stats&u=ID → records page of the member, everything else → arcade.
+	 * Game ids of the JV arcade differ from ours, so game links go to the arcade start page.
+	 */
+	protected function old_arcade_link()
+	{
+		$mode = $this->request->variable('mode', '');
+		$user_id = $this->request->variable('u', 0);
+
+		$url = ($mode === 'stats' && $user_id > 0)
+			? $this->helper->route('arcadewelten_arcade_user', ['user_id' => $user_id], false, false, \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL)
+			: $this->helper->route('arcadewelten_arcade_index', [], false, false, \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
+
+		return new \Symfony\Component\HttpFoundation\RedirectResponse($url, 301);
 	}
 
 	public function load_language($event)

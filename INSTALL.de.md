@@ -70,6 +70,8 @@ Die Punkte-Schnittstelle wird beim Import direkt aus der Spieldatei erkannt. Du 
 
 Spiele mit der Schnittstelle „Activity Mod“ senden ihre Punkte an `newscore.php` im Forum-Root.
 Kopiere dafür die Datei `ext/arcadewelten/arcade/contrib/root/newscore.php` in den Forum-Root (neben die `index.php`).
+
+**Umstieg von einer anderen Spielhalle (z. B. JV):** Alte Beiträge verlinken oft noch auf `arcade.php` (etwa `arcade.php?mode=stats&u=2` in alten „Top 10“-Beiträgen). Kopiere `ext/arcadewelten/arcade/contrib/root/arcade.php` ebenfalls in den Forum-Root: Spielerstatistiken führen dann zur Rekordseite des Mitglieds, alle anderen alten Links zur Spielhalle.
 Unter ACP → Spielhalle → Einstellungen siehst du mit einem grünen Haken, ob sie richtig liegt.
 
 ## 7. Einstellungen
@@ -121,4 +123,4 @@ Hinweis: JV-eigene HTML5-Spiele (`*_jvh5`) und Spiele mit JV-Schnittstelle funkt
 
 ## Deinstallieren
 
-ACP → Erweiterungen verwalten → deaktivieren → **Daten löschen**. Danach `ext/arcadewelten/` und ggf. `newscore.php` im Root löschen. Deine Spiele im Ordner `arcade/` bleiben erhalten.
+ACP → Erweiterungen verwalten → deaktivieren → **Daten löschen**. Danach `ext/arcadewelten/` und ggf. `newscore.php` und `arcade.php` im Root löschen. Deine Spiele im Ordner `arcade/` bleiben erhalten.
