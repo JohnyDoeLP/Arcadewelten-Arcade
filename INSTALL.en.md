@@ -118,6 +118,7 @@ By default the arcade automatically appends a matching section to the board’s 
 2. Disable “phpBB Arcade” and then “JVA Core” in the ACP and choose **Delete data** for both.
 3. Delete `ext/jv/` via FTP. In the folder `arcade/` keep only `games/` and `gamedata/`.
 4. Install this extension (steps 2–9).
+5. Optional: copy `contrib/root/arcade.php` to the board root (next to `index.php`). Old links in posts such as `arcade.php?mode=stats&u=2` then lead to the member's records page, other old arcade links to the arcade. Only needed if many old posts still contain such links.
 
 Note: JV's own HTML5 games (`*_jvh5`) and games using the JV interface only work with the JV server and cannot be imported.
 

@@ -61,6 +61,7 @@ The arcade is reached at `app.php/arcadehall` (or `/arcadehall` with URL rewriti
 2. Disable “phpBB Arcade” and “JVA Core” in the ACP and choose “Delete data”.
 3. Delete `ext/jv/`. In the folder `arcade/` keep only `games/` and `gamedata/`.
 4. Install this extension and import your games.
+5. Optional: copy `contrib/root/arcade.php` to the board root (next to `index.php`). Old links in posts such as `arcade.php?mode=stats&u=2` then lead to the member's records page, other old arcade links to the arcade. Only needed if many old posts still contain such links.
 
 ## HTML5 games
 

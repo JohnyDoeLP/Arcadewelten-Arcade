@@ -118,6 +118,7 @@ Ab Werk hängt die Spielhalle an die Datenschutzerklärung des Forums (`ucp.php?
 2. „phpBB Arcade“ und danach „JVA Core“ im ACP deaktivieren und jeweils **Daten löschen** wählen.
 3. Per FTP `ext/jv/` löschen. Im Ordner `arcade/` nur `games/` und `gamedata/` behalten.
 4. Diese Erweiterung installieren (Schritte 2–9).
+5. Optional: `contrib/root/arcade.php` in den Forum-Root kopieren (neben die `index.php`). Alte Links aus Beiträgen wie `arcade.php?mode=stats&u=2` führen dann zur Rekordseite des Mitglieds, andere alte Spielhallen-Links zur Spielhalle. Nur nötig, wenn noch viele alte Beiträge solche Links enthalten.
 
 Hinweis: JV-eigene HTML5-Spiele (`*_jvh5`) und Spiele mit JV-Schnittstelle funktionieren nur mit dem JV-Server und lassen sich nicht übernehmen.
 

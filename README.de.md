@@ -61,6 +61,7 @@ Die Spielhalle erreichst du unter `app.php/arcadehall` (mit URL-Rewriting unter 
 2. Im ACP „phpBB Arcade“ und „JVA Core“ deaktivieren und „Daten löschen“ wählen.
 3. `ext/jv/` löschen. Im Ordner `arcade/` nur `games/` und `gamedata/` behalten.
 4. Diese Erweiterung installieren und die Spiele importieren.
+5. Optional: `contrib/root/arcade.php` in den Forum-Root kopieren (neben die `index.php`). Alte Links aus Beiträgen wie `arcade.php?mode=stats&u=2` führen dann zur Rekordseite des Mitglieds, andere alte Spielhallen-Links zur Spielhalle. Nur nötig, wenn noch viele alte Beiträge solche Links enthalten.
 
 ## HTML5-Spiele
 
