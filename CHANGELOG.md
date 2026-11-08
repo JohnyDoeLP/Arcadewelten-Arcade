@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- ACP → Categories: the news forum choice shows which forum the “default news forum” is (or that none is chosen yet)
+
 ## 0.16.1-beta (2026-11-08)
 
 - Forum integration: no more PHP warning “Undefined array key "enable_markdown"” from the extension “Markdown” (alfredoramos) when the ArcadeBot posts (e.g. at the season close). Bot posts now tell such extensions explicitly that they use BBCode, not Markdown.

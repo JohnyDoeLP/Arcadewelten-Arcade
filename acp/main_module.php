@@ -899,6 +899,7 @@ class main_module
 
 	protected function assign_forum_options($block, $selected)
 	{
+		$default = (int) $this->config['aw_arcade_news_forum'];
 		if (!function_exists('make_forum_select'))
 		{
 			global $phpbb_root_path, $phpEx;
@@ -913,6 +914,11 @@ class main_module
 				'S_SEL'		=> (int) $forum['forum_id'] === (int) $selected,
 				'S_POST'	=> (int) $forum['forum_type'] === FORUM_POST,
 			]);
+
+			if ((int) $forum['forum_id'] === $default)
+			{
+				$this->template->assign_var('AW_DEFAULT_NEWS_FORUM', $forum['forum_name']);
+			}
 		}
 	}
 
