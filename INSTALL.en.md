@@ -70,6 +70,8 @@ The score interface is detected from the game file itself during import. You can
 
 Games using the “Activity Mod” interface send their scores to `newscore.php` in the board root.
 Copy `ext/arcadewelten/arcade/contrib/root/newscore.php` into the board root (next to `index.php`).
+
+**Switching from another arcade (e.g. JV):** old posts often still link to `arcade.php` (e.g. `arcade.php?mode=stats&u=2` in old “Top 10” posts). Copy `ext/arcadewelten/arcade/contrib/root/arcade.php` to the board root as well: player statistics then lead to the member's records page, all other old links to the arcade.
 ACP → Arcade → Settings shows a green tick when it is in the right place.
 
 ## 7. Settings
@@ -121,4 +123,4 @@ Note: JV's own HTML5 games (`*_jvh5`) and games using the JV interface only work
 
 ## Uninstalling
 
-ACP → Manage extensions → disable → **Delete data**. Then delete `ext/arcadewelten/` and, if present, `newscore.php` in the root. Your games in the `arcade/` folder are kept.
+ACP → Manage extensions → disable → **Delete data**. Then delete `ext/arcadewelten/` and, if present, `newscore.php` and `arcade.php` in the root. Your games in the `arcade/` folder are kept.
