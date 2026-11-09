@@ -25,6 +25,10 @@ Suggestions are welcome – the list grows with the community.
 9. **Statistics page** per member: favourite game, play time, best ranks
 10. **Highscore certificates** for season winners (image, generated with GD)
 
+## phpBB 4
+
+phpBB 4.0 changes a lot under the hood (no ACP/MCP/UCP modules any more, Doctrine instead of the phpBB DBAL, services only by dependency injection, Symfony 7). The arcade will get its own branch for phpBB 4 once phpBB 4 reaches beta / release candidate and its interfaces are stable. Both versions are then offered side by side – the phpBB 3.3 version keeps getting fixes (and new features where possible) as long as phpBB 3.3 itself is supported.
+
 ## Later / optional
 
 - Points interface: other points systems can be connected (detected automatically when installed, or attached by other extensions through a phpBB event). The existing Ultimate Points support stays exactly as it is – nothing changes in Ultimate Points itself or in how the arcade uses it.
