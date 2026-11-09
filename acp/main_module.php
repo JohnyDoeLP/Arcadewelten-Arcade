@@ -42,6 +42,10 @@ class main_module
 	protected $duels;
 	/** @var \arcadewelten\arcade\core\forum */
 	protected $forum;
+	/** @var \arcadewelten\arcade\core\favorites */
+	protected $favorites;
+	/** @var \arcadewelten\arcade\core\reports */
+	protected $reports;
 	/** @var \arcadewelten\arcade\core\season */
 	protected $season;
 	/** @var \phpbb\user */
@@ -67,6 +71,8 @@ class main_module
 		$this->recent = $phpbb_container->get('arcadewelten.arcade.recent');
 		$this->duels = $phpbb_container->get('arcadewelten.arcade.duels');
 		$this->forum = $phpbb_container->get('arcadewelten.arcade.forum');
+		$this->favorites = $phpbb_container->get('arcadewelten.arcade.favorites');
+		$this->reports = $phpbb_container->get('arcadewelten.arcade.reports');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
 
@@ -156,6 +162,9 @@ class main_module
 			$this->config->set('aw_arcade_duel_days', max(1, min(30, $this->request->variable('aw_duel_days', 7))));
 			$this->config->set('aw_arcade_duel_max', max(1, min(50, $this->request->variable('aw_duel_max', 5))));
 			$this->config->set('aw_arcade_news_forum', $this->request->variable('aw_news_forum', 0));
+			$this->config->set('aw_arcade_favorites', $this->request->variable('aw_favorites', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_reports', $this->request->variable('aw_reports', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_medals', $this->request->variable('aw_medals', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_games', $this->request->variable('aw_post_games', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_season', $this->request->variable('aw_post_season', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_batch', max(0, min(100, $this->request->variable('aw_post_batch', 5))));
@@ -207,6 +216,9 @@ class main_module
 			'AW_DUEL_MAX'			=> (int) $this->config['aw_arcade_duel_max'],
 			'AW_BOT'				=> ($bot = $this->forum->bot()) ? $bot['username'] : '',
 			'AW_POST_GAMES'			=> (bool) $this->config['aw_arcade_post_games'],
+			'AW_FAVORITES'			=> (bool) $this->config['aw_arcade_favorites'],
+			'AW_REPORTS'			=> (bool) $this->config['aw_arcade_reports'],
+			'AW_MEDALS'				=> (bool) $this->config['aw_arcade_medals'],
 			'AW_POST_SEASON'		=> (bool) $this->config['aw_arcade_post_season'],
 			'AW_POST_BATCH'			=> (int) $this->config['aw_arcade_post_batch'],
 			'U_AW_FIND_BOT'			=> append_sid($this->phpbb_root_path_web() . 'memberlist.php', 'mode=searchuser&amp;form=aw_settings&amp;field=aw_bot&amp;select_single=true'),
@@ -352,13 +364,19 @@ class main_module
 		}
 
 		// Bulk actions on installed games
-		if ($this->request->is_set_post('bulk'))
+		if ($this->request->is_set_post('bulk') || $this->request->is_set_post('bulk_values'))
 		{
 			$this->check_form();
 
 			$ids = array_map('intval', $this->request->variable('game_ids', [0]));
 			$bulk_action = $this->request->variable('bulk_action', '');
 			$cat_id = $this->request->variable('bulk_cat', 0);
+
+			if ($this->request->is_set_post('bulk_values'))
+			{
+				$changed = $this->bulk_values(array_filter($ids));
+				trigger_error($this->language->lang('ACP_AW_ARCADE_BULK_VALUES_DONE', $changed) . adm_back_link($this->u_action));
+			}
 
 			if ($bulk_action === 'post_topic')
 			{
@@ -427,6 +445,8 @@ class main_module
 				$this->ratings->delete_game($game_id);
 				$this->recent->delete_game($game_id);
 				$this->duels->delete_game($game_id);
+				$this->favorites->delete_game($game_id);
+				$this->reports->delete_game($game_id);
 				$this->games->delete_game($game_id);
 				trigger_error($this->language->lang('ACP_AW_ARCADE_GAME_DELETED') . adm_back_link($this->u_action));
 			}
@@ -506,6 +526,15 @@ class main_module
 		}
 
 		$this->assign_cat_options($cat_filter);
+
+		foreach (\arcadewelten\arcade\core\points::KEYS as $key)
+		{
+			$this->template->assign_block_vars('bulk_points', [
+				'KEY'	=> $key,
+				'LABEL'	=> $this->language->lang('ACP_AW_ARCADE_PT_' . strtoupper($key)),
+			]);
+		}
+		$this->template->assign_var('S_AW_POINTS_AVAILABLE', $this->points->available());
 
 		$this->template->assign_vars([
 			'AW_TOTAL_GAMES'	=> $total,
@@ -642,7 +671,32 @@ class main_module
 			redirect($this->u_action);
 		}
 
+		if ($action === 'report_done' && ($report_id = $this->request->variable('r', 0)))
+		{
+			if (!check_link_hash($this->request->variable('hash', ''), 'aw_arcade_review'))
+			{
+				trigger_error($this->language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
+
+			$this->reports->delete($report_id);
+			redirect($this->u_action);
+		}
+
 		$hash = generate_link_hash('aw_arcade_review');
+
+		foreach ($this->reports->get_all() as $row)
+		{
+			$this->template->assign_block_vars('reports', [
+				'GAME'		=> $row['game_name'] !== null ? $row['game_name'] : '–',
+				'USER'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+				'REASON'	=> $this->language->lang('AW_ARCADE_REPORT_' . strtoupper($row['report_reason'])),
+				'TEXT'		=> $row['report_text'],
+				'DATE'		=> $this->user->format_date($row['report_time']),
+				'U_EDIT'	=> str_replace('mode=review', 'mode=games', $this->u_action) . '&amp;action=edit&amp;g=' . (int) $row['game_id'],
+				'U_DONE'	=> $this->u_action . '&amp;action=report_done&amp;r=' . (int) $row['report_id'] . '&amp;hash=' . $hash,
+			]);
+		}
+		$this->template->assign_var('S_AW_REPORTS_ON', $this->reports->enabled());
 
 		foreach ($this->scores->get_flagged() as $row)
 		{
@@ -876,6 +930,54 @@ class main_module
 	/**
 	 * Postable forums as a select list (template block $block).
 	 */
+	/**
+	 * Set minimum play time, maximum score and point values for several games.
+	 * Empty fields stay unchanged; "-" puts a point value back to category/global.
+	 *
+	 * @return int number of changed games
+	 */
+	protected function bulk_values(array $ids)
+	{
+		$data = [];
+
+		$min_time = trim($this->request->variable('bv_min_time', ''));
+		if ($min_time !== '')
+		{
+			$data['game_min_time'] = max(0, min(3600, (int) $min_time));
+		}
+
+		$max_score = trim(str_replace(',', '.', $this->request->variable('bv_max_score', '')));
+		if ($max_score !== '')
+		{
+			$data['game_max_score'] = max(0, (float) $max_score);
+		}
+
+		foreach (\arcadewelten\arcade\core\points::KEYS as $key)
+		{
+			$raw = trim(str_replace(',', '.', $this->request->variable('bv_pt_' . $key, '')));
+			if ($raw === '-')
+			{
+				$data['game_' . $key] = -1;
+			}
+			else if ($raw !== '')
+			{
+				$data['game_' . $key] = max(0, (float) $raw);
+			}
+		}
+
+		if (!$data || !$ids)
+		{
+			return 0;
+		}
+
+		foreach ($ids as $id)
+		{
+			$this->games->update_game((int) $id, $data);
+		}
+
+		return count($ids);
+	}
+
 	protected function user_id_by_name($name)
 	{
 		global $db;

@@ -1,6 +1,6 @@
 {% if U_AW_PROFILE_RECORDS %}
 <dl class="details">
 	<dt>{{ lang('AW_ARCADE_RECORDS_LABEL') }}{{ lang('COLON') }}</dt>
-	<dd>{% if AW_PROFILE_RECORDS %}<i class="icon fa-trophy" style="color:#d4a017" aria-hidden="true"></i> <a href="{{ U_AW_PROFILE_RECORDS }}">{{ lang('AW_ARCADE_RECORDS', AW_PROFILE_RECORDS) }}</a>{% else %}{{ lang('AW_ARCADE_RECORDS', 0) }}{% endif %}</dd>
+	<dd>{% if AW_PROFILE_RECORDS or AW_PROFILE_MEDALS %}<i class="icon fa-trophy" style="color:#d4a017" aria-hidden="true"></i> <a href="{{ U_AW_PROFILE_RECORDS }}">{{ lang('AW_ARCADE_RECORDS', AW_PROFILE_RECORDS) }}</a>{% if AW_PROFILE_MEDALS %} <span class="aw-medals">({{ AW_PROFILE_MEDALS }})</span>{% endif %}{% else %}{{ lang('AW_ARCADE_RECORDS', 0) }}{% endif %}</dd>
 </dl>
 {% endif %}

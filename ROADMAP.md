@@ -11,19 +11,16 @@ Suggestions are welcome – the list grows with the community.
 - 0.14 – permission "Can use the arcade", categories visible only for selected user groups
 - 0.15 – duels with phpBB notifications, "NEW" badge, ACP version check
 - 0.16 – forum integration (ArcadeBot): game topics as discussion threads, season top 10
+- 0.17 – favourites, medals next to posts, bulk editing in the ACP, "report game"
 
 ## Next
 
 1. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
-2. **Favourites**: members mark games with a heart; their favourites appear at the top of the arcade
-3. **Medals next to posts**: first, second and third places (🥇🥈🥉) instead of only the number of records
-4. **Bulk editing in the ACP**: set minimum play time, maximum score and point values for many games at once
-5. **"Report game"**: button with reasons (score not saved, graphics error, not working on mobile …) and a list in the ACP
-6. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
-7. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-8. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-9. **Statistics page** per member: favourite game, play time, best ranks
-10. **Highscore certificates** for season winners (image, generated with GD)
+2. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
+3. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
+4. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+5. **Statistics page** per member: favourite game, play time, best ranks
+6. **Highscore certificates** for season winners (image, generated with GD)
 
 ## phpBB 4
 

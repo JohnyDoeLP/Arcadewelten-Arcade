@@ -1,3 +1,5 @@
 {% if postrow.AW_RECORDS %}
-<dd class="profile-custom-field aw-records-badge"><strong><i class="icon fa-trophy" style="color:#d4a017" aria-hidden="true"></i> <a href="{{ postrow.U_AW_RECORDS }}">{{ postrow.AW_RECORDS }}</a></strong></dd>
+<dd class="profile-custom-field aw-records-badge">
+	<strong><i class="icon fa-trophy" style="color:#d4a017" aria-hidden="true"></i> <a href="{{ postrow.U_AW_RECORDS }}">{% if postrow.AW_MEDALS %}<span class="aw-medals">{{ postrow.AW_MEDALS }}</span>{% else %}{{ postrow.AW_RECORDS }}{% endif %}</a></strong>
+</dd>
 {% endif %}

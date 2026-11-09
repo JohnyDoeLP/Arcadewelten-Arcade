@@ -154,3 +154,18 @@ html.aw-cinema .aw-points-info, html.aw-cinema .aw-touch-hint { position: relati
 .aw-duel-lost { color: #b02020; }
 .aw-duel-banner .icon { color: #e0a800; }
 table.table1.aw-duel-table thead th { color: #333; font-weight: bold; background: none; text-transform: none; font-size: 1em; padding: 4px; }
+
+/* Favourites */
+.aw-card { position: relative; }
+.aw-card-fav { position: absolute; top: 4px; right: 4px; margin: 0; }
+.aw-card-fav .aw-fav { background: rgba(255, 255, 255, 0.85); border: 1px solid #c7c3bf; border-radius: 50%; width: 28px; height: 28px; padding: 0; cursor: pointer; color: #888; line-height: 26px; }
+.aw-fav.aw-fav-on, .aw-fav.aw-fav-on .icon { color: #d31141; }
+.aw-favorites h3 .icon { color: #d31141; }
+.aw-medals { white-space: nowrap; }
+
+/* Report game */
+.aw-report { margin-top: 8px; }
+.aw-report .inner { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.aw-report h3, .aw-report p { flex-basis: 100%; margin: 0; }
+.aw-report input[type=text] { flex: 1 1 220px; }
+.aw-report[hidden] { display: none; }

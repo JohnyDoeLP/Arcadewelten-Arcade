@@ -26,10 +26,12 @@ class privacy
 	protected $recent;
 	protected $duels;
 	protected $forum;
+	protected $favorites;
+	protected $reports;
 	protected $games_table;
 	protected $cats_table;
 
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\language\language $language, points $points, ratings $ratings, recent $recent, duels $duels, forum $forum, $games_table, $cats_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\language\language $language, points $points, ratings $ratings, recent $recent, duels $duels, forum $forum, favorites $favorites, reports $reports, $games_table, $cats_table)
 	{
 		$this->db = $db;
 		$this->config = $config;
@@ -39,6 +41,8 @@ class privacy
 		$this->recent = $recent;
 		$this->duels = $duels;
 		$this->forum = $forum;
+		$this->favorites = $favorites;
+		$this->reports = $reports;
 		$this->games_table = $games_table;
 		$this->cats_table = $cats_table;
 	}
@@ -71,6 +75,16 @@ class privacy
 		if ($this->recent->enabled())
 		{
 			$paragraphs[] = ['AW_ARCADE_PRIVACY_RECENT', \arcadewelten\arcade\core\recent::KEEP];
+		}
+
+		if ($this->favorites->enabled())
+		{
+			$paragraphs[] = ['AW_ARCADE_PRIVACY_FAVORITES'];
+		}
+
+		if ($this->reports->enabled())
+		{
+			$paragraphs[] = ['AW_ARCADE_PRIVACY_REPORTS'];
 		}
 
 		if ($this->forum->posts_season())

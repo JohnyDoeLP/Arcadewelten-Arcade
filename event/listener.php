@@ -18,6 +18,10 @@ class listener implements EventSubscriberInterface
 	protected $recent;
 	protected $access;
 	protected $duels;
+	protected $favorites;
+	protected $reports;
+	/** @var array|null */
+	protected $medal_counts;
 	protected $helper;
 	protected $template;
 	protected $request;
@@ -28,7 +32,7 @@ class listener implements EventSubscriberInterface
 	/** @var array|null user_id => number of records */
 	protected $record_counts;
 
-	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\duels $duels, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config)
+	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config)
 	{
 		$this->config = $config;
 		$this->user = $user;
@@ -39,6 +43,8 @@ class listener implements EventSubscriberInterface
 		$this->recent = $recent;
 		$this->access = $access;
 		$this->duels = $duels;
+		$this->favorites = $favorites;
+		$this->reports = $reports;
 		$this->helper = $helper;
 		$this->template = $template;
 		$this->request = $request;
@@ -149,6 +155,8 @@ class listener implements EventSubscriberInterface
 		$this->ratings->delete_users($event['user_ids']);
 		$this->recent->delete_users($event['user_ids']);
 		$this->duels->delete_users($event['user_ids']);
+		$this->favorites->delete_users($event['user_ids']);
+		$this->reports->delete_users($event['user_ids']);
 	}
 
 	/* ---------------------------------------------------------------
@@ -158,6 +166,40 @@ class listener implements EventSubscriberInterface
 	protected function is_member()
 	{
 		return $this->user->data['user_id'] != ANONYMOUS && empty($this->user->data['is_bot']);
+	}
+
+	/**
+	 * Medals text like "🥇 3 · 🥈 1 · 🥉 4" (empty when switched off or none).
+	 */
+	protected function medals_of($user_id)
+	{
+		if (empty($this->config['aw_arcade_medals']))
+		{
+			return '';
+		}
+
+		if ($this->medal_counts === null)
+		{
+			$this->medal_counts = $this->scores->medal_counts();
+		}
+
+		$m = isset($this->medal_counts[(int) $user_id]) ? $this->medal_counts[(int) $user_id] : null;
+
+		if (!$m || !array_sum($m))
+		{
+			return '';
+		}
+
+		$parts = [];
+		foreach ([1 => '🥇', 2 => '🥈', 3 => '🥉'] as $place => $icon)
+		{
+			if ($m[$place])
+			{
+				$parts[] = '<span title="' . $this->language->lang('AW_ARCADE_MEDAL_' . $place, $m[$place]) . '">' . $icon . ' ' . (int) $m[$place] . '</span>';
+			}
+		}
+
+		return implode(' · ', $parts);
 	}
 
 	protected function records_of($user_id)
@@ -172,13 +214,22 @@ class listener implements EventSubscriberInterface
 
 	public function post_records($event)
 	{
-		if (!$this->is_member() || $event['poster_id'] == ANONYMOUS || !($count = $this->records_of($event['poster_id'])))
+		if (!$this->is_member() || $event['poster_id'] == ANONYMOUS)
+		{
+			return;
+		}
+
+		$count = $this->records_of($event['poster_id']);
+
+		// With medals switched on, members with only 2nd/3rd places are shown too.
+		if (!$count && !$this->medals_of($event['poster_id']))
 		{
 			return;
 		}
 
 		$post_row = $event['post_row'];
 		$post_row['AW_RECORDS'] = $this->language->lang('AW_ARCADE_RECORDS', $count);
+		$post_row['AW_MEDALS'] = $this->medals_of($event['poster_id']);
 		$post_row['U_AW_RECORDS'] = $this->helper->route('arcadewelten_arcade_user', ['user_id' => (int) $event['poster_id']]);
 		$event['post_row'] = $post_row;
 	}
@@ -193,6 +244,7 @@ class listener implements EventSubscriberInterface
 		$user_id = (int) $event['member']['user_id'];
 
 		$this->template->assign_vars([
+			'AW_PROFILE_MEDALS'		=> $this->medals_of($user_id),
 			'AW_PROFILE_RECORDS'	=> $this->records_of($user_id),
 			'U_AW_PROFILE_RECORDS'	=> $this->helper->route('arcadewelten_arcade_user', ['user_id' => $user_id]),
 		]);

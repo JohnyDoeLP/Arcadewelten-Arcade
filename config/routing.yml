@@ -55,3 +55,17 @@ arcadewelten_arcade_duel_decline:
     methods: [POST]
     requirements:
         duel_id: \d+
+
+arcadewelten_arcade_favorite:
+    path: /arcadehall/favorite/{game_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:favorite }
+    methods: [POST]
+    requirements:
+        game_id: \d+
+
+arcadewelten_arcade_report:
+    path: /arcadehall/report/{game_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:report }
+    methods: [POST]
+    requirements:
+        game_id: \d+

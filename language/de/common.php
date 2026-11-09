@@ -210,4 +210,36 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_NOTIFICATION_DUEL_SCORES'		=> 'Vorgelegt: %1$s – Gegner: %2$s',
 
 	'AW_ARCADE_DISCUSS'			=> 'Tipps &amp; Diskussion',
+
+	'AW_ARCADE_FAVORITES'		=> 'Meine Favoriten',
+	'AW_ARCADE_FAV_ADD'			=> 'Zu Favoriten',
+	'AW_ARCADE_FAV_REMOVE'		=> 'Favorit entfernen',
+	'AW_ARCADE_FAV_TOGGLE'		=> '%s als Favorit markieren oder entfernen',
+	'AW_ARCADE_FAV_MAX'			=> 'Du kannst höchstens %d Favoriten haben. Entferne zuerst einen anderen.',
+	'AW_ARCADE_MEDAL_1'			=> [
+		1 => '%d erster Platz',
+		2 => '%d erste Plätze',
+	],
+	'AW_ARCADE_MEDAL_2'			=> [
+		1 => '%d zweiter Platz',
+		2 => '%d zweite Plätze',
+	],
+	'AW_ARCADE_MEDAL_3'			=> [
+		1 => '%d dritter Platz',
+		2 => '%d dritte Plätze',
+	],
+	'AW_ARCADE_REPORT'			=> 'Spiel melden',
+	'AW_ARCADE_REPORT_TITLE'	=> 'Problem mit diesem Spiel melden',
+	'AW_ARCADE_REPORT_EXPLAIN'	=> 'Deine Meldung geht direkt an die Administratoren.',
+	'AW_ARCADE_REPORT_REASON'	=> 'Problem',
+	'AW_ARCADE_REPORT_TEXT'		=> 'Details',
+	'AW_ARCADE_REPORT_TEXT_HINT'	=> 'optional, z. B. Browser oder Gerät',
+	'AW_ARCADE_REPORT_SEND'		=> 'Absenden',
+	'AW_ARCADE_REPORT_THANKS'	=> 'Danke für deine Meldung! Die Administratoren schauen sich das Spiel an.',
+	'AW_ARCADE_REPORT_SCORES'	=> 'Punkte werden nicht gespeichert',
+	'AW_ARCADE_REPORT_GRAPHICS'	=> 'Grafik- oder Tonfehler',
+	'AW_ARCADE_REPORT_MOBILE'	=> 'Geht auf Handy oder Tablet nicht',
+	'AW_ARCADE_REPORT_LOADING'	=> 'Spiel lädt nicht oder hängt',
+	'AW_ARCADE_REPORT_OTHER'	=> 'Sonstiges',
+	'AW_ARCADE_BACK_TO_GAME'	=> 'Zurück zum Spiel',
 ]);

@@ -97,6 +97,27 @@
 			<dd><input type="number" id="aw_new_days" name="aw_new_days" min="0" max="365" value="{{ AW_NEW_DAYS }}"> {{ lang('DAYS') }}</dd>
 		</dl>
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_FAVORITES') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_FAVORITES_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_favorites" value="1"{% if AW_FAVORITES %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_favorites" value="0"{% if not AW_FAVORITES %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_MEDALS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_MEDALS_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_medals" value="1"{% if AW_MEDALS %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_medals" value="0"{% if not AW_MEDALS %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_REPORTS_SETTING') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_REPORTS_SETTING_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_reports" value="1"{% if AW_REPORTS %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_reports" value="0"{% if not AW_REPORTS %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_DUELS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_DUELS_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="aw_duels" value="1"{% if AW_DUELS %} checked{% endif %}> {{ lang('YES') }}</label>
@@ -357,6 +378,27 @@
 			<select name="bulk_cat"><option value="0">{{ lang('ACP_AW_ARCADE_NO_CAT') }}</option>{% for c in loops.cat_options %}<option value="{{ c.ID }}">{{ c.NAME }}</option>{% endfor %}</select>
 			<input class="button2" type="submit" name="bulk" value="{{ lang('SUBMIT') }}">
 		</p>
+		<fieldset class="aw-bulk-values">
+			<legend>{{ lang('ACP_AW_ARCADE_BULK_VALUES') }}</legend>
+			<p>{{ lang('ACP_AW_ARCADE_BULK_VALUES_EXPLAIN') }}</p>
+			<dl>
+				<dt><label for="bv_min_time">{{ lang('ACP_AW_ARCADE_MIN_TIME') }}{{ lang('COLON') }}</label></dt>
+				<dd><input type="text" class="inputbox autowidth" size="6" id="bv_min_time" name="bv_min_time" value="" placeholder="–"> {{ lang('ACP_AW_ARCADE_SECONDS') }}</dd>
+			</dl>
+			<dl>
+				<dt><label for="bv_max_score">{{ lang('ACP_AW_ARCADE_MAX_SCORE') }}{{ lang('COLON') }}</label></dt>
+				<dd><input type="text" class="inputbox autowidth" size="10" id="bv_max_score" name="bv_max_score" value="" placeholder="–"></dd>
+			</dl>
+			{% if S_AW_POINTS_AVAILABLE %}
+			{% for p in loops.bulk_points %}
+			<dl>
+				<dt><label for="bv_pt_{{ p.KEY }}">{{ p.LABEL }}{{ lang('COLON') }}</label></dt>
+				<dd><input type="text" class="inputbox autowidth" size="8" id="bv_pt_{{ p.KEY }}" name="bv_pt_{{ p.KEY }}" value="" placeholder="–"></dd>
+			</dl>
+			{% endfor %}
+			{% endif %}
+			<p class="submit-buttons"><input class="button1" type="submit" name="bulk_values" value="{{ lang('ACP_AW_ARCADE_BULK_VALUES_SUBMIT') }}"></p>
+		</fieldset>
 		{% else %}
 		<p>{{ lang('AW_ARCADE_NO_GAMES') }}</p>
 		{% endif %}
@@ -497,6 +539,35 @@
 		</tr>
 	{% else %}
 		<tr><td colspan="7">{{ lang('ACP_AW_ARCADE_REVIEW_EMPTY') }}</td></tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+<h2 id="aw-reports">{{ lang('ACP_AW_ARCADE_REPORTS') }}</h2>
+<p>{{ lang('ACP_AW_ARCADE_REPORTS_EXPLAIN') }}{% if not S_AW_REPORTS_ON %} <strong>{{ lang('ACP_AW_ARCADE_REPORTS_OFF') }}</strong>{% endif %}</p>
+<table class="table1 zebra-table">
+	<thead>
+		<tr>
+			<th>{{ lang('ACP_AW_ARCADE_NAME') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_REPORTED_BY') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_REPORT_REASON') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_REPORT_TEXT') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_REPORT_DATE') }}</th>
+			<th>{{ lang('ACTION') }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for r in loops.reports %}
+		<tr>
+			<td><strong><a href="{{ r.U_EDIT }}">{{ r.GAME }}</a></strong></td>
+			<td>{{ r.USER }}</td>
+			<td>{{ r.REASON }}</td>
+			<td>{{ r.TEXT }}</td>
+			<td>{{ r.DATE }}</td>
+			<td class="actions"><a href="{{ r.U_DONE }}">{{ lang('ACP_AW_ARCADE_REPORT_DONE') }}</a></td>
+		</tr>
+	{% else %}
+		<tr><td colspan="6">{{ lang('ACP_AW_ARCADE_REPORTS_EMPTY') }}</td></tr>
 	{% endfor %}
 	</tbody>
 </table>

@@ -8,6 +8,8 @@ parameters:
     arcadewelten.arcade.tables.recent: '%core.table_prefix%aw_arcade_recent'
     arcadewelten.arcade.tables.cat_groups: '%core.table_prefix%aw_arcade_cat_groups'
     arcadewelten.arcade.tables.duels: '%core.table_prefix%aw_arcade_duels'
+    arcadewelten.arcade.tables.favorites: '%core.table_prefix%aw_arcade_favorites'
+    arcadewelten.arcade.tables.reports: '%core.table_prefix%aw_arcade_reports'
 
 services:
     arcadewelten.arcade.games:
@@ -128,8 +130,27 @@ services:
             - '@arcadewelten.arcade.recent'
             - '@arcadewelten.arcade.duels'
             - '@arcadewelten.arcade.forum'
+            - '@arcadewelten.arcade.favorites'
+            - '@arcadewelten.arcade.reports'
             - '%arcadewelten.arcade.tables.games%'
             - '%arcadewelten.arcade.tables.cats%'
+
+    arcadewelten.arcade.favorites:
+        class: arcadewelten\arcade\core\favorites
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '%arcadewelten.arcade.tables.favorites%'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.cats%'
+
+    arcadewelten.arcade.reports:
+        class: arcadewelten\arcade\core\reports
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '%arcadewelten.arcade.tables.reports%'
+            - '%arcadewelten.arcade.tables.games%'
 
     arcadewelten.arcade.forum:
         class: arcadewelten\arcade\core\forum
@@ -180,6 +201,8 @@ services:
             - '@arcadewelten.arcade.recent'
             - '@arcadewelten.arcade.duels'
             - '@arcadewelten.arcade.forum'
+            - '@arcadewelten.arcade.favorites'
+            - '@arcadewelten.arcade.reports'
             - '@config'
             - '@controller.helper'
             - '@template'
@@ -198,6 +221,8 @@ services:
             - '@arcadewelten.arcade.recent'
             - '@arcadewelten.arcade.access'
             - '@arcadewelten.arcade.duels'
+            - '@arcadewelten.arcade.favorites'
+            - '@arcadewelten.arcade.reports'
             - '@controller.helper'
             - '@template'
             - '@request'

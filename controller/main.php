@@ -22,6 +22,8 @@ class main
 	protected $recent;
 	protected $duels;
 	protected $forum;
+	protected $favorites;
+	protected $reports;
 	protected $config;
 	protected $helper;
 	protected $template;
@@ -31,7 +33,7 @@ class main
 	protected $pagination;
 	protected $root_path;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -41,6 +43,8 @@ class main
 		$this->recent = $recent;
 		$this->duels = $duels;
 		$this->forum = $forum;
+		$this->favorites = $favorites;
+		$this->reports = $reports;
 		$this->config = $config;
 		$this->helper = $helper;
 		$this->template = $template;
@@ -170,6 +174,8 @@ class main
 		$rows = $guests_blocked ? [] : $this->games->list_games($cat_id, $start, $per_page, true, $search, $exclude, $sort);
 		$tops = $is_guest ? [] : $this->scores->get_top($rows, 3);
 
+		$fav_ids = (!$is_guest && $this->favorites->enabled()) ? $this->favorites->ids($this->user->data['user_id']) : [];
+
 		foreach ($rows as $row)
 		{
 			$id = (int) $row['game_id'];
@@ -186,6 +192,8 @@ class main
 				'S_NO_SCORES'	=> (int) $row['game_save_type'] === games::SAVE_NONE,
 				'S_TOUCH'		=> (bool) $row['game_touch'],
 				'S_NEW'			=> $this->games->is_new($row),
+				'S_FAV'			=> isset($fav_ids[(int) $row['game_id']]),
+				'U_FAV'			=> $this->helper->route('arcadewelten_arcade_favorite', ['game_id' => (int) $row['game_id']]),
 				'S_GUEST'		=> $is_guest,
 				'RATING_COUNT'	=> $this->ratings->enabled() ? (int) $row['game_rating_count'] : 0,
 				'RATING_STARS'	=> $this->stars($row),
@@ -203,6 +211,29 @@ class main
 					'SCORE'	=> $this->format_score($t['score']),
 				]);
 			}
+		}
+
+		if ($fav_ids && !$cat_id && $search === '' && !$start)
+		{
+			foreach ($this->favorites->get($this->user->data['user_id']) as $row)
+			{
+				if ($row['cat_id'] && (!$this->access->can_see_cat($row['cat_id']) || !$this->access->has_access($row)))
+				{
+					continue;
+				}
+
+				$this->template->assign_block_vars('favorites', [
+					'NAME'		=> $row['game_name'],
+					'IMAGE'		=> $this->game_web_path($row, $row['game_image']),
+					'S_TOUCH'	=> (bool) $row['game_touch'],
+					'U_PLAY'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $row['game_id']]),
+				]);
+			}
+		}
+
+		if (!$is_guest && $this->favorites->enabled())
+		{
+			add_form_key('aw_arcade_fav', '_AW_FAV');
 		}
 
 		if (!$is_guest && !$cat_id && $search === '' && !$start && $this->recent->enabled())
@@ -268,6 +299,7 @@ class main
 			'AW_DUELS_OPEN'		=> (!$is_guest && $this->duels->enabled()) ? $this->duels->count_incoming($this->user->data['user_id']) : 0,
 			'U_AW_DUELS'		=> (!$is_guest && $this->duels->enabled()) ? $this->helper->route('arcadewelten_arcade_duels') : '',
 			'AW_SORT'			=> $sort,
+			'S_AW_FAVORITES'	=> !$is_guest && $this->favorites->enabled(),
 			'AW_TOTAL_GAMES'	=> $total,
 			'AW_ALL_GAMES'		=> $all_games,
 			'AW_MESSAGE'		=> $this->request->variable('guest_done', 0) ? $this->language->lang('AW_ARCADE_MSG_GUEST') : '',
@@ -363,6 +395,19 @@ class main
 		$board_url = generate_board_url() . '/';
 		$type = (int) $game['game_type'];
 
+		if ($is_member && ($this->favorites->enabled() || $this->reports->enabled()))
+		{
+			add_form_key('aw_arcade_fav', '_AW_FAV');
+			add_form_key('aw_arcade_report', '_AW_REPORT');
+			foreach (\arcadewelten\arcade\core\reports::REASONS as $reason)
+			{
+				$this->template->assign_block_vars('report_reasons', [
+					'KEY'	=> $reason,
+					'LABEL'	=> $this->language->lang('AW_ARCADE_REPORT_' . strtoupper($reason)),
+				]);
+			}
+		}
+
 		$this->template->assign_vars([
 			'AW_GAME_NAME'		=> $game['game_name'],
 			'AW_GAME_DESC'		=> $game['game_desc'],
@@ -376,6 +421,11 @@ class main
 			'S_AW_HTML5'		=> $type === games::TYPE_HTML5,
 			'S_AW_TOUCH'		=> (bool) $game['game_touch'],
 			'U_AW_TOPIC'		=> $this->forum->topic_url($game),
+			'S_AW_FAVORITES'	=> $is_member && $this->favorites->enabled(),
+			'S_AW_FAV'			=> $is_member && $this->favorites->enabled() && $this->favorites->is_favorite($this->user->data['user_id'], $game['game_id']),
+			'U_AW_FAV'			=> $this->helper->route('arcadewelten_arcade_favorite', ['game_id' => (int) $game['game_id']]),
+			'S_AW_REPORTS'		=> $is_member && $this->reports->enabled(),
+			'U_AW_REPORT'		=> $this->helper->route('arcadewelten_arcade_report', ['game_id' => (int) $game['game_id']]),
 			'S_AW_GUEST'		=> !$is_member,
 			'S_AW_NO_SCORES'	=> (int) $game['game_save_type'] === games::SAVE_NONE,
 			'AW_POINTS_INFO'	=> $this->points_info($game),
@@ -584,6 +634,97 @@ class main
 				'last'		=> (string) round($score, 2),
 			] + ($earned > 0 ? ['earned' => (string) $earned] : []) + (!empty($result['duels_won']) ? ['duel' => (int) $result['duels_won']] : []), false),
 		]);
+	}
+
+	/* ---------------------------------------------------------------
+	 * Favourites and reports
+	 * ------------------------------------------------------------- */
+
+	/**
+	 * Heart on/off. AJAX: JSON; without JavaScript: back to the page.
+	 */
+	public function favorite($game_id)
+	{
+		$this->check_use();
+		$ajax = $this->request->is_ajax();
+		$game = $this->games->get_game($game_id);
+		$error = '';
+
+		if (!$this->is_member() || !$this->favorites->enabled() || !$game || !$this->access->can_see_cat($game['cat_id']))
+		{
+			$error = $this->language->lang('AW_ARCADE_NO_GAME');
+		}
+		else if (!check_form_key('aw_arcade_fav', 4 * 3600))
+		{
+			$error = $this->language->lang('FORM_INVALID');
+		}
+
+		$state = false;
+		if ($error === '')
+		{
+			$state = $this->favorites->toggle($this->user->data['user_id'], $game['game_id']);
+
+			if ($state === null)
+			{
+				$error = $this->language->lang('AW_ARCADE_FAV_MAX', \arcadewelten\arcade\core\favorites::MAX);
+			}
+		}
+
+		if ($ajax)
+		{
+			return new JsonResponse($error === ''
+				? ['ok' => true, 'fav' => $state, 'label' => $this->language->lang($state ? 'AW_ARCADE_FAV_REMOVE' : 'AW_ARCADE_FAV_ADD')]
+				: ['ok' => false, 'error' => $error], $error === '' ? 200 : 400);
+		}
+
+		if ($error !== '')
+		{
+			trigger_error($error, E_USER_WARNING);
+		}
+
+		redirect($this->request->variable('back', '') === 'list'
+			? $this->helper->route('arcadewelten_arcade_index')
+			: $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $game['game_id']]));
+	}
+
+	/**
+	 * "Report game" form on the play page.
+	 */
+	public function report($game_id)
+	{
+		$this->check_use();
+		$ajax = $this->request->is_ajax();
+		$game = $this->games->get_game($game_id);
+		$error = '';
+
+		if (!$this->is_member() || !$this->reports->enabled() || !$game || !$this->access->can_see_cat($game['cat_id']))
+		{
+			$error = $this->language->lang('AW_ARCADE_NO_GAME');
+		}
+		else if (!check_form_key('aw_arcade_report', 4 * 3600))
+		{
+			$error = $this->language->lang('FORM_INVALID');
+		}
+
+		if ($error === '')
+		{
+			$this->reports->add($game['game_id'], $this->user->data['user_id'], $this->request->variable('reason', ''), $this->request->variable('text', '', true));
+		}
+
+		if ($ajax)
+		{
+			return new JsonResponse($error === ''
+				? ['ok' => true, 'message' => $this->language->lang('AW_ARCADE_REPORT_THANKS')]
+				: ['ok' => false, 'error' => $error], $error === '' ? 200 : 400);
+		}
+
+		if ($error !== '')
+		{
+			trigger_error($error, E_USER_WARNING);
+		}
+
+		$url = $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $game['game_id']]);
+		trigger_error($this->language->lang('AW_ARCADE_REPORT_THANKS') . '<br><br><a href="' . $url . '">' . $this->language->lang('AW_ARCADE_BACK_TO_GAME') . '</a>');
 	}
 
 	/* ---------------------------------------------------------------

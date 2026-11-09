@@ -20,6 +20,7 @@ class scores
 	protected $db;
 
 	const CACHE_KEY = '_aw_arcade_champions';
+	const MEDALS_KEY = '_aw_arcade_medals';
 
 	protected $scores_table;
 	protected $games_table;
@@ -226,6 +227,7 @@ class scores
 			]));
 
 			$this->cache->destroy(self::CACHE_KEY);
+			$this->cache->destroy(self::MEDALS_KEY);
 
 			return ['improved' => true, 'best' => $score, 'duels_won' => $this->duels->on_score($game, $user_id, $score)];
 		}
@@ -240,6 +242,7 @@ class scores
 			$data['score'] = $score;
 			$data['score_time'] = time();
 			$this->cache->destroy(self::CACHE_KEY);
+			$this->cache->destroy(self::MEDALS_KEY);
 		}
 
 		$this->db->sql_query('UPDATE ' . $this->scores_table . ' SET ' . $this->db->sql_build_array('UPDATE', $data) . '
@@ -368,6 +371,7 @@ class scores
 		$this->db->sql_query('DELETE FROM ' . $this->sessions_table . ' WHERE ' . $this->db->sql_in_set('user_id', array_map('intval', $user_ids)));
 		$this->db->sql_query('DELETE FROM ' . $this->flagged_table . ' WHERE ' . $this->db->sql_in_set('user_id', array_map('intval', $user_ids)));
 		$this->cache->destroy(self::CACHE_KEY);
+		$this->cache->destroy(self::MEDALS_KEY);
 	}
 
 	public function delete_game_scores($game_id)
@@ -376,6 +380,7 @@ class scores
 		$this->db->sql_query('DELETE FROM ' . $this->sessions_table . ' WHERE game_id = ' . (int) $game_id);
 		$this->db->sql_query('DELETE FROM ' . $this->flagged_table . ' WHERE game_id = ' . (int) $game_id);
 		$this->cache->destroy(self::CACHE_KEY);
+		$this->cache->destroy(self::MEDALS_KEY);
 	}
 
 	public function get_user($user_id)
@@ -397,11 +402,13 @@ class scores
 		$this->db->sql_query('DELETE FROM ' . $this->sessions_table);
 		$this->db->sql_query('DELETE FROM ' . $this->flagged_table);
 		$this->cache->destroy(self::CACHE_KEY);
+		$this->cache->destroy(self::MEDALS_KEY);
 	}
 
 	public function purge_cache()
 	{
 		$this->cache->destroy(self::CACHE_KEY);
+		$this->cache->destroy(self::MEDALS_KEY);
 	}
 
 	/* ---------------------------------------------------------------
@@ -520,6 +527,64 @@ class scores
 		arsort($counts);
 
 		return $counts;
+	}
+
+	/**
+	 * First, second and third places per member over all active games.
+	 *
+	 * @return array user_id => [1 => n, 2 => n, 3 => n]
+	 */
+	public function medal_counts()
+	{
+		$medals = $this->cache->get(self::MEDALS_KEY);
+
+		if ($medals !== false)
+		{
+			return $medals;
+		}
+
+		$sql = 'SELECT s.game_id, s.user_id, s.score, s.score_time, g.game_scoretype
+			FROM ' . $this->scores_table . ' s
+			INNER JOIN ' . $this->games_table . ' g ON g.game_id = s.game_id AND g.game_active = 1';
+		$result = $this->db->sql_query($sql);
+		$by_game = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$by_game[(int) $row['game_id']][] = $row;
+		}
+		$this->db->sql_freeresult($result);
+
+		$medals = [];
+		foreach ($by_game as $rows)
+		{
+			$low = (int) $rows[0]['game_scoretype'] === games::SCORE_LOW;
+
+			usort($rows, function ($a, $b) use ($low) {
+				$sa = (float) $a['score'];
+				$sb = (float) $b['score'];
+
+				if ($sa != $sb)
+				{
+					return ($low ? $sa > $sb : $sa < $sb) ? 1 : -1;
+				}
+
+				return (int) $a['score_time'] <=> (int) $b['score_time'];
+			});
+
+			foreach (array_slice($rows, 0, 3) as $i => $row)
+			{
+				$uid = (int) $row['user_id'];
+				if (!isset($medals[$uid]))
+				{
+					$medals[$uid] = [1 => 0, 2 => 0, 3 => 0];
+				}
+				$medals[$uid][$i + 1]++;
+			}
+		}
+
+		$this->cache->put(self::MEDALS_KEY, $medals, 3600);
+
+		return $medals;
 	}
 
 	/**

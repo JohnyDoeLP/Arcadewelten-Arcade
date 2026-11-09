@@ -27,10 +27,32 @@
 	<p class="aw-touch-hint" id="aw-touch-hint" hidden><i class="icon fa-keyboard-o fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_NOT_TOUCH_HINT') }}</p>
 	<div class="aw-play-tools">
 		<button type="button" class="button" id="aw-fullscreen"><i class="icon fa-arrows-alt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_FULLSCREEN') }}</span></button>
+		{% if S_AW_FAVORITES %}
+		<form method="post" action="{{ U_AW_FAV }}" class="aw-inline-form aw-fav-form">
+			<button type="submit" class="button aw-fav{% if S_AW_FAV %} aw-fav-on{% endif %}" aria-pressed="{{ S_AW_FAV ? 'true' : 'false' }}"><i class="icon fa-heart{% if not S_AW_FAV %}-o{% endif %} fa-fw" aria-hidden="true"></i><span>{{ S_AW_FAV ? lang('AW_ARCADE_FAV_REMOVE') : lang('AW_ARCADE_FAV_ADD') }}</span></button>
+			{{ S_FORM_TOKEN_AW_FAV }}
+		</form>
+		{% endif %}
 		{% if U_AW_TOPIC %}<a class="button" href="{{ U_AW_TOPIC }}"><i class="icon fa-comments fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DISCUSS') }}</span></a>{% endif %}
 		<button type="button" class="button" id="aw-cinema" aria-pressed="false" data-on="{{ lang('AW_ARCADE_LIGHTS_ON') }}" data-off="{{ lang('AW_ARCADE_LIGHTS_OFF') }}"><i class="icon fa-lightbulb-o fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_LIGHTS_OFF') }}</span></button>
 		{% if not S_AW_GUEST %}<a class="button" href="{{ U_AW_SCORES }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_HIGHSCORES') }}</span></a>{% endif %}
+		{% if S_AW_REPORTS %}<button type="button" class="button" id="aw-report-open" aria-expanded="false" aria-controls="aw-report"><i class="icon fa-flag fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_REPORT') }}</span></button>{% endif %}
 	</div>
+	{% if S_AW_REPORTS %}
+	<form method="post" action="{{ U_AW_REPORT }}" class="panel aw-report" id="aw-report" hidden>
+		<div class="inner">
+			<h3>{{ lang('AW_ARCADE_REPORT_TITLE') }}</h3>
+			<p class="aw-small">{{ lang('AW_ARCADE_REPORT_EXPLAIN') }}</p>
+			<label for="aw-report-reason">{{ lang('AW_ARCADE_REPORT_REASON') }}{{ lang('COLON') }}</label>
+			<select id="aw-report-reason" name="reason">{% for r in loops.report_reasons %}<option value="{{ r.KEY }}">{{ r.LABEL }}</option>{% endfor %}</select>
+			<label for="aw-report-text">{{ lang('AW_ARCADE_REPORT_TEXT') }}{{ lang('COLON') }}</label>
+			<input type="text" class="inputbox" id="aw-report-text" name="text" maxlength="255" placeholder="{{ lang('AW_ARCADE_REPORT_TEXT_HINT') }}">
+			<button type="submit" class="button"><i class="icon fa-paper-plane fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_REPORT_SEND') }}</span></button>
+			<span class="aw-report-msg" role="status" aria-live="polite"></span>
+			{{ S_FORM_TOKEN_AW_REPORT }}
+		</div>
+	</form>
+	{% endif %}
 </div>
 
 <div class="aw-columns">
@@ -250,5 +272,54 @@
 </script>
 
 {% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+<script>
+(function () {
+	'use strict';
+	if (!window.fetch || !window.FormData) { return; }
+
+	/* Favourite heart (also used on the game list). */
+	Array.prototype.forEach.call(document.querySelectorAll('.aw-fav-form'), function (form) {
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var btn = form.querySelector('button');
+			fetch(form.action, { method: 'POST', body: new FormData(form), credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					if (!res.ok) { alert(res.error); return; }
+					btn.classList.toggle('aw-fav-on', res.fav);
+					btn.setAttribute('aria-pressed', res.fav ? 'true' : 'false');
+					var icon = btn.querySelector('.icon');
+					icon.classList.toggle('fa-heart', res.fav);
+					icon.classList.toggle('fa-heart-o', !res.fav);
+					var label = btn.querySelector('span');
+					if (label) { label.textContent = res.label; } else { btn.title = res.label; }
+				})
+				.catch(function () { form.submit(); });
+		});
+	});
+
+	/* Report form. */
+	var open = document.getElementById('aw-report-open');
+	var form = document.getElementById('aw-report');
+	if (open && form) {
+		open.addEventListener('click', function () {
+			form.hidden = !form.hidden;
+			open.setAttribute('aria-expanded', form.hidden ? 'false' : 'true');
+		});
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var msg = form.querySelector('.aw-report-msg');
+			fetch(form.action, { method: 'POST', body: new FormData(form), credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					msg.textContent = res.ok ? res.message : res.error;
+					if (res.ok) { form.querySelector('button[type=submit]').disabled = true; }
+				})
+				.catch(function () { form.submit(); });
+		});
+	}
+})();
+</script>
 
 {% include 'overall_footer.html' %}

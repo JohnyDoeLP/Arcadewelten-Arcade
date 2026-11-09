@@ -60,6 +60,20 @@
 </div>
 {% endif %}
 
+{% if loops.favorites|length %}
+<div class="aw-recent aw-favorites">
+	<h3><i class="icon fa-heart fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_FAVORITES') }}</h3>
+	<div class="aw-recent-list">
+		{% for r in loops.favorites %}
+		<a class="aw-recent-item" href="{{ r.U_PLAY }}" title="{{ r.NAME }}">
+			<span class="aw-thumb">{% if r.IMAGE %}<img src="{{ r.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}</span>
+			<span class="aw-recent-name">{% if r.S_TOUCH %}<i class="icon fa-mobile aw-touch" aria-hidden="true"></i> {% endif %}{{ r.NAME }}</span>
+		</a>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}
+
 {% if loops.recent|length %}
 <div class="aw-recent">
 	<h3>{{ lang('AW_ARCADE_RECENT') }}</h3>
@@ -110,6 +124,13 @@
 			{% if game.IMAGE %}<img src="{{ game.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}
 			{% if game.S_NEW %}<span class="aw-new-badge">{{ lang('AW_ARCADE_NEW') }}</span>{% endif %}
 		</a>
+		{% if S_AW_FAVORITES %}
+		<form method="post" action="{{ game.U_FAV }}" class="aw-fav-form aw-card-fav">
+			<button type="submit" class="aw-fav{% if game.S_FAV %} aw-fav-on{% endif %}" aria-pressed="{{ game.S_FAV ? 'true' : 'false' }}" title="{{ game.S_FAV ? lang('AW_ARCADE_FAV_REMOVE') : lang('AW_ARCADE_FAV_ADD') }}" aria-label="{{ lang('AW_ARCADE_FAV_TOGGLE', game.NAME) }}"><i class="icon fa-heart{% if not game.S_FAV %}-o{% endif %}" aria-hidden="true"></i></button>
+			<input type="hidden" name="back" value="list">
+			{{ S_FORM_TOKEN_AW_FAV }}
+		</form>
+		{% endif %}
 		<div class="aw-card-body">
 			<a class="aw-game-name" href="{{ game.U_PLAY }}">{% if game.S_TOUCH %}<i class="icon fa-mobile fa-fw aw-touch" aria-hidden="true" title="{{ lang('AW_ARCADE_TOUCH_GAME') }}"></i><span class="sr-only">{{ lang('AW_ARCADE_TOUCH_GAME') }}: </span>{% endif %}{{ game.NAME }}</a>
 			{% if not AW_CAT_NAME and game.CAT_NAME %}<div class="aw-small">{{ game.CAT_NAME }}</div>{% endif %}
@@ -138,5 +159,32 @@
 {% endif %}
 
 {% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% if S_AW_FAVORITES %}
+<script>
+(function () {
+	'use strict';
+	if (!window.fetch || !window.FormData) { return; }
+	Array.prototype.forEach.call(document.querySelectorAll('.aw-fav-form'), function (form) {
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var btn = form.querySelector('button');
+			fetch(form.action, { method: 'POST', body: new FormData(form), credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					if (!res.ok) { alert(res.error); return; }
+					btn.classList.toggle('aw-fav-on', res.fav);
+					btn.setAttribute('aria-pressed', res.fav ? 'true' : 'false');
+					var icon = btn.querySelector('.icon');
+					icon.classList.toggle('fa-heart', res.fav);
+					icon.classList.toggle('fa-heart-o', !res.fav);
+					btn.title = res.label;
+				})
+				.catch(function () { form.submit(); });
+		});
+	});
+})();
+</script>
+{% endif %}
 
 {% include 'overall_footer.html' %}

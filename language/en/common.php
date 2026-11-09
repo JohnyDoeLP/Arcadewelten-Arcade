@@ -210,4 +210,36 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_NOTIFICATION_DUEL_SCORES'		=> 'Put up: %1$s – opponent: %2$s',
 
 	'AW_ARCADE_DISCUSS'			=> 'Tips &amp; discussion',
+
+	'AW_ARCADE_FAVORITES'		=> 'My favourites',
+	'AW_ARCADE_FAV_ADD'			=> 'Add to favourites',
+	'AW_ARCADE_FAV_REMOVE'		=> 'Remove favourite',
+	'AW_ARCADE_FAV_TOGGLE'		=> 'Mark or unmark %s as favourite',
+	'AW_ARCADE_FAV_MAX'			=> 'You can have at most %d favourites. Remove another one first.',
+	'AW_ARCADE_MEDAL_1'			=> [
+		1 => '%d first place',
+		2 => '%d first places',
+	],
+	'AW_ARCADE_MEDAL_2'			=> [
+		1 => '%d second place',
+		2 => '%d second places',
+	],
+	'AW_ARCADE_MEDAL_3'			=> [
+		1 => '%d third place',
+		2 => '%d third places',
+	],
+	'AW_ARCADE_REPORT'			=> 'Report game',
+	'AW_ARCADE_REPORT_TITLE'	=> 'Report a problem with this game',
+	'AW_ARCADE_REPORT_EXPLAIN'	=> 'Your report goes straight to the administrators.',
+	'AW_ARCADE_REPORT_REASON'	=> 'Problem',
+	'AW_ARCADE_REPORT_TEXT'		=> 'Details',
+	'AW_ARCADE_REPORT_TEXT_HINT'	=> 'optional, e.g. browser or device',
+	'AW_ARCADE_REPORT_SEND'		=> 'Send',
+	'AW_ARCADE_REPORT_THANKS'	=> 'Thanks for your report! The administrators will look at the game.',
+	'AW_ARCADE_REPORT_SCORES'	=> 'Scores are not saved',
+	'AW_ARCADE_REPORT_GRAPHICS'	=> 'Graphics or sound error',
+	'AW_ARCADE_REPORT_MOBILE'	=> 'Does not work on phone or tablet',
+	'AW_ARCADE_REPORT_LOADING'	=> 'Game does not load or hangs',
+	'AW_ARCADE_REPORT_OTHER'	=> 'Other',
+	'AW_ARCADE_BACK_TO_GAME'	=> 'Back to the game',
 ]);

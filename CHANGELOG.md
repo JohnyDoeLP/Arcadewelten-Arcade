@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.0-beta (2026-11-09)
+
+- **Favourites:** members mark games with a heart (on the game cards and the play page); “My favourites” appear at the top of the arcade. Up to 24 per member, only visible to the member. ACP switch (on by default); privacy section mentions favourites
+- **Medals next to posts:** instead of only the number of records, posts and profiles show first, second and third places (🥇 2 · 🥈 1 · 🥉 4) over all games, “lower wins” games included. Members with only 2nd/3rd places now get the badge too. ACP switch (on by default)
+- **Bulk editing in the ACP:** set minimum play time, maximum score and point values for all selected games at once; empty fields stay unchanged, “-” resets a point value to category/global
+- **“Report game”:** members report problems on the play page (scores not saved, graphics/sound, phone/tablet, does not load, other) with an optional text; one open report per member and game. Reports appear in the ACP review list with a link to the game and “Done”. ACP switch (on by default); privacy section mentions reports
+- README/INSTALL: optional `arcade.php` step in the “Switching from JV” section
+
 ## 0.16.2-beta (2026-11-08)
 
 - Old links of the previous (JV) arcade keep working: copy the new file `contrib/root/arcade.php` to the board root (next to `index.php`). `arcade.php?mode=stats&u=…` (player statistics, e.g. in the old “Top 10” posts) then leads to the member's records page, all other old arcade links to the arcade (permanent redirect, also tells search engines the new address)
