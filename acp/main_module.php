@@ -824,6 +824,7 @@ class main_module
 				'DESC'			=> $cat['cat_desc'],
 				'COUNT'			=> (int) $cat['game_count'],
 				'S_PROTECTED'	=> $cat['cat_password'] !== '',
+				'S_ONLINE_HIDE'	=> !empty($cat['cat_online_hide']),
 				'GROUPS'		=> $this->group_names($this->access->get_cat_groups($id)),
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;c=' . $id,
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;c=' . $id,

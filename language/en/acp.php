@@ -257,6 +257,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CAT_EVERYBODY'		=> 'everybody',
 	'ACP_AW_ARCADE_CAT_PASSWORD_EXPLAIN'	=> 'Leave empty to keep the current setting or to set no lock. The password is only stored as a hash.',
 	'ACP_AW_ARCADE_CAT_ONLINE_HIDE'			=> 'Hide game names in “Who is online”',
+	'ACP_AW_ARCADE_CAT_ONLINE_HIDDEN'		=> 'hidden in “Who is online”',
 	'ACP_AW_ARCADE_CAT_ONLINE_HIDE_EXPLAIN'	=> 'If “Yes”, only “Is in the arcade” is shown there, without the game name. This always happens for categories with a password, and for group-limited categories for everybody who may not see the category.',
 	'ACP_AW_ARCADE_CAT_PASSWORD_REMOVE'	=> 'Remove password protection',
 	'ACP_AW_ARCADE_DELETE_CAT_CONFIRM'	=> 'Delete the category “%s”? Its games are kept and will have no category afterwards.',

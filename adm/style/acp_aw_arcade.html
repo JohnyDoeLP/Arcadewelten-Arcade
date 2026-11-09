@@ -484,7 +484,7 @@
 			<td><strong>{{ c.NAME }}</strong>{% if c.DESC %}<br><span class="small">{{ c.DESC }}</span>{% endif %}</td>
 			<td>{{ c.COUNT }}</td>
 			<td>{% if c.GROUPS %}{{ c.GROUPS }}{% else %}{{ lang('ACP_AW_ARCADE_CAT_EVERYBODY') }}{% endif %}</td>
-			<td>{% if c.S_PROTECTED %}{{ lang('YES') }}{% else %}{{ lang('NO') }}{% endif %}</td>
+			<td>{% if c.S_PROTECTED %}{{ lang('YES') }}{% else %}{{ lang('NO') }}{% endif %}{% if c.S_ONLINE_HIDE %} · {{ lang('ACP_AW_ARCADE_CAT_ONLINE_HIDDEN') }}{% endif %}</td>
 			<td class="actions">
 				{% if not loop.first %}<a href="{{ c.U_UP }}">{{ ICON_MOVE_UP }}</a>{% else %}{{ ICON_MOVE_UP_DISABLED }}{% endif %}
 				{% if not loop.last %}<a href="{{ c.U_DOWN }}">{{ ICON_MOVE_DOWN }}</a>{% else %}{{ ICON_MOVE_DOWN_DISABLED }}{% endif %}

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- ACP → Categories: the category list shows “hidden in “Who is online”” next to the password column for categories with that switch
+
 ## 0.17.1-beta (2026-11-09)
 
 - **“Who is online”:** arcade pages no longer appear as “Board index”. The list shows “Is in the arcade”, “Playing “Game”” and “Viewing the highscores of “Game”” (with link), plus duels and records pages. Game names only appear if the viewer may see the game: never for categories with a password, for group-limited categories only to members of those groups, and for guests only games released for guests
