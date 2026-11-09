@@ -806,6 +806,7 @@ class main_module
 				'CAT_NAME'			=> $cat['cat_name'],
 				'CAT_DESC'			=> $cat['cat_desc'],
 				'S_CAT_PROTECTED'	=> $cat['cat_password'] !== '',
+				'S_CAT_ONLINE_HIDE'	=> !empty($cat['cat_online_hide']),
 				'U_CAT_ACTION'		=> $this->u_action . '&amp;action=edit&amp;c=' . $cat_id,
 				'U_BACK'			=> $this->u_action,
 			]);
@@ -911,6 +912,7 @@ class main_module
 			'cat_desc'			=> $this->request->variable('cat_desc', '', true),
 			'cat_image'			=> $image,
 			'cat_news_forum'	=> $this->request->variable('cat_news_forum', 0),
+			'cat_online_hide'	=> $this->request->variable('cat_online_hide', 0) ? 1 : 0,
 		] + $this->read_point_fields('cat');
 		$password = $this->request->variable('cat_password', '', true);
 

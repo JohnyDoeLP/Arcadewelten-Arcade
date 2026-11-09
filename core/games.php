@@ -96,7 +96,7 @@ class games
 
 	public function get_game($game_id, $only_active = true)
 	{
-		$sql = 'SELECT g.*, c.cat_name, c.cat_password, c.cat_cost, c.cat_reward_play, c.cat_reward_1, c.cat_reward_2, c.cat_reward_3
+		$sql = 'SELECT g.*, c.cat_name, c.cat_password, c.cat_online_hide, c.cat_cost, c.cat_reward_play, c.cat_reward_1, c.cat_reward_2, c.cat_reward_3
 			FROM ' . $this->games_table . ' g
 			LEFT JOIN ' . $this->cats_table . ' c ON c.cat_id = g.cat_id
 			WHERE g.game_id = ' . (int) $game_id .

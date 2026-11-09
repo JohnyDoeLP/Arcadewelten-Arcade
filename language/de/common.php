@@ -18,6 +18,11 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, [
 	'AW_ARCADE'					=> 'Spielhalle',
+	'AW_ARCADE_ONLINE'			=> 'Ist in der Spielhalle',
+	'AW_ARCADE_ONLINE_PLAYING'	=> 'Spielt „%s“',
+	'AW_ARCADE_ONLINE_SCORES'	=> 'Betrachtet die Bestenliste von „%s“',
+	'AW_ARCADE_ONLINE_DUELS'	=> 'Betrachtet die Duelle der Spielhalle',
+	'AW_ARCADE_ONLINE_RECORDS'	=> 'Betrachtet Rekorde in der Spielhalle',
 	'AW_ARCADE_ALL_GAMES'		=> 'Alle Spiele',
 	'AW_ARCADE_SEARCH'			=> 'Spiel suchen …',
 	'AW_ARCADE_GAME_COUNT'		=> [

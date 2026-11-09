@@ -256,6 +256,8 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CAT_VISIBLE_FOR'		=> 'Sichtbar für',
 	'ACP_AW_ARCADE_CAT_EVERYBODY'		=> 'alle',
 	'ACP_AW_ARCADE_CAT_PASSWORD_EXPLAIN'	=> 'Leer lassen, um nichts zu ändern bzw. keine Sperre zu setzen. Das Passwort wird nur verschlüsselt gespeichert.',
+	'ACP_AW_ARCADE_CAT_ONLINE_HIDE'			=> 'Spielnamen in „Wer ist online?“ verbergen',
+	'ACP_AW_ARCADE_CAT_ONLINE_HIDE_EXPLAIN'	=> 'Bei „Ja“ steht dort nur „Ist in der Spielhalle“, ohne Spielnamen. Bei Kategorien mit Passwort geschieht das immer, bei Kategorien mit Gruppen-Sichtbarkeit für alle, die die Kategorie nicht sehen dürfen.',
 	'ACP_AW_ARCADE_CAT_PASSWORD_REMOVE'	=> 'Passwortschutz entfernen',
 	'ACP_AW_ARCADE_DELETE_CAT_CONFIRM'	=> 'Soll die Kategorie „%s“ gelöscht werden? Die Spiele darin bleiben erhalten und sind danach ohne Kategorie.',
 ]);

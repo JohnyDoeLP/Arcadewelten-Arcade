@@ -11,6 +11,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 
 - phpBB permissions: user permission “Can use the arcade”, categories visible only for selected user groups (e.g. 18+)
 - Game list with category tiles (image, number of games, category champion), search and pagination; optional password per category; 18 bundled category images, own images can simply be put into `images/arcade/cats/`
+- “Who is online” shows who is in the arcade and what is being played – without game names from password-protected categories, from group-limited categories (for everybody without access) and from categories where you switch it off
 - Cinema mode (“lights off”), mobile/touch games with fullscreen start (iPhone included), “recently played” bar
 - Favourites (heart), medals 🥇🥈🥉 next to posts, “report game” with a list in the ACP, bulk editing of minimum time, maximum score and points
 - Forum integration (ArcadeBot): new games and the season top 10 posted automatically, game topic as discussion thread, own news forum per category
@@ -85,7 +86,7 @@ The arcade automatically appends an “Arcade” section to the board’s privac
 
 ## Known limitations
 
-- Flash games run through the Ruffle emulator. Older ActionScript 1/2 games work well, ActionScript 3 support in Ruffle is still incomplete.
+- Flash games run through the Ruffle emulator. Older ActionScript 1/2 games (practically all classic arcade games) work very well. Ruffle now supports ActionScript 3 largely, but not completely; AS3 games with their own score transfer (e.g. made for phpBB Arcade) do not save scores here.
 - Scores of browser games can never be fully protected against manipulation. The arcade checks play sessions, the IBPro v3 checksum, a minimum play time and an optional maximum score per game.
 - Games that send their score from inside an ActionScript function do not save scores under Ruffle without a patch. Patch them with `contrib/tools/ruffle_function_geturl_patch.py` (Python 3, keep a backup of the original). The diagnostics switch in the ACP shows `super=…` / `arguments=` for affected games.
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.1-beta (2026-11-09)
+
+- **“Who is online”:** arcade pages no longer appear as “Board index”. The list shows “Is in the arcade”, “Playing “Game”” and “Viewing the highscores of “Game”” (with link), plus duels and records pages. Game names only appear if the viewer may see the game: never for categories with a password, for group-limited categories only to members of those groups, and for guests only games released for guests
+- ACP → Categories: new switch “Hide game names in “Who is online”” per category
+- README: Ruffle note on ActionScript 3 updated
+
 ## 0.17.0-beta (2026-11-09)
 
 - **Favourites:** members mark games with a heart (on the game cards and the play page); “My favourites” appear at the top of the arcade. Up to 24 per member, only visible to the member. ACP switch (on by default); privacy section mentions favourites

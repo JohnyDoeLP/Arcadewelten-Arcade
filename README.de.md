@@ -11,6 +11,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 
 - Rechte über phpBB: Benutzerrecht „Kann die Spielhalle benutzen“, Kategorien nur für bestimmte Benutzergruppen sichtbar (z. B. Ü18)
 - Spieleliste mit Kategorie-Kacheln (Bild, Spielanzahl, Kategorie-Champion), Suche und Seitenaufteilung; optional Passwort pro Kategorie; 18 mitgelieferte Kategorie-Bilder, eigene Bilder einfach in `images/arcade/cats/` ablegen
+- „Wer ist online?“ zeigt, wer in der Spielhalle ist und was gerade gespielt wird – ohne Spielnamen aus Kategorien mit Passwort, aus Gruppen-Kategorien (für alle ohne Zugriff) und aus Kategorien, in denen du es abschaltest
 - Kino-Modus („Licht aus“), Handy-/Touch-Spiele mit Vollbild-Start (auch auf dem iPhone), Leiste „Zuletzt gespielt“
 - Favoriten (Herz), Medaillen 🥇🥈🥉 neben Beiträgen, „Spiel melden“ mit Liste im ACP, Massenbearbeitung von Mindestzeit, Höchstpunktzahl und Punkten
 - Foren-Anbindung (ArcadeBot): neue Spiele und Saison-Top-10 automatisch als Forenbeiträge, Spielthema als Diskussionsthema, eigenes News-Forum pro Kategorie
@@ -85,7 +86,7 @@ Die Spielhalle hängt an die Datenschutzerklärung des Forums (`ucp.php?mode=pri
 
 ## Bekannte Einschränkungen
 
-- Flash-Spiele laufen über den Emulator Ruffle. Ältere Spiele (ActionScript 1/2) laufen gut, die Unterstützung für ActionScript 3 ist in Ruffle noch lückenhaft.
+- Flash-Spiele laufen über den Emulator Ruffle. Ältere Spiele (ActionScript 1/2, also praktisch alle klassischen Arcade-Spiele) laufen sehr gut. ActionScript 3 unterstützt Ruffle inzwischen weitgehend, aber noch nicht vollständig; AS3-Spiele mit eigener Punkte-Übertragung (z. B. für phpBB Arcade) speichern bei uns keine Punkte.
 - Punkte aus Browser-Spielen lassen sich nie vollständig gegen Manipulation absichern. Die Spielhalle prüft Spielsitzungen, die IBPro-v3-Prüfsumme, eine Mindestspielzeit und optional eine Höchstpunktzahl pro Spiel.
 - Spiele, die ihre Punkte aus einer ActionScript-Funktion heraus senden, speichern unter Ruffle ohne Patch keine Punkte. Solche Spiele mit `contrib/tools/ruffle_function_geturl_patch.py` patchen (Python 3, Original vorher sichern). Der Diagnose-Schalter im ACP zeigt bei betroffenen Spielen `super=…` / `arguments=`.
 

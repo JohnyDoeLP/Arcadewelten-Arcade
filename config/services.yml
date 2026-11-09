@@ -232,6 +232,17 @@ services:
         tags:
             - { name: event.listener }
 
+    arcadewelten.arcade.online_listener:
+        class: arcadewelten\arcade\event\online_listener
+        arguments:
+            - '@arcadewelten.arcade.games'
+            - '@arcadewelten.arcade.access'
+            - '@controller.helper'
+            - '@language'
+            - '@user'
+        tags:
+            - { name: event.listener }
+
     arcadewelten.arcade.privacy_listener:
         class: arcadewelten\arcade\event\privacy_listener
         arguments:

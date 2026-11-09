@@ -50,6 +50,11 @@
 		{% if S_CAT_PROTECTED %}<br><label><input type="checkbox" name="cat_password_remove" value="1"> {{ lang('ACP_AW_ARCADE_CAT_PASSWORD_REMOVE') }}</label>{% endif %}
 	</dd>
 </dl>
+<dl>
+	<dt><label for="cat_online_hide">{{ lang('ACP_AW_ARCADE_CAT_ONLINE_HIDE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_ONLINE_HIDE_EXPLAIN') }}</span></dt>
+	<dd><label><input type="radio" class="radio" id="cat_online_hide" name="cat_online_hide" value="1"{% if S_CAT_ONLINE_HIDE %} checked{% endif %}> {{ lang('YES') }}</label>
+		<label><input type="radio" class="radio" name="cat_online_hide" value="0"{% if not S_CAT_ONLINE_HIDE %} checked{% endif %}> {{ lang('NO') }}</label></dd>
+</dl>
 {% if S_AW_POINTS_AVAILABLE %}
 {% include '@arcadewelten_arcade/acp_aw_arcade_point_fields.html' %}
 {% endif %}
