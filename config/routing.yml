@@ -69,3 +69,13 @@ arcadewelten_arcade_report:
     methods: [POST]
     requirements:
         game_id: \d+
+
+arcadewelten_arcade_tourneys:
+    path: /arcadehall/tourneys
+    defaults: { _controller: arcadewelten.arcade.controller.main:tourneys }
+
+arcadewelten_arcade_tourney:
+    path: /arcadehall/tourney/{tourney_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:tourney }
+    requirements:
+        tourney_id: \d+

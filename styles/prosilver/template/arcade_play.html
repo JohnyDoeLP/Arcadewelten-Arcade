@@ -11,6 +11,10 @@
 <div class="panel aw-message aw-duel-banner"><div class="inner"><p><i class="icon fa-bolt fa-fw" aria-hidden="true"></i> {{ d.TEXT }}</p></div></div>
 {% endfor %}
 
+{% for t in loops.game_tourneys %}
+<div class="panel aw-tourney-banner"><div class="inner"><p><i class="icon fa-trophy fa-fw" aria-hidden="true"></i> <a href="{{ t.U_VIEW }}">{{ t.TEXT }}</a></p></div></div>
+{% endfor %}
+
 {% if AW_POINTS_INFO %}
 <p class="aw-points-info"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ AW_POINTS_INFO }}</p>
 {% endif %}

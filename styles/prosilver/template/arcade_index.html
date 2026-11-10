@@ -7,6 +7,10 @@
 <div class="panel aw-message"><div class="inner"><p>{{ AW_MESSAGE }}</p></div></div>
 {% endif %}
 
+{% for t in loops.running_tourneys %}
+<div class="panel aw-tourney-banner"><div class="inner"><p><i class="icon fa-trophy fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_TOURNEY_BANNER', t.NAME, t.LEFT) }} <a class="button" href="{{ t.U_VIEW }}"><span>{{ lang('AW_ARCADE_TOURNEY_TO') }}</span></a></p></div></div>
+{% endfor %}
+
 {% if S_AW_GUEST %}
 <div class="panel aw-guest">
 	<div class="inner">
@@ -88,8 +92,11 @@
 </div>
 {% endif %}
 
-{% if U_AW_DUELS %}
-<p class="aw-duel-link"><a class="button" href="{{ U_AW_DUELS }}"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUELS') }}</span>{% if AW_DUELS_OPEN %} <strong class="badge">{{ AW_DUELS_OPEN }}</strong>{% endif %}</a></p>
+{% if U_AW_DUELS or U_AW_TOURNEYS %}
+<p class="aw-duel-link">
+	{% if U_AW_DUELS %}<a class="button" href="{{ U_AW_DUELS }}"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUELS') }}</span>{% if AW_DUELS_OPEN %} <strong class="badge">{{ AW_DUELS_OPEN }}</strong>{% endif %}</a>{% endif %}
+	{% if U_AW_TOURNEYS %}<a class="button" href="{{ U_AW_TOURNEYS }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_TOURNEYS') }}</span></a>{% endif %}
+</p>
 {% endif %}
 
 <div class="action-bar bar-top">

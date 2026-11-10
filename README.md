@@ -15,6 +15,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 - Cinema mode (“lights off”), mobile/touch games with fullscreen start (iPhone included), “recently played” bar
 - Favourites (heart), medals 🥇🥈🥉 next to posts, “report game” with a list in the ACP, bulk editing of minimum time, maximum score and points
 - Forum integration (ArcadeBot): new games and the season top 10 posted automatically, game topic as discussion thread, own news forum per category
+- Tournaments: several games over a period, overall ranking by tournament points, countdown, optional prizes (Ultimate Points) and ArcadeBot topics at start and end
 - Duels: members challenge each other with their record, with phpBB notifications; “New” badge for recently installed games
 - Game ratings: 1–5 stars per member and game (only after playing, changeable), average shown in the game list; game list sortable by name, rating, popularity and newest
 - Highscores per game with trophies for places 1–3, hall of fame (podium with avatars)

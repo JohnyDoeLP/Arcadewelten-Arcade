@@ -1,0 +1,108 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+
+<h2 class="aw-title"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i> {{ AW_TOURNEY_NAME }}</h2>
+
+<div class="panel aw-tourney-head">
+	<div class="inner">
+		<p class="aw-tourney-period">{{ lang('AW_ARCADE_TOURNEY_PERIOD') }}{{ lang('COLON') }} <strong>{{ AW_TOURNEY_START }}</strong> – <strong>{{ AW_TOURNEY_END }}</strong></p>
+		{% if AW_TOURNEY_STATUS == 'finished' %}
+		<p class="aw-tourney-state"><strong>{{ lang('AW_ARCADE_TOURNEY_IS_FINISHED') }}</strong></p>
+		{% else %}
+		<p class="aw-tourney-state">{{ AW_TOURNEY_STATUS == 'upcoming' ? lang('AW_ARCADE_TOURNEY_STARTS_IN') : lang('AW_ARCADE_TOURNEY_ENDS_IN') }}{{ lang('COLON') }}
+			<strong class="aw-countdown" data-target="{{ AW_TOURNEY_TARGET }}" data-done="{{ AW_TOURNEY_STATUS == 'upcoming' ? lang('AW_ARCADE_TOURNEY_STARTED_RELOAD') : lang('AW_ARCADE_TOURNEY_ENDED_RELOAD') }}">{{ AW_TOURNEY_LEFT }}</strong></p>
+		{% endif %}
+		{% if AW_TOURNEY_DESC %}<p>{{ AW_TOURNEY_DESC }}</p>{% endif %}
+		<p class="aw-tourney-rules">{{ lang('AW_ARCADE_TOURNEY_RULES', AW_TOURNEY_POINTS) }}</p>
+		{% if AW_TOURNEY_PRIZES %}<p class="aw-tourney-prizes"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ AW_TOURNEY_PRIZES }}</p>{% endif %}
+	</div>
+</div>
+
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_TOURNEY_OVERALL') }}</h3>
+		{% if loops.overall|length %}
+		<table class="table1 aw-duel-table aw-tourney-table">
+			<thead>
+				<tr>
+					<th>{{ lang('AW_ARCADE_TOURNEY_RANK') }}</th>
+					<th>{{ lang('USERNAME') }}</th>
+					<th>{{ lang('AW_ARCADE_TOURNEY_POINTS') }}</th>
+					<th>{{ lang('AW_ARCADE_TOURNEY_FIRSTS') }}</th>
+					<th>{{ lang('AW_ARCADE_TOURNEY_GAMES_PLAYED') }}</th>
+					{% if loops.overall[0].PRIZE or loops.overall|length > 1 and loops.overall[1].PRIZE %}<th>{{ lang('AW_ARCADE_TOURNEY_PRIZE') }}</th>{% endif %}
+				</tr>
+			</thead>
+			<tbody>
+			{% set prize_col = loops.overall[0].PRIZE or (loops.overall|length > 1 and loops.overall[1].PRIZE) %}
+			{% for r in loops.overall %}
+				<tr class="{% if r.S_ME %}reported{% elseif loop.index is odd %}bg1{% else %}bg2{% endif %}">
+					<td class="aw-rank">{% if r.RANK <= 3 %}<i class="icon fa-trophy aw-cup aw-cup-{{ r.RANK }}" aria-hidden="true" title="{{ r.RANK }}."></i>{% else %}{{ r.RANK }}{% endif %}</td>
+					<td>{{ r.USER }}</td>
+					<td><strong>{{ r.POINTS }}</strong></td>
+					<td>{{ r.FIRSTS }}</td>
+					<td>{{ r.GAMES }}</td>
+					{% if prize_col %}<td>{{ r.PRIZE }}</td>{% endif %}
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+		<p>{{ AW_TOURNEY_STATUS == 'upcoming' ? lang('AW_ARCADE_TOURNEY_NOT_STARTED') : lang('AW_ARCADE_TOURNEY_NO_PLAYERS') }}</p>
+		{% endif %}
+	</div>
+</div>
+
+<h3 class="aw-tourney-games-title">{{ lang('AW_ARCADE_TOURNEY_GAMES') }}</h3>
+<div class="aw-tourney-games">
+{% for g in loops.tgames %}
+	<div class="panel aw-tourney-game">
+		<div class="inner">
+			<h4>
+				<span class="aw-thumb">{% if g.IMAGE %}<img src="{{ g.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}</span>
+				{{ g.NAME }}
+			</h4>
+			{% if g.S_LOW %}<p class="small">{{ lang('AW_ARCADE_LOW_WINS') }}</p>{% endif %}
+			{% if g.rows|length %}
+			<table class="table1 aw-tourney-mini">
+				<tbody>
+				{% for r in g.rows %}
+					<tr class="{% if r.S_ME %}reported{% elseif loop.index is odd %}bg1{% else %}bg2{% endif %}">
+						<td>{{ r.PLACE }}.</td>
+						<td>{{ r.USER }}</td>
+						<td>{{ r.SCORE }}</td>
+						<td class="small">+{{ r.POINTS }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			{% else %}
+			<p class="small">{{ lang('AW_ARCADE_TOURNEY_GAME_EMPTY') }}</p>
+			{% endif %}
+			{% if AW_TOURNEY_STATUS == 'running' %}<p><a class="button" href="{{ g.U_PLAY }}"><i class="icon fa-play fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_PLAY_NOW') }}</span></a></p>{% endif %}
+		</div>
+	</div>
+{% endfor %}
+</div>
+{% if AW_TOURNEY_HIDDEN %}<p class="small">{{ lang('AW_ARCADE_TOURNEY_HIDDEN_GAMES', AW_TOURNEY_HIDDEN) }}</p>{% endif %}
+
+<script>
+(function () {
+	var el = document.querySelector('.aw-countdown');
+	if (!el) { return; }
+	var target = parseInt(el.getAttribute('data-target'), 10) * 1000;
+	var labels = {d: '{{ lang('AW_ARCADE_CD_D')|e('js') }}', h: '{{ lang('AW_ARCADE_CD_H')|e('js') }}', m: '{{ lang('AW_ARCADE_CD_M')|e('js') }}', s: '{{ lang('AW_ARCADE_CD_S')|e('js') }}'};
+	function tick() {
+		var left = Math.floor((target - Date.now()) / 1000);
+		if (left <= 0) { el.textContent = el.getAttribute('data-done'); return; }
+		var d = Math.floor(left / 86400), h = Math.floor(left % 86400 / 3600), m = Math.floor(left % 3600 / 60), s = left % 60;
+		el.textContent = (d ? d + labels.d + ' ' : '') + h + labels.h + ' ' + (m < 10 ? '0' : '') + m + labels.m + ' ' + (s < 10 ? '0' : '') + s + labels.s;
+		setTimeout(tick, 1000);
+	}
+	tick();
+})();
+</script>
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

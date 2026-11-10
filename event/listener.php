@@ -32,7 +32,10 @@ class listener implements EventSubscriberInterface
 	/** @var array|null user_id => number of records */
 	protected $record_counts;
 
-	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config)
+	/** @var \arcadewelten\arcade\core\tourneys */
+	protected $tourneys;
+
+	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config, \arcadewelten\arcade\core\tourneys $tourneys)
 	{
 		$this->config = $config;
 		$this->user = $user;
@@ -48,6 +51,7 @@ class listener implements EventSubscriberInterface
 		$this->helper = $helper;
 		$this->template = $template;
 		$this->request = $request;
+		$this->tourneys = $tourneys;
 	}
 
 	public static function getSubscribedEvents()
@@ -157,6 +161,7 @@ class listener implements EventSubscriberInterface
 		$this->duels->delete_users($event['user_ids']);
 		$this->favorites->delete_users($event['user_ids']);
 		$this->reports->delete_users($event['user_ids']);
+		$this->tourneys->delete_users($event['user_ids']);
 	}
 
 	/* ---------------------------------------------------------------

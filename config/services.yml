@@ -10,6 +10,9 @@ parameters:
     arcadewelten.arcade.tables.duels: '%core.table_prefix%aw_arcade_duels'
     arcadewelten.arcade.tables.favorites: '%core.table_prefix%aw_arcade_favorites'
     arcadewelten.arcade.tables.reports: '%core.table_prefix%aw_arcade_reports'
+    arcadewelten.arcade.tables.tourneys: '%core.table_prefix%aw_arcade_tourneys'
+    arcadewelten.arcade.tables.tourney_games: '%core.table_prefix%aw_arcade_tourney_games'
+    arcadewelten.arcade.tables.tourney_scores: '%core.table_prefix%aw_arcade_tourney_scores'
 
 services:
     arcadewelten.arcade.games:
@@ -61,6 +64,38 @@ services:
         tags:
             - { name: notification.type }
 
+    arcadewelten.arcade.tourneys:
+        class: arcadewelten\arcade\core\tourneys
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '%arcadewelten.arcade.tables.tourneys%'
+            - '%arcadewelten.arcade.tables.tourney_games%'
+            - '%arcadewelten.arcade.tables.tourney_scores%'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.cats%'
+
+    arcadewelten.arcade.tourney_jobs:
+        class: arcadewelten\arcade\core\tourney_jobs
+        arguments:
+            - '@arcadewelten.arcade.tourneys'
+            - '@arcadewelten.arcade.points'
+            - '@arcadewelten.arcade.forum'
+            - '@arcadewelten.arcade.access'
+            - '@log'
+            - '@user'
+
+    arcadewelten.arcade.cron.task.tourneys:
+        class: arcadewelten\arcade\cron\task\tourneys
+        arguments:
+            - '@arcadewelten.arcade.tourneys'
+            - '@arcadewelten.arcade.tourney_jobs'
+            - '@config'
+        calls:
+            - [set_name, [cron.task.arcadewelten.arcade.tourneys]]
+        tags:
+            - { name: cron.task }
+
     arcadewelten.arcade.scores:
         class: arcadewelten\arcade\core\scores
         arguments:
@@ -73,6 +108,7 @@ services:
             - '%arcadewelten.arcade.tables.flagged%'
             - '@config'
             - '@arcadewelten.arcade.duels'
+            - '@arcadewelten.arcade.tourneys'
 
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer
@@ -211,6 +247,8 @@ services:
             - '@request'
             - '@pagination'
             - '%core.root_path%'
+            - '@arcadewelten.arcade.tourneys'
+            - '@arcadewelten.arcade.tourney_jobs'
 
     arcadewelten.arcade.listener:
         class: arcadewelten\arcade\event\listener
@@ -229,6 +267,7 @@ services:
             - '@user'
             - '@language'
             - '@config'
+            - '@arcadewelten.arcade.tourneys'
         tags:
             - { name: event.listener }
 

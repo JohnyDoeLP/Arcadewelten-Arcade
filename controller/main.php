@@ -33,7 +33,12 @@ class main
 	protected $pagination;
 	protected $root_path;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path)
+	/** @var \arcadewelten\arcade\core\tourneys */
+	protected $tourneys;
+	/** @var \arcadewelten\arcade\core\tourney_jobs */
+	protected $tourney_jobs;
+
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -53,6 +58,8 @@ class main
 		$this->request = $request;
 		$this->pagination = $pagination;
 		$this->root_path = $root_path;
+		$this->tourneys = $tourneys;
+		$this->tourney_jobs = $tourney_jobs;
 
 		$this->language->add_lang('common', 'arcadewelten/arcade');
 	}
@@ -296,6 +303,7 @@ class main
 		$this->template->assign_vars([
 			'AW_CAT_NAME'		=> $cat ? $cat['cat_name'] : '',
 			'AW_SEARCH'			=> $search,
+			'U_AW_TOURNEYS'		=> $this->tourneys->enabled() ? $this->helper->route('arcadewelten_arcade_tourneys') : '',
 			'AW_DUELS_OPEN'		=> (!$is_guest && $this->duels->enabled()) ? $this->duels->count_incoming($this->user->data['user_id']) : 0,
 			'U_AW_DUELS'		=> (!$is_guest && $this->duels->enabled()) ? $this->helper->route('arcadewelten_arcade_duels') : '',
 			'AW_SORT'			=> $sort,
@@ -311,6 +319,7 @@ class main
 			'U_AW_SEARCH'		=> $cat_id ? $this->helper->route('arcadewelten_arcade_cat', ['cat_id' => $cat_id]) : $this->helper->route('arcadewelten_arcade_index'),
 		]);
 
+		$this->assign_running_tourneys();
 		$this->breadcrumbs($cat);
 
 		return $this->helper->render('@arcadewelten_arcade/arcade_index.html', $cat ? $cat['cat_name'] : $this->language->lang('AW_ARCADE'));
@@ -439,6 +448,19 @@ class main
 			$this->assign_top_scores($game, 10);
 		}
 
+		if ($this->tourneys->enabled() && (int) $game['game_save_type'] !== games::SAVE_NONE)
+		{
+			foreach ($this->tourneys->active_for_game($game['game_id']) as $tourney)
+			{
+				$upcoming = \arcadewelten\arcade\core\tourneys::status($tourney) === \arcadewelten\arcade\core\tourneys::UPCOMING;
+
+				$this->template->assign_block_vars('game_tourneys', [
+					'TEXT'	=> $this->language->lang($upcoming ? 'AW_ARCADE_TOURNEY_GAME_SOON' : 'AW_ARCADE_TOURNEY_GAME_NOW', $tourney['tourney_name'], $this->user->format_date((int) ($upcoming ? $tourney['tourney_start'] : $tourney['tourney_end']))),
+					'U_VIEW'	=> $this->helper->route('arcadewelten_arcade_tourney', ['tourney_id' => (int) $tourney['tourney_id']]),
+				]);
+			}
+		}
+
 		$this->breadcrumbs($game['cat_id'] ? ['cat_id' => $game['cat_id'], 'cat_name' => $game['cat_name']] : false, $game);
 
 		return $this->helper->render('@arcadewelten_arcade/arcade_play.html', $game['game_name']);
@@ -505,6 +527,11 @@ class main
 			if (($won = $this->request->variable('duel', 0)) > 0)
 			{
 				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_DUEL_WON', $won);
+			}
+
+			if (($counted = $this->request->variable('tourney', 0)) > 0)
+			{
+				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_TOURNEY', $counted);
 			}
 		}
 		else if ($this->request->variable('challenged', 0))
@@ -632,8 +659,223 @@ class main
 				'game_id'	=> (int) $game['game_id'],
 				'saved'		=> $result['improved'] ? 2 : 1,
 				'last'		=> (string) round($score, 2),
-			] + ($earned > 0 ? ['earned' => (string) $earned] : []) + (!empty($result['duels_won']) ? ['duel' => (int) $result['duels_won']] : []), false),
+			] + ($earned > 0 ? ['earned' => (string) $earned] : []) + (!empty($result['duels_won']) ? ['duel' => (int) $result['duels_won']] : []) + (!empty($result['tourneys']) ? ['tourney' => (int) $result['tourneys']] : []), false),
 		]);
+	}
+
+	/* ---------------------------------------------------------------
+	 * Tournaments
+	 * ------------------------------------------------------------- */
+
+	/**
+	 * List: running, planned and finished tournaments.
+	 */
+	public function tourneys()
+	{
+		$this->check_use();
+		$this->check_tourneys();
+
+		$players = $this->tourneys->count_players();
+		$now = time();
+
+		foreach ($this->tourneys->get_all() as $tourney)
+		{
+			$status = \arcadewelten\arcade\core\tourneys::status($tourney);
+			$id = (int) $tourney['tourney_id'];
+
+			$this->template->assign_block_vars('tourneys_' . $status, [
+				'NAME'		=> $tourney['tourney_name'],
+				'START'		=> $this->user->format_date((int) $tourney['tourney_start']),
+				'END'		=> $this->user->format_date((int) $tourney['tourney_end']),
+				'END_TS'	=> (int) $tourney['tourney_end'],
+				'START_TS'	=> (int) $tourney['tourney_start'],
+				'LEFT'		=> $this->time_left($status === \arcadewelten\arcade\core\tourneys::UPCOMING ? (int) $tourney['tourney_start'] - $now : (int) $tourney['tourney_end'] - $now),
+				'GAMES'		=> count($this->visible_tourney_games($id)),
+				'PLAYERS'	=> isset($players[$id]) ? $players[$id] : 0,
+				'U_VIEW'	=> $this->helper->route('arcadewelten_arcade_tourney', ['tourney_id' => $id]),
+			]);
+		}
+
+		$this->tourney_breadcrumbs();
+
+		return $this->helper->render('@arcadewelten_arcade/arcade_tourneys.html', $this->language->lang('AW_ARCADE_TOURNEYS'));
+	}
+
+	/**
+	 * One tournament: countdown, games, overall ranking and places per game.
+	 */
+	public function tourney($tourney_id)
+	{
+		$this->check_use();
+		$this->check_tourneys();
+
+		$tourney = $this->tourneys->get($tourney_id);
+
+		if (!$tourney)
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_TOURNEY_NOT_FOUND');
+		}
+
+		$status = \arcadewelten\arcade\core\tourneys::status($tourney);
+		$all_games = $this->tourneys->get_games($tourney_id);
+		$visible = $this->visible_tourney_games($tourney_id, $all_games);
+		$standings = $this->tourneys->standings($tourney, $all_games);
+		$me = (int) $this->user->data['user_id'];
+		$is_member = $this->is_member();
+
+		foreach ($standings['overall'] as $row)
+		{
+			$this->template->assign_block_vars('overall', [
+				'RANK'		=> (int) $row['rank'],
+				'USER'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+				'POINTS'	=> (int) $row['points'],
+				'GAMES'		=> (int) $row['games'],
+				'FIRSTS'	=> (int) $row['places'][0],
+				'PRIZE'		=> ($row['rank'] <= 3 && $this->points->available() && (float) $tourney['tourney_prize_' . $row['rank']] > 0) ? $this->points->format($tourney['tourney_prize_' . $row['rank']]) : '',
+				'S_ME'		=> $is_member && (int) $row['user_id'] === $me,
+			]);
+		}
+
+		foreach ($visible as $game_id => $game)
+		{
+			$rows = isset($standings['games'][$game_id]) ? $standings['games'][$game_id] : [];
+
+			$this->template->assign_block_vars('tgames', [
+				'NAME'		=> $game['game_name'],
+				'IMAGE'		=> $this->game_web_path($game, $game['game_image']),
+				'PLAYERS'	=> count($rows),
+				'S_LOW'		=> (int) $game['game_scoretype'] === games::SCORE_LOW,
+				'U_PLAY'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $game_id]),
+			]);
+
+			foreach (array_slice($rows, 0, 10) as $row)
+			{
+				$this->template->assign_block_vars('tgames.rows', [
+					'PLACE'		=> (int) $row['place'],
+					'USER'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+					'SCORE'		=> $this->format_score($row['score']),
+					'POINTS'	=> (int) $row['points'],
+					'S_ME'		=> $is_member && (int) $row['user_id'] === $me,
+				]);
+			}
+		}
+
+		$prizes = [];
+		if ($this->points->available())
+		{
+			foreach ([1, 2, 3] as $place)
+			{
+				if ((float) $tourney['tourney_prize_' . $place] > 0)
+				{
+					$prizes[] = $this->language->lang('AW_ARCADE_TOURNEY_PRIZE_LINE', $place, $this->points->format($tourney['tourney_prize_' . $place]), $this->points->name());
+				}
+			}
+		}
+
+		$this->template->assign_vars([
+			'AW_TOURNEY_NAME'		=> $tourney['tourney_name'],
+			'AW_TOURNEY_DESC'		=> nl2br($tourney['tourney_desc']),
+			'AW_TOURNEY_START'		=> $this->user->format_date((int) $tourney['tourney_start']),
+			'AW_TOURNEY_END'		=> $this->user->format_date((int) $tourney['tourney_end']),
+			'AW_TOURNEY_STATUS'		=> $status,
+			'AW_TOURNEY_TARGET'		=> $status === \arcadewelten\arcade\core\tourneys::UPCOMING ? (int) $tourney['tourney_start'] : (int) $tourney['tourney_end'],
+			'AW_TOURNEY_LEFT'		=> $this->time_left(($status === \arcadewelten\arcade\core\tourneys::UPCOMING ? (int) $tourney['tourney_start'] : (int) $tourney['tourney_end']) - time()),
+			'AW_TOURNEY_HIDDEN'		=> count($all_games) - count($visible),
+			'AW_TOURNEY_PRIZES'		=> implode(' · ', $prizes),
+			'AW_TOURNEY_POINTS'		=> implode(', ', \arcadewelten\arcade\core\tourneys::PLACE_POINTS),
+		]);
+
+		$this->tourney_breadcrumbs($tourney);
+
+		return $this->helper->render('@arcadewelten_arcade/arcade_tourney.html', $tourney['tourney_name']);
+	}
+
+	/**
+	 * Banner above the game list.
+	 */
+	protected function assign_running_tourneys()
+	{
+		if (!$this->tourneys->enabled())
+		{
+			return;
+		}
+
+		foreach ($this->tourneys->get_running() as $tourney)
+		{
+			$this->template->assign_block_vars('running_tourneys', [
+				'NAME'		=> $tourney['tourney_name'],
+				'LEFT'		=> $this->time_left((int) $tourney['tourney_end'] - time()),
+				'END'		=> $this->user->format_date((int) $tourney['tourney_end']),
+				'U_VIEW'	=> $this->helper->route('arcadewelten_arcade_tourney', ['tourney_id' => (int) $tourney['tourney_id']]),
+			]);
+		}
+	}
+
+	/**
+	 * Games of a tournament the current user may see (category groups).
+	 * A password does not hide a game here: the category itself asks for it when playing.
+	 */
+	protected function visible_tourney_games($tourney_id, ?array $games = null)
+	{
+		$games = $games === null ? $this->tourneys->get_games($tourney_id) : $games;
+
+		return array_filter($games, function ($game) {
+			return !empty($game['game_active']) && $this->access->can_see_cat((int) $game['cat_id']);
+		});
+	}
+
+	protected function check_tourneys()
+	{
+		if (!$this->tourneys->enabled())
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_TOURNEYS_OFF');
+		}
+
+		// Start and end what is due right away, without waiting for the cron.
+		$this->tourney_jobs->run();
+	}
+
+	protected function tourney_breadcrumbs($tourney = false)
+	{
+		$this->template->assign_block_vars('navlinks', [
+			'FORUM_NAME'	=> $this->language->lang('AW_ARCADE'),
+			'U_VIEW_FORUM'	=> $this->helper->route('arcadewelten_arcade_index'),
+		]);
+		$this->template->assign_block_vars('navlinks', [
+			'FORUM_NAME'	=> $this->language->lang('AW_ARCADE_TOURNEYS'),
+			'U_VIEW_FORUM'	=> $this->helper->route('arcadewelten_arcade_tourneys'),
+		]);
+
+		if ($tourney)
+		{
+			$this->template->assign_block_vars('navlinks', [
+				'FORUM_NAME'	=> $tourney['tourney_name'],
+				'U_VIEW_FORUM'	=> $this->helper->route('arcadewelten_arcade_tourney', ['tourney_id' => (int) $tourney['tourney_id']]),
+			]);
+		}
+	}
+
+	/**
+	 * "2 Tage 5 Std." / "3 Std. 12 Min." / "12 Min."
+	 */
+	protected function time_left($seconds)
+	{
+		$seconds = max(0, (int) $seconds);
+		$days = intdiv($seconds, 86400);
+		$hours = intdiv($seconds % 86400, 3600);
+		$minutes = intdiv($seconds % 3600, 60);
+
+		if ($days > 0)
+		{
+			return $this->language->lang('AW_ARCADE_LEFT_DAYS', $days, $hours);
+		}
+
+		if ($hours > 0)
+		{
+			return $this->language->lang('AW_ARCADE_LEFT_HOURS', $hours, $minutes);
+		}
+
+		return $this->language->lang('AW_ARCADE_LEFT_MINUTES', max(1, $minutes));
 	}
 
 	/* ---------------------------------------------------------------

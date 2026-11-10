@@ -322,6 +322,116 @@ class forum
 	}
 
 	/* ---------------------------------------------------------------
+	 * Tournaments
+	 * ------------------------------------------------------------- */
+
+	public function posts_tourneys()
+	{
+		return $this->enabled() && !empty($this->config['aw_arcade_post_tourneys']);
+	}
+
+	/**
+	 * Topic "[Turnier] Name" when a tournament starts.
+	 *
+	 * @param array $tourney
+	 * @param array $games games that may be named in public (no password, no group limit)
+	 * @param int $hidden number of further games that are not named
+	 * @param array $prizes [1 => amount, 2 => ..., 3 => ...] (only amounts > 0)
+	 * @return int topic id or 0
+	 */
+	public function announce_tourney_start(array $tourney, array $games, $hidden, array $prizes)
+	{
+		if (!$this->posts_tourneys() || !$this->forum_exists((int) $this->config['aw_arcade_news_forum']))
+		{
+			return 0;
+		}
+
+		$url = $this->url('arcadehall/tourney/' . (int) $tourney['tourney_id']);
+		$lines = [
+			$this->lang('AW_ARCADE_POST_TOURNEY_INTRO', $this->user->format_date((int) $tourney['tourney_start'], 'd.m.Y H:i'), $this->user->format_date((int) $tourney['tourney_end'], 'd.m.Y H:i')),
+		];
+
+		if ((string) $tourney['tourney_desc'] !== '')
+		{
+			$lines[] = '';
+			$lines[] = $tourney['tourney_desc'];
+		}
+
+		$lines[] = '';
+		$lines[] = '[b]' . $this->lang('AW_ARCADE_POST_TOURNEY_GAMES') . '[/b]';
+
+		$list = [];
+		foreach ($games as $game)
+		{
+			$list[] = '[*][url=' . $this->url('arcadehall/play/' . (int) $game['game_id']) . ']' . $game['game_name'] . '[/url]';
+		}
+
+		if ($hidden > 0)
+		{
+			$list[] = '[*]' . $this->post_language()->lang('AW_ARCADE_POST_TOURNEY_MORE', (int) $hidden);
+		}
+
+		$lines[] = '[list]' . implode('', $list) . '[/list]';
+		$lines[] = $this->lang('AW_ARCADE_POST_TOURNEY_RULES');
+
+		if ($prizes && $this->points->active())
+		{
+			$lines[] = '';
+			$lines[] = '[b]' . $this->lang('AW_ARCADE_POST_TOURNEY_PRIZES') . '[/b]';
+			foreach ($prizes as $place => $amount)
+			{
+				$lines[] = $this->lang('AW_ARCADE_POST_TOURNEY_PRIZE_LINE', (int) $place, $this->points->format($amount), $this->points->name());
+			}
+		}
+
+		$lines[] = '';
+		$lines[] = '[url=' . $url . ']' . $this->lang('AW_ARCADE_POST_TOURNEY_TO') . '[/url] – ' . $this->lang('AW_ARCADE_POST_TOURNEY_GOOD_LUCK');
+
+		return $this->post((int) $this->config['aw_arcade_news_forum'], $this->lang('AW_ARCADE_POST_TOURNEY_TITLE', $tourney['tourney_name']), implode("\n", $lines));
+	}
+
+	/**
+	 * Topic "[Turnierergebnis] Name" when a tournament ends.
+	 *
+	 * @param array $overall overall ranking (rows from tourneys::standings)
+	 * @param array $paid user_id => paid amount
+	 * @return int topic id or 0
+	 */
+	public function announce_tourney_result(array $tourney, array $overall, array $paid)
+	{
+		if (!$this->posts_tourneys() || !$this->forum_exists((int) $this->config['aw_arcade_news_forum']))
+		{
+			return 0;
+		}
+
+		$lang = $this->post_language();
+		$lines = [$this->lang('AW_ARCADE_POST_TOURNEY_RESULT_INTRO', $tourney['tourney_name']), ''];
+
+		foreach (array_slice($overall, 0, 10) as $row)
+		{
+			$name = (string) $row['user_colour'] !== '' ? '[color=#' . $row['user_colour'] . ']' . $row['username'] . '[/color]' : $row['username'];
+			$entry = (int) $row['rank'] . '. [b][url=' . $this->url('arcadehall/user/' . (int) $row['user_id']) . ']' . $name . '[/url][/b] – ' . $lang->lang('AW_ARCADE_POST_TOURNEY_POINTS', (int) $row['points']);
+
+			if (!empty($paid[(int) $row['user_id']]))
+			{
+				$entry .= ' – ' . $this->lang('AW_ARCADE_POST_PRIZE', $this->points->format($paid[(int) $row['user_id']]), $this->points->name());
+			}
+
+			$lines[] = $entry;
+		}
+
+		if (!$overall)
+		{
+			$lines[] = $this->lang('AW_ARCADE_POST_TOURNEY_EMPTY');
+		}
+
+		$lines[] = '';
+		$lines[] = '[url=' . $this->url('arcadehall/tourney/' . (int) $tourney['tourney_id']) . ']' . $this->lang('AW_ARCADE_POST_TOURNEY_FULL') . '[/url]';
+
+		return $this->post((int) $this->config['aw_arcade_news_forum'], $this->lang('AW_ARCADE_POST_TOURNEY_RESULT_TITLE', $tourney['tourney_name']), implode("\n", $lines));
+	}
+
+	/* ---------------------------------------------------------------
 	 * Discussion link on the play page
 	 * ------------------------------------------------------------- */
 

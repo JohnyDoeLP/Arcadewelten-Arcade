@@ -169,3 +169,16 @@ table.table1.aw-duel-table thead th { color: #333; font-weight: bold; background
 .aw-report h3, .aw-report p { flex-basis: 100%; margin: 0; }
 .aw-report input[type=text] { flex: 1 1 220px; }
 .aw-report[hidden] { display: none; }
+
+/* Tournaments */
+.aw-tourney-banner .inner p { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: bold; }
+.aw-tourney-banner .button { margin-left: auto; }
+.aw-tourney-head p { margin: 4px 0; }
+.aw-countdown { font-variant-numeric: tabular-nums; }
+.aw-tourney-games-title { margin-top: 12px; }
+.aw-tourney-games { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+.aw-tourney-game { margin: 0; }
+.aw-tourney-game h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font-size: 1.1em; }
+.aw-tourney-game .aw-thumb { flex-basis: 40px; width: 40px; height: 40px; }
+.aw-tourney-mini { width: 100%; margin-bottom: 6px; }
+.aw-tourney-mini td { padding: 2px 4px; }

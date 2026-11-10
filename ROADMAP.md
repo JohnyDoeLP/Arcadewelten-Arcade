@@ -12,16 +12,15 @@ Suggestions are welcome – the list grows with the community.
 - 0.15 – duels with phpBB notifications, "NEW" badge, ACP version check
 - 0.16 – forum integration (ArcadeBot): game topics as discussion threads, season top 10
 - 0.17 – favourites, medals next to posts, bulk editing in the ACP, "report game"
+- 0.18 – tournaments with overall ranking, countdown and prizes; importer recognises wrongly filled installation files
 
 ## Next
 
-1. **Import: detect wrongly filled installation files**: if the installation file declares an unknown score interface (e.g. `ARCADELIB_GAME` or a missing/unknown constant), the importer still looks into the game file itself instead of sorting the game out right away; if it finds IBPro, IBPro v3 or Activity Mod calls there, the game is imported with that interface and the ACP shows a note "interface detected from the game file". Example: four games that were labelled as Arcadelib but are really IBPro games. If nothing usable is found, the import list says why: game file missing, file damaged or not a Flash file, compressed format that cannot be checked (ZWS), no known score interface found, or an unknown constant from the installation file (shown by name instead of a raw language key)
-2. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
-3. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
-4. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-5. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-6. **Statistics page** per member: favourite game, play time, best ranks
-7. **Highscore certificates** for season winners (image, generated with GD)
+1. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
+2. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
+3. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+4. **Statistics page** per member: favourite game, play time, best ranks
+5. **Highscore certificates** for season winners (image, generated with GD)
 
 ## phpBB 4
 

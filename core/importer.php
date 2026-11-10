@@ -119,7 +119,13 @@ class importer
 			'save_type'		=> games::SAVE_NONE,
 			'supported'		=> true,
 			'reason'		=> '',
+			// Argument for the reason text (e.g. the declared constant) and a note for ready games.
+			'reason_arg'	=> '',
+			'note'			=> '',
 		];
+
+		// A constant we do not support is not final: the game file is checked further down.
+		$declared_unknown = '';
 
 		switch ($save_const)
 		{
@@ -140,8 +146,7 @@ class importer
 			break;
 
 			default:
-				$game['supported'] = false;
-				$game['reason'] = $save_const;
+				$declared_unknown = (string) $save_const;
 		}
 
 		// Many packages label v32 games wrongly; a v32game.txt in gamedata is decisive.
@@ -150,6 +155,12 @@ class importer
 			$game['save_type'] = games::SAVE_IBPROV3;
 			$game['supported'] = true;
 			$game['reason'] = '';
+		}
+
+		if ($game['save_type'] === games::SAVE_IBPROV3 && $declared_unknown !== '')
+		{
+			// Decided by v32game.txt.
+			$declared_unknown = '';
 		}
 
 		if ($game['type'] === games::TYPE_FLASH && !is_file($base . $game['file']))
@@ -172,22 +183,49 @@ class importer
 			{
 				$game['save_type'] = games::SAVE_HTML5;
 			}
+
+			// The declared Flash interface does not matter for HTML5 games.
+			$declared_unknown = '';
 		}
 
 		// The declared score interface is often wrong; the SWF itself tells which URLs it calls.
 		if ($game['type'] === games::TYPE_FLASH && $game['supported'])
 		{
-			$detected = $this->detect_save_type($base . $game['file']);
+			$check = $this->inspect_swf($base . $game['file']);
 
-			if ($detected === -1)
+			if ($check['problem'] === 'DAMAGED')
+			{
+				$game['supported'] = false;
+				$game['reason'] = 'FILE_DAMAGED';
+			}
+			else if ($check['type'] === -1)
 			{
 				$game['supported'] = false;
 				$game['reason'] = 'PHPBBARCADE_GAME';
 			}
-			else if ($detected !== null)
+			else if ($check['type'] !== null)
 			{
-				$game['save_type'] = $detected;
+				if ($declared_unknown !== '')
+				{
+					$game['note'] = 'DETECTED';
+					$game['reason_arg'] = $declared_unknown;
+				}
+
+				$game['save_type'] = $check['type'];
 			}
+			else if ($declared_unknown !== '')
+			{
+				// Neither the installation file nor the game file names an interface we know.
+				$game['supported'] = false;
+				$game['reason'] = $check['problem'] === 'COMPRESSED' ? 'DECLARED_COMPRESSED' : 'DECLARED_NO_IFACE';
+				$game['reason_arg'] = $declared_unknown;
+			}
+		}
+		else if ($declared_unknown !== '' && $game['supported'])
+		{
+			$game['supported'] = false;
+			$game['reason'] = 'DECLARED_NO_IFACE';
+			$game['reason_arg'] = $declared_unknown;
 		}
 
 		if ($game['image'] === '' || !is_file($base . $game['image']))
@@ -208,20 +246,36 @@ class importer
 	}
 
 	/**
-	 * Look for the score URLs inside a (zlib compressed) SWF.
+	 * Score interface named inside a SWF (kept for callers of older versions).
 	 *
-	 * @return int|null games::SAVE_* or null if unknown
+	 * @return int|null games::SAVE_*, -1 for the JV interface or null if unknown
 	 */
 	public function detect_save_type($file)
+	{
+		return $this->inspect_swf($file)['type'];
+	}
+
+	/**
+	 * Look into a SWF: which score interface does it call, and can it be read at all?
+	 *
+	 * @return array ['type' => games::SAVE_*|-1|null, 'problem' => ''|'DAMAGED'|'COMPRESSED'|'NONE']
+	 */
+	public function inspect_swf($file)
 	{
 		$data = @file_get_contents($file);
 
 		if ($data === false || strlen($data) < 8)
 		{
-			return null;
+			return ['type' => null, 'problem' => 'DAMAGED'];
 		}
 
 		$sig = substr($data, 0, 3);
+
+		if ($sig === 'ZWS')
+		{
+			// LZMA compressed: Ruffle plays it, but we cannot look inside.
+			return ['type' => null, 'problem' => 'COMPRESSED'];
+		}
 
 		if ($sig === 'CWS')
 		{
@@ -229,36 +283,35 @@ class importer
 		}
 		else if ($sig !== 'FWS')
 		{
-			// LZMA compressed (ZWS) or unknown: cannot inspect.
-			return null;
+			return ['type' => null, 'problem' => 'DAMAGED'];
 		}
 
 		if (!is_string($data))
 		{
-			return null;
+			return ['type' => null, 'problem' => 'DAMAGED'];
 		}
 
 		if (stripos($data, 'autocom=arcade') !== false)
 		{
-			return games::SAVE_IBPROV3;
+			return ['type' => games::SAVE_IBPROV3, 'problem' => ''];
 		}
 
 		if (stripos($data, 'act=Arcade&do=newscore') !== false)
 		{
-			return games::SAVE_IBPRO;
+			return ['type' => games::SAVE_IBPRO, 'problem' => ''];
 		}
 
 		if (stripos($data, 'newscore.php') !== false)
 		{
-			return games::SAVE_AMOD;
+			return ['type' => games::SAVE_AMOD, 'problem' => ''];
 		}
 
 		if (stripos($data, 'phpBBArcadeUrl') !== false)
 		{
-			return -1;
+			return ['type' => -1, 'problem' => ''];
 		}
 
-		return null;
+		return ['type' => null, 'problem' => 'NONE'];
 	}
 
 	/**

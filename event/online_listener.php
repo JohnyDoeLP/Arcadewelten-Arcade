@@ -73,6 +73,11 @@ class online_listener implements EventSubscriberInterface
 			$location = $this->language->lang('AW_ARCADE_ONLINE_DUELS');
 			$url = $this->helper->route('arcadewelten_arcade_duels');
 		}
+		else if ($path === 'tourneys' || preg_match('#^tourney/\d+$#', $path))
+		{
+			$location = $this->language->lang('AW_ARCADE_ONLINE_TOURNEYS');
+			$url = $this->helper->route('arcadewelten_arcade_tourneys');
+		}
 		else if (preg_match('#^user/\d+$#', $path))
 		{
 			$location = $this->language->lang('AW_ARCADE_ONLINE_RECORDS');

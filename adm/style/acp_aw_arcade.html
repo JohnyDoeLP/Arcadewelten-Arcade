@@ -125,6 +125,13 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_TOURNEYS_ON') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_TOURNEYS_ON_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_tourneys" value="1"{% if AW_TOURNEYS %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_tourneys" value="0"{% if not AW_TOURNEYS %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label for="aw_duel_days">{{ lang('ACP_AW_ARCADE_DUEL_DAYS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_DUEL_DAYS_EXPLAIN') }}</span></dt>
 			<dd><input type="number" id="aw_duel_days" name="aw_duel_days" min="1" max="30" value="{{ AW_DUEL_DAYS }}"> {{ lang('DAYS') }}</dd>
 		</dl>
@@ -210,6 +217,13 @@
 			<dd>
 				<label><input type="radio" class="radio" name="aw_post_season" value="1"{% if AW_POST_SEASON %} checked{% endif %}> {{ lang('YES') }}</label>
 				<label><input type="radio" class="radio" name="aw_post_season" value="0"{% if not AW_POST_SEASON %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_POST_TOURNEYS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_POST_TOURNEYS_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_post_tourneys" value="1"{% if AW_POST_TOURNEYS %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_post_tourneys" value="0"{% if not AW_POST_TOURNEYS %} checked{% endif %}> {{ lang('NO') }}</label>
 			</dd>
 		</dl>
 	</fieldset>
@@ -430,7 +444,7 @@
 					<td><strong>{{ g.NAME }}</strong><br><span class="small">{{ g.DIR }}</span></td>
 					<td>{{ g.SAVE_TYPE }}</td>
 					<td>{{ g.SIZE }}</td>
-					<td>{% if g.S_SUPPORTED %}{{ lang('ACP_AW_ARCADE_READY') }}{% else %}<span class="error">{{ g.REASON }}</span>{% endif %}</td>
+					<td>{% if g.S_SUPPORTED %}{{ lang('ACP_AW_ARCADE_READY') }}{% if g.NOTE %}<br><span class="small">{{ g.NOTE }}</span>{% endif %}{% else %}<span class="error">{{ g.REASON }}</span>{% endif %}</td>
 				</tr>
 			{% endfor %}
 			</tbody>
@@ -571,6 +585,82 @@
 	{% endfor %}
 	</tbody>
 </table>
+{% endif %}
+
+{% if AW_MODE == 'tourneys' %}
+{% if S_AW_TOURNEY_FORM %}
+<a href="{{ U_ACTION }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+{% if AW_TOURNEY_ERRORS %}<div class="errorbox"><p>{{ AW_TOURNEY_ERRORS }}</p></div>{% endif %}
+<form id="aw_tourney" method="post" action="{{ U_AW_TOURNEY_FORM }}">
+	<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_TOURNEY') }}</legend>
+		<dl>
+			<dt><label for="tourney_name">{{ lang('ACP_AW_ARCADE_NAME') }}{{ lang('COLON') }}</label></dt>
+			<dd><input class="text medium" type="text" id="tourney_name" name="tourney_name" maxlength="255" value="{{ AW_TOURNEY_NAME }}" required></dd>
+		</dl>
+		<dl>
+			<dt><label for="tourney_desc">{{ lang('ACP_AW_ARCADE_DESC') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_TOURNEY_DESC_EXPLAIN') }}</span></dt>
+			<dd><textarea id="tourney_desc" name="tourney_desc" rows="4" cols="60">{{ AW_TOURNEY_DESC }}</textarea></dd>
+		</dl>
+		<dl>
+			<dt><label for="tourney_start">{{ lang('ACP_AW_ARCADE_TOURNEY_START') }}{{ lang('COLON') }}</label>{% if S_AW_TOURNEY_STARTED %}<br><span>{{ lang('ACP_AW_ARCADE_TOURNEY_START_LOCKED') }}</span>{% endif %}</dt>
+			<dd><input type="datetime-local" id="tourney_start" name="tourney_start" value="{{ AW_TOURNEY_START }}"{% if S_AW_TOURNEY_STARTED %} disabled{% endif %}></dd>
+		</dl>
+		<dl>
+			<dt><label for="tourney_end">{{ lang('ACP_AW_ARCADE_TOURNEY_END') }}{{ lang('COLON') }}</label></dt>
+			<dd><input type="datetime-local" id="tourney_end" name="tourney_end" value="{{ AW_TOURNEY_END }}"></dd>
+		</dl>
+		<dl>
+			<dt><label for="tourney_games">{{ lang('ACP_AW_ARCADE_TOURNEY_GAMES') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_TOURNEY_GAMES_EXPLAIN') }}</span></dt>
+			<dd><select id="tourney_games" name="tourney_games[]" multiple size="15">
+				{% for c in loops.tg_cats %}<optgroup label="{{ c.NAME }}">{% for g in c.games %}<option value="{{ g.ID }}"{% if g.S_SEL %} selected{% endif %}>{{ g.NAME }}</option>{% endfor %}</optgroup>{% endfor %}
+			</select></dd>
+		</dl>
+		{% if S_AW_POINTS_AVAILABLE %}
+		{% for place in 1..3 %}
+		<dl>
+			<dt><label for="tourney_prize_{{ place }}">{{ lang('ACP_AW_ARCADE_TOURNEY_PRIZE', place) }}{{ lang('COLON') }}</label>{% if loop.first %}<br><span>{{ lang('ACP_AW_ARCADE_TOURNEY_PRIZE_EXPLAIN') }}</span>{% endif %}</dt>
+			<dd><input type="number" min="0" step="0.01" id="tourney_prize_{{ place }}" name="tourney_prize_{{ place }}" value="{{ attribute(_context, 'AW_TOURNEY_PRIZE_' ~ place) }}"></dd>
+		</dl>
+		{% endfor %}
+		{% endif %}
+	</fieldset>
+	<p class="submit-buttons"><input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}"></p>
+	{{ S_FORM_TOKEN }}
+</form>
+{% else %}
+<p>{{ lang('ACP_AW_ARCADE_TOURNEYS_EXPLAIN') }}</p>
+{% if not S_AW_TOURNEYS_ON %}<div class="errorbox"><p>{{ lang('ACP_AW_ARCADE_TOURNEYS_OFF') }}</p></div>{% endif %}
+<table class="table1 zebra-table">
+	<thead>
+		<tr>
+			<th>{{ lang('ACP_AW_ARCADE_NAME') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_TOURNEY_START') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_TOURNEY_END') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_TOURNEY_STATUS') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_TOURNEY_GAMES') }}</th>
+			<th>{{ lang('ACP_AW_ARCADE_TOURNEY_PLAYERS') }}</th>
+			<th>{{ lang('ACTION') }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for t in loops.tourneys %}
+		<tr>
+			<td><a href="{{ t.U_VIEW }}">{{ t.NAME }}</a></td>
+			<td>{{ t.START }}</td>
+			<td>{{ t.END }}</td>
+			<td>{{ t.STATUS }}</td>
+			<td>{{ t.GAMES }}</td>
+			<td>{{ t.PLAYERS }}</td>
+			<td>{% if t.U_EDIT %}<a href="{{ t.U_EDIT }}">{{ ICON_EDIT }}</a> {% endif %}<a href="{{ t.U_DELETE }}">{{ ICON_DELETE }}</a></td>
+		</tr>
+	{% else %}
+		<tr><td colspan="7">{{ lang('ACP_AW_ARCADE_TOURNEYS_NONE') }}</td></tr>
+	{% endfor %}
+	</tbody>
+</table>
+<p><a class="button2" href="{{ U_AW_TOURNEY_ADD }}">{{ lang('ACP_AW_ARCADE_TOURNEY_ADD') }}</a></p>
+{% endif %}
 {% endif %}
 
 {% include 'overall_footer.html' %}

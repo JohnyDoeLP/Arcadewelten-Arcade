@@ -20,6 +20,7 @@ class main_info
 				'games'		=> ['title' => 'ACP_AW_ARCADE_GAMES', 'auth' => 'ext_arcadewelten/arcade && acl_a_board', 'cat' => ['ACP_AW_ARCADE']],
 				'cats'		=> ['title' => 'ACP_AW_ARCADE_CATS', 'auth' => 'ext_arcadewelten/arcade && acl_a_board', 'cat' => ['ACP_AW_ARCADE']],
 				'review'	=> ['title' => 'ACP_AW_ARCADE_REVIEW', 'auth' => 'ext_arcadewelten/arcade && acl_a_board', 'cat' => ['ACP_AW_ARCADE']],
+				'tourneys'	=> ['title' => 'ACP_AW_ARCADE_TOURNEYS', 'auth' => 'ext_arcadewelten/arcade && acl_a_board', 'cat' => ['ACP_AW_ARCADE']],
 			],
 		];
 	}

@@ -1,0 +1,60 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+{% import _self as aw %}
+
+<h2 class="aw-title"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_TOURNEYS') }}</h2>
+<p>{{ lang('AW_ARCADE_TOURNEYS_EXPLAIN') }}</p>
+
+{% macro list(rows, kind) %}
+<table class="table1 aw-duel-table aw-tourney-table">
+	<thead>
+		<tr>
+			<th>{{ lang('AW_ARCADE_TOURNEY') }}</th>
+			<th>{{ lang('AW_ARCADE_TOURNEY_PERIOD') }}</th>
+			<th>{{ lang('AW_ARCADE_TOURNEY_GAMES') }}</th>
+			<th>{{ lang('AW_ARCADE_TOURNEY_PLAYERS') }}</th>
+			<th>{{ kind == 'running' ? lang('AW_ARCADE_TOURNEY_ENDS_IN') : (kind == 'upcoming' ? lang('AW_ARCADE_TOURNEY_STARTS_IN') : '') }}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for t in rows %}
+		<tr class="{{ loop.index is odd ? 'bg1' : 'bg2' }}">
+			<td><a href="{{ t.U_VIEW }}"><strong>{{ t.NAME }}</strong></a></td>
+			<td>{{ t.START }} – {{ t.END }}</td>
+			<td>{{ t.GAMES }}</td>
+			<td>{{ t.PLAYERS }}</td>
+			<td>{% if kind != 'finished' %}{{ t.LEFT }}{% else %}<a href="{{ t.U_VIEW }}">{{ lang('AW_ARCADE_TOURNEY_RESULT') }}</a>{% endif %}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endmacro %}
+
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_TOURNEYS_RUNNING') }}</h3>
+		{% if loops.tourneys_running|length %}{{ aw.list(loops.tourneys_running, 'running') }}{% else %}<p>{{ lang('AW_ARCADE_TOURNEYS_NONE_RUNNING') }}</p>{% endif %}
+	</div>
+</div>
+
+{% if loops.tourneys_upcoming|length %}
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_TOURNEYS_UPCOMING') }}</h3>
+		{{ aw.list(loops.tourneys_upcoming, 'upcoming') }}
+	</div>
+</div>
+{% endif %}
+
+{% if loops.tourneys_finished|length %}
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('AW_ARCADE_TOURNEYS_FINISHED') }}</h3>
+		{{ aw.list(loops.tourneys_finished, 'finished') }}
+	</div>
+</div>
+{% endif %}
+
+{% include '@arcadewelten_arcade/arcade_credit.html' %}
+
+{% include 'overall_footer.html' %}

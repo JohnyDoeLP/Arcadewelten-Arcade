@@ -48,6 +48,10 @@ class main_module
 	protected $reports;
 	/** @var \arcadewelten\arcade\core\season */
 	protected $season;
+	/** @var \arcadewelten\arcade\core\tourneys */
+	protected $tourneys;
+	/** @var \arcadewelten\arcade\core\tourney_jobs */
+	protected $tourney_jobs;
 	/** @var \phpbb\user */
 	protected $user;
 	/** @var string */
@@ -73,6 +77,8 @@ class main_module
 		$this->forum = $phpbb_container->get('arcadewelten.arcade.forum');
 		$this->favorites = $phpbb_container->get('arcadewelten.arcade.favorites');
 		$this->reports = $phpbb_container->get('arcadewelten.arcade.reports');
+		$this->tourneys = $phpbb_container->get('arcadewelten.arcade.tourneys');
+		$this->tourney_jobs = $phpbb_container->get('arcadewelten.arcade.tourney_jobs');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
 
@@ -95,6 +101,10 @@ class main_module
 
 			case 'review':
 				$this->mode_review();
+			break;
+
+			case 'tourneys':
+				$this->mode_tourneys();
 			break;
 
 			default:
@@ -161,12 +171,14 @@ class main_module
 			$this->config->set('aw_arcade_duels', $this->request->variable('aw_duels', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_duel_days', max(1, min(30, $this->request->variable('aw_duel_days', 7))));
 			$this->config->set('aw_arcade_duel_max', max(1, min(50, $this->request->variable('aw_duel_max', 5))));
+			$this->config->set('aw_arcade_tourneys', $this->request->variable('aw_tourneys', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_news_forum', $this->request->variable('aw_news_forum', 0));
 			$this->config->set('aw_arcade_favorites', $this->request->variable('aw_favorites', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_reports', $this->request->variable('aw_reports', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_medals', $this->request->variable('aw_medals', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_games', $this->request->variable('aw_post_games', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_season', $this->request->variable('aw_post_season', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_post_tourneys', $this->request->variable('aw_post_tourneys', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_batch', max(0, min(100, $this->request->variable('aw_post_batch', 5))));
 
 			$bot_name = trim($this->request->variable('aw_bot', '', true));
@@ -214,6 +226,8 @@ class main_module
 			'AW_DUELS'				=> (bool) $this->config['aw_arcade_duels'],
 			'AW_DUEL_DAYS'			=> (int) $this->config['aw_arcade_duel_days'],
 			'AW_DUEL_MAX'			=> (int) $this->config['aw_arcade_duel_max'],
+			'AW_TOURNEYS'			=> (bool) $this->config['aw_arcade_tourneys'],
+			'AW_POST_TOURNEYS'		=> (bool) $this->config['aw_arcade_post_tourneys'],
 			'AW_BOT'				=> ($bot = $this->forum->bot()) ? $bot['username'] : '',
 			'AW_POST_GAMES'			=> (bool) $this->config['aw_arcade_post_games'],
 			'AW_FAVORITES'			=> (bool) $this->config['aw_arcade_favorites'],
@@ -445,6 +459,7 @@ class main_module
 				$this->ratings->delete_game($game_id);
 				$this->recent->delete_game($game_id);
 				$this->duels->delete_game($game_id);
+				$this->tourneys->delete_game($game_id);
 				$this->favorites->delete_game($game_id);
 				$this->reports->delete_game($game_id);
 				$this->games->delete_game($game_id);
@@ -521,7 +536,8 @@ class main_module
 				'SAVE_TYPE'		=> $this->language->lang('ACP_AW_ARCADE_SAVE_' . (int) $g['save_type']),
 				'SIZE'			=> $g['width'] . ' × ' . $g['height'],
 				'S_SUPPORTED'	=> $g['supported'],
-				'REASON'		=> $g['reason'] !== '' ? $this->language->lang('ACP_AW_ARCADE_REASON_' . $g['reason']) : '',
+				'REASON'		=> $this->import_reason($g),
+				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
 			]);
 		}
 
@@ -663,7 +679,7 @@ class main_module
 
 			if ($flag && $action === 'approve' && ($game = $this->games->get_game($flag['game_id'], false)))
 			{
-				$this->scores->save_score($game, $flag['user_id'], $flag['score']);
+				$this->scores->save_score($game, $flag['user_id'], $flag['score'], (int) $flag['flag_time']);
 				$this->points->reward_round($flag['user_id'], $game, $flag['score']);
 			}
 
@@ -1078,6 +1094,231 @@ class main_module
 		return implode(', ', $names);
 	}
 
+	/* ---------------------------------------------------------------
+	 * Tournaments
+	 * ------------------------------------------------------------- */
+
+	protected function mode_tourneys()
+	{
+		// Start and end what is due, so the list shows the real state.
+		$this->tourney_jobs->run();
+
+		$action = $this->request->variable('action', '');
+		$tourney_id = $this->request->variable('t', 0);
+
+		if ($action === 'delete' && $tourney_id)
+		{
+			$tourney = $this->tourneys->get($tourney_id);
+
+			if ($tourney && confirm_box(true))
+			{
+				$this->tourneys->delete($tourney_id);
+				$this->log_admin('LOG_AW_ARCADE_TOURNEY_DELETED', [$tourney['tourney_name']]);
+				trigger_error($this->language->lang('ACP_AW_ARCADE_TOURNEY_DELETED') . adm_back_link($this->u_action));
+			}
+			else if ($tourney)
+			{
+				confirm_box(false, $this->language->lang('ACP_AW_ARCADE_TOURNEY_DELETE_CONFIRM', $tourney['tourney_name']), build_hidden_fields(['action' => 'delete', 't' => $tourney_id]));
+			}
+
+			redirect($this->u_action);
+		}
+
+		if ($action === 'add' || $action === 'edit')
+		{
+			$this->tourney_form($action === 'edit' ? $tourney_id : 0);
+			return;
+		}
+
+		$players = $this->tourneys->count_players();
+
+		foreach ($this->tourneys->get_all() as $tourney)
+		{
+			$status = \arcadewelten\arcade\core\tourneys::status($tourney);
+			$id = (int) $tourney['tourney_id'];
+
+			$this->template->assign_block_vars('tourneys', [
+				'NAME'		=> $tourney['tourney_name'],
+				'START'		=> $this->user->format_date((int) $tourney['tourney_start']),
+				'END'		=> $this->user->format_date((int) $tourney['tourney_end']),
+				'STATUS'	=> $this->language->lang('ACP_AW_ARCADE_TOURNEY_' . strtoupper($status)),
+				'GAMES'		=> count($this->tourneys->get_game_ids($id)),
+				'PLAYERS'	=> isset($players[$id]) ? $players[$id] : 0,
+				'U_VIEW'	=> append_sid($this->phpbb_root_path_web() . 'app.php/arcadehall/tourney/' . $id),
+				'U_EDIT'	=> $status !== \arcadewelten\arcade\core\tourneys::FINISHED ? $this->u_action . '&amp;action=edit&amp;t=' . $id : '',
+				'U_DELETE'	=> $this->u_action . '&amp;action=delete&amp;t=' . $id,
+			]);
+		}
+
+		$this->template->assign_vars([
+			'S_AW_TOURNEYS_ON'	=> $this->tourneys->enabled(),
+			'U_AW_TOURNEY_ADD'	=> $this->u_action . '&amp;action=add',
+		]);
+	}
+
+	protected function tourney_form($tourney_id)
+	{
+		$tourney = $tourney_id ? $this->tourneys->get($tourney_id) : false;
+
+		if ($tourney_id && (!$tourney || \arcadewelten\arcade\core\tourneys::status($tourney) === \arcadewelten\arcade\core\tourneys::FINISHED))
+		{
+			trigger_error($this->language->lang('ACP_AW_ARCADE_TOURNEY_LOCKED') . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		$errors = [];
+		$data = $tourney ?: [
+			'tourney_name'		=> '',
+			'tourney_desc'		=> '',
+			'tourney_start'		=> mktime((int) date('G') + 1, 0, 0),
+			'tourney_end'		=> mktime((int) date('G') + 1, 0, 0) + 7 * 86400,
+			'tourney_prize_1'	=> 0,
+			'tourney_prize_2'	=> 0,
+			'tourney_prize_3'	=> 0,
+		];
+		$game_ids = $tourney ? $this->tourneys->get_game_ids($tourney_id) : [];
+		$started = $tourney && (int) $tourney['tourney_start'] <= time();
+
+		if ($this->request->is_set_post('submit'))
+		{
+			$this->check_form();
+
+			$data['tourney_name'] = utf8_normalize_nfc(trim($this->request->variable('tourney_name', '', true)));
+			$data['tourney_desc'] = utf8_normalize_nfc(trim($this->request->variable('tourney_desc', '', true)));
+			$start = $this->parse_datetime($this->request->variable('tourney_start', ''));
+			$end = $this->parse_datetime($this->request->variable('tourney_end', ''));
+			$game_ids = array_map('intval', $this->request->variable('tourney_games', [0]));
+			$game_ids = array_values(array_filter($game_ids));
+
+			foreach ([1, 2, 3] as $place)
+			{
+				$data['tourney_prize_' . $place] = max(0, round((float) str_replace(',', '.', $this->request->variable('tourney_prize_' . $place, '0')), 2));
+			}
+
+			// A running tournament keeps its start; changing it would change who already counted.
+			if (!$started)
+			{
+				$data['tourney_start'] = $start;
+			}
+			$data['tourney_end'] = $end;
+
+			if ($data['tourney_name'] === '')
+			{
+				$errors[] = $this->language->lang('ACP_AW_ARCADE_TOURNEY_ERR_NAME');
+			}
+
+			if (!$start || !$end || $end <= (int) $data['tourney_start'])
+			{
+				$errors[] = $this->language->lang('ACP_AW_ARCADE_TOURNEY_ERR_PERIOD');
+			}
+			else if ($end <= time())
+			{
+				$errors[] = $this->language->lang('ACP_AW_ARCADE_TOURNEY_ERR_PAST');
+			}
+
+			if (!$game_ids)
+			{
+				$errors[] = $this->language->lang('ACP_AW_ARCADE_TOURNEY_ERR_GAMES');
+			}
+
+			if (!$errors)
+			{
+				$save = [
+					'tourney_name'		=> $data['tourney_name'],
+					'tourney_desc'		=> $data['tourney_desc'],
+					'tourney_start'		=> (int) $data['tourney_start'],
+					'tourney_end'		=> (int) $data['tourney_end'],
+					'tourney_prize_1'	=> $data['tourney_prize_1'],
+					'tourney_prize_2'	=> $data['tourney_prize_2'],
+					'tourney_prize_3'	=> $data['tourney_prize_3'],
+				];
+
+				$this->tourneys->save($tourney_id, $save, $game_ids);
+				$this->log_admin($tourney_id ? 'LOG_AW_ARCADE_TOURNEY_EDITED' : 'LOG_AW_ARCADE_TOURNEY_ADDED', [$save['tourney_name']]);
+
+				// Starting right now: announce at once instead of waiting for the cron.
+				$this->tourney_jobs->run();
+
+				trigger_error($this->language->lang('ACP_AW_ARCADE_TOURNEY_SAVED') . adm_back_link($this->u_action));
+			}
+		}
+
+		// Games grouped by category, active games only.
+		$cats = [0 => $this->language->lang('ACP_AW_ARCADE_NO_CAT')];
+		foreach ($this->games->get_cats() as $cat)
+		{
+			$cats[(int) $cat['cat_id']] = $cat['cat_name'];
+		}
+
+		$by_cat = [];
+		foreach ($this->games->list_games(0, 0, 100000, true) as $game)
+		{
+			if ((int) $game['game_save_type'] === games::SAVE_NONE)
+			{
+				continue;
+			}
+			$by_cat[(int) $game['cat_id']][] = $game;
+		}
+
+		foreach ($cats as $cat_id => $cat_name)
+		{
+			if (empty($by_cat[$cat_id]))
+			{
+				continue;
+			}
+
+			$this->template->assign_block_vars('tg_cats', ['NAME' => $cat_name]);
+
+			foreach ($by_cat[$cat_id] as $game)
+			{
+				$this->template->assign_block_vars('tg_cats.games', [
+					'ID'		=> (int) $game['game_id'],
+					'NAME'		=> $game['game_name'],
+					'S_SEL'		=> in_array((int) $game['game_id'], $game_ids, true),
+				]);
+			}
+		}
+
+		$this->template->assign_vars([
+			'S_AW_TOURNEY_FORM'		=> true,
+			'S_AW_TOURNEY_STARTED'	=> $started,
+			'AW_TOURNEY_ERRORS'		=> $errors ? implode('<br>', $errors) : '',
+			'AW_TOURNEY_NAME'		=> $data['tourney_name'],
+			'AW_TOURNEY_DESC'		=> $data['tourney_desc'],
+			'AW_TOURNEY_START'		=> $this->format_datetime((int) $data['tourney_start']),
+			'AW_TOURNEY_END'		=> $this->format_datetime((int) $data['tourney_end']),
+			'AW_TOURNEY_PRIZE_1'	=> (float) $data['tourney_prize_1'],
+			'AW_TOURNEY_PRIZE_2'	=> (float) $data['tourney_prize_2'],
+			'AW_TOURNEY_PRIZE_3'	=> (float) $data['tourney_prize_3'],
+			'S_AW_POINTS_AVAILABLE'	=> $this->points->available(),
+			'U_AW_TOURNEY_FORM'		=> $this->u_action . '&amp;action=' . ($tourney_id ? 'edit&amp;t=' . (int) $tourney_id : 'add'),
+		]);
+	}
+
+	/**
+	 * "2026-11-20T18:00" in the admin's time zone -> timestamp (0 if invalid).
+	 */
+	protected function parse_datetime($value)
+	{
+		$date = \DateTime::createFromFormat('Y-m-d\TH:i', (string) $value, $this->user->timezone);
+
+		return $date ? $date->getTimestamp() : 0;
+	}
+
+	protected function format_datetime($timestamp)
+	{
+		$date = new \DateTime('@' . (int) $timestamp);
+		$date->setTimezone($this->user->timezone);
+
+		return $date->format('Y-m-d\TH:i');
+	}
+
+	protected function log_admin($key, array $args)
+	{
+		global $phpbb_container;
+
+		$phpbb_container->get('log')->add('admin', $this->user->data['user_id'], $this->user->ip, $key, false, $args);
+	}
+
 	protected function assign_cat_options($selected)
 	{
 		foreach ($this->games->get_cats() as $cat)
@@ -1088,5 +1329,25 @@ class main_module
 				'S_SEL'		=> (int) $cat['cat_id'] === (int) $selected,
 			]);
 		}
+	}
+
+	/**
+	 * Why a game cannot be imported, in words (also for constants we have no text for).
+	 */
+	protected function import_reason(array $g)
+	{
+		if ($g['reason'] === '')
+		{
+			return '';
+		}
+
+		$key = 'ACP_AW_ARCADE_REASON_' . $g['reason'];
+
+		if (!$this->language->is_set($key))
+		{
+			return $this->language->lang('ACP_AW_ARCADE_REASON_UNKNOWN', $g['reason']);
+		}
+
+		return $this->language->lang($key, $g['reason_arg']);
 	}
 }

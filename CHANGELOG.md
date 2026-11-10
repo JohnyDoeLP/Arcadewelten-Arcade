@@ -1,7 +1,16 @@
 # Changelog
 
-## Unreleased
+## 0.18.0-beta (2026-11-10)
 
+- **Tournaments:** the admin picks several games and a period (ACP → Tournaments). Per game every member’s best result within the period counts; places 1–8 earn tournament points (10, 8, 6, 5, 4, 3, 2, 1), their total is the overall ranking (tie: first, second, third places, then games played). Normal highscores are not affected
+  - Tournament list (running, planned, finished) and a page per tournament with live countdown, overall ranking and the places per game; banner in the arcade while a tournament runs, hint on the play page of every tournament game, note after a result that counted
+  - Optional prizes in Ultimate Points for places 1–3, paid automatically when the tournament ends
+  - ArcadeBot: topic “[Tournament]” at the start and “[Tournament result]” with the top 10 at the end (switchable). Games from categories with a password or group visibility are only counted there, not named
+  - Games from group-limited categories are only shown to members who may see them; approved results from the review list count with the time they were played
+  - Start and end run through phpBB’s cron and on the tournament pages, protected against double payouts; a running tournament keeps its start, finished ones can only be deleted
+  - New switches “Tournaments” and “Post tournaments” in the settings; privacy section, “Who is online” and member deletion cover tournaments
+- **Import:** wrongly filled installation files are recognised. If the installation file names an interface we do not support (e.g. `ARCADELIB_GAME`), the importer still looks into the game file; if it finds IBPro, IBPro v3 or Activity Mod there, the game is imported with that interface and the list says “interface detected from the game file”
+- **Import:** clearer reasons for games that cannot be imported: game file damaged or not a Flash file, strongly compressed (ZWS) and not checkable, no known score interface found; unknown values from the installation file are shown by name instead of a raw language key
 - ACP → Categories: the category list shows “hidden in “Who is online”” next to the password column for categories with that switch
 
 ## 0.17.1-beta (2026-11-09)
