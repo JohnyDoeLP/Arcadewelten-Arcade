@@ -51,7 +51,7 @@ $lang = array_merge($lang, [
 		1 => '%d more game (only visible to members with access)',
 		2 => '%d more games (only visible to members with access)',
 	],
-	'AW_ARCADE_POST_TOURNEY_RULES'			=> 'Per game your best result within the tournament period counts. The places earn tournament points (10, 8, 6, 5, 4, 3, 2, 1); the total decides.',
+	'AW_ARCADE_POST_TOURNEY_RULES'			=> 'Per game your best result above 0 within the tournament period counts. The places earn tournament points (10, 8, 6, 5, 4, 3, 2, 1); the total decides.',
 	'AW_ARCADE_POST_TOURNEY_PRIZES'			=> 'Prizes:',
 	'AW_ARCADE_POST_TOURNEY_PRIZE_LINE'		=> 'Place %1$d: %2$s %3$s',
 	'AW_ARCADE_POST_TOURNEY_TO'				=> 'To the tournament',

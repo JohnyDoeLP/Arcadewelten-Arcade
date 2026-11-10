@@ -51,7 +51,7 @@ $lang = array_merge($lang, [
 		1 => '%d weiteres Spiel (nur für berechtigte Mitglieder sichtbar)',
 		2 => '%d weitere Spiele (nur für berechtigte Mitglieder sichtbar)',
 	],
-	'AW_ARCADE_POST_TOURNEY_RULES'			=> 'Pro Spiel zählt dein bestes Ergebnis im Turnierzeitraum. Die Plätze bringen Turnierpunkte (10, 8, 6, 5, 4, 3, 2, 1), die Summe entscheidet.',
+	'AW_ARCADE_POST_TOURNEY_RULES'			=> 'Pro Spiel zählt dein bestes Ergebnis über 0 im Turnierzeitraum. Die Plätze bringen Turnierpunkte (10, 8, 6, 5, 4, 3, 2, 1), die Summe entscheidet.',
 	'AW_ARCADE_POST_TOURNEY_PRIZES'			=> 'Prämien:',
 	'AW_ARCADE_POST_TOURNEY_PRIZE_LINE'		=> 'Platz %1$d: %2$s %3$s',
 	'AW_ARCADE_POST_TOURNEY_TO'				=> 'Zum Turnier',

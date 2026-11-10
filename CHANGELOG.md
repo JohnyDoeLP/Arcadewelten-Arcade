@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.18.2-beta (2026-11-10)
+
+- Fix: in tournaments a result of 0 earned a place and tournament points. Only results above 0 count now; existing 0 results disappear from the ranking at once
+
 ## 0.18.1-beta (2026-11-10)
 
 - Fix: a running tournament could not be saved in the ACP (“Please enter start and end”), because the browser does not send the locked start field

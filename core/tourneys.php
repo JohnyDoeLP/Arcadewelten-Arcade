@@ -157,7 +157,7 @@ class tourneys
 	}
 
 	/**
-	 * Number of players per tournament.
+	 * Number of players per tournament (results above 0 only).
 	 *
 	 * @return array tourney_id => count
 	 */
@@ -165,6 +165,7 @@ class tourneys
 	{
 		$sql = 'SELECT tourney_id, COUNT(DISTINCT user_id) AS players
 			FROM ' . $this->tourney_scores_table . '
+			WHERE score > 0
 			GROUP BY tourney_id';
 		$result = $this->db->sql_query($sql);
 		$counts = [];
@@ -202,6 +203,7 @@ class tourneys
 			FROM ' . $this->tourney_scores_table . ' s
 			JOIN ' . USERS_TABLE . ' u ON u.user_id = s.user_id
 			WHERE s.tourney_id = ' . (int) $tourney['tourney_id'] . '
+				AND s.score > 0
 				AND ' . $this->db->sql_in_set('s.game_id', array_keys($games));
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
@@ -301,6 +303,12 @@ class tourneys
 
 		$time = $time === null ? time() : (int) $time;
 		$score = round((float) $score, 2);
+
+		// 0 (or less) means "nothing reached": no place, no tournament points.
+		if ($score <= 0)
+		{
+			return 0;
+		}
 		$low = (int) $game['game_scoretype'] === games::SCORE_LOW;
 
 		$sql = 'SELECT t.tourney_id
