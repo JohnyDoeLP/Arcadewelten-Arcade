@@ -15,12 +15,13 @@ Suggestions are welcome – the list grows with the community.
 
 ## Next
 
-1. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
-2. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
-3. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-4. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-5. **Statistics page** per member: favourite game, play time, best ranks
-6. **Highscore certificates** for season winners (image, generated with GD)
+1. **Import: detect wrongly filled installation files**: if the installation file declares an unknown score interface (e.g. `ARCADELIB_GAME` or a missing/unknown constant), the importer still looks into the game file itself instead of sorting the game out right away; if it finds IBPro, IBPro v3 or Activity Mod calls there, the game is imported with that interface and the ACP shows a note "interface detected from the game file". Example: four games that were labelled as Arcadelib but are really IBPro games
+2. **Tournaments / championships**: the admin picks several games and a period; overall ranking across the games, countdown, prizes (Ultimate Points)
+3. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
+4. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
+5. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+6. **Statistics page** per member: favourite game, play time, best ranks
+7. **Highscore certificates** for season winners (image, generated with GD)
 
 ## phpBB 4
 
