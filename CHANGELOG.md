@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.18.1-beta (2026-11-10)
 
+- Fix: a running tournament could not be saved in the ACP (“Please enter start and end”), because the browser does not send the locked start field
 - Tournament pages: values are centred under their column headings, the prize column shows the points name (e.g. “900 Points”)
 
 ## 0.18.0-beta (2026-11-10)

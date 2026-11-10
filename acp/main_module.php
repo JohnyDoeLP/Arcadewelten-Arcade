@@ -1184,7 +1184,8 @@ class main_module
 
 			$data['tourney_name'] = utf8_normalize_nfc(trim($this->request->variable('tourney_name', '', true)));
 			$data['tourney_desc'] = utf8_normalize_nfc(trim($this->request->variable('tourney_desc', '', true)));
-			$start = $this->parse_datetime($this->request->variable('tourney_start', ''));
+			// A running tournament keeps its start (the locked field is not even sent by the browser).
+			$start = $started ? (int) $tourney['tourney_start'] : $this->parse_datetime($this->request->variable('tourney_start', ''));
 			$end = $this->parse_datetime($this->request->variable('tourney_end', ''));
 			$game_ids = array_map('intval', $this->request->variable('tourney_games', [0]));
 			$game_ids = array_values(array_filter($game_ids));
