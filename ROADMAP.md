@@ -16,11 +16,12 @@ Suggestions are welcome – the list grows with the community.
 
 ## Next
 
-1. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
-2. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-3. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-4. **Statistics page** per member: favourite game, play time, best ranks
-5. **Highscore certificates** for season winners (image, generated with GD)
+1. **Tournament changes in the forum**: the start topic of a tournament is remembered; if the end, the games or the prizes of a running tournament change in the ACP, the ArcadeBot posts a short reply there (e.g. "Change: the tournament now ends on 11.11.2026 at 16:00"), so subscribers are notified and the change stays traceable. The result stays a separate topic; the start topic gets a short final reply with a link to it
+2. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
+3. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
+4. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+5. **Statistics page** per member: favourite game, play time, best ranks
+6. **Highscore certificates** for season winners (image, generated with GD)
 
 ## phpBB 4
 
