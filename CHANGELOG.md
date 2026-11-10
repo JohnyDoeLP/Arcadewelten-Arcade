@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Tournament pages: values are centred under their column headings, the prize column shows the points name (e.g. “900 Points”)
+
 ## 0.18.0-beta (2026-11-10)
 
 - **Tournaments:** the admin picks several games and a period (ACP → Tournaments). Per game every member’s best result within the period counts; places 1–8 earn tournament points (10, 8, 6, 5, 4, 3, 2, 1), their total is the overall ranking (tie: first, second, third places, then games played). Normal highscores are not affected

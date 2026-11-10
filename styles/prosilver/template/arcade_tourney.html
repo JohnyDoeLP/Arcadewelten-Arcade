@@ -26,7 +26,7 @@
 			<thead>
 				<tr>
 					<th>{{ lang('AW_ARCADE_TOURNEY_RANK') }}</th>
-					<th>{{ lang('USERNAME') }}</th>
+					<th class="aw-col-name">{{ lang('USERNAME') }}</th>
 					<th>{{ lang('AW_ARCADE_TOURNEY_POINTS') }}</th>
 					<th>{{ lang('AW_ARCADE_TOURNEY_FIRSTS') }}</th>
 					<th>{{ lang('AW_ARCADE_TOURNEY_GAMES_PLAYED') }}</th>
@@ -38,7 +38,7 @@
 			{% for r in loops.overall %}
 				<tr class="{% if r.S_ME %}reported{% elseif loop.index is odd %}bg1{% else %}bg2{% endif %}">
 					<td class="aw-rank">{% if r.RANK <= 3 %}<i class="icon fa-trophy aw-cup aw-cup-{{ r.RANK }}" aria-hidden="true" title="{{ r.RANK }}."></i>{% else %}{{ r.RANK }}{% endif %}</td>
-					<td>{{ r.USER }}</td>
+					<td class="aw-col-name">{{ r.USER }}</td>
 					<td><strong>{{ r.POINTS }}</strong></td>
 					<td>{{ r.FIRSTS }}</td>
 					<td>{{ r.GAMES }}</td>

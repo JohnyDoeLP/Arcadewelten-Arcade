@@ -182,3 +182,9 @@ table.table1.aw-duel-table thead th { color: #333; font-weight: bold; background
 .aw-tourney-game .aw-thumb { flex-basis: 40px; width: 40px; height: 40px; }
 .aw-tourney-mini { width: 100%; margin-bottom: 6px; }
 .aw-tourney-mini td { padding: 2px 4px; }
+
+/* Values sit centred under their column headings; names stay left-aligned */
+table.table1.aw-tourney-table th,
+table.table1.aw-tourney-table td { text-align: center; }
+table.table1.aw-tourney-table th.aw-col-name,
+table.table1.aw-tourney-table td.aw-col-name { text-align: left; }

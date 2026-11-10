@@ -731,7 +731,7 @@ class main
 				'POINTS'	=> (int) $row['points'],
 				'GAMES'		=> (int) $row['games'],
 				'FIRSTS'	=> (int) $row['places'][0],
-				'PRIZE'		=> ($row['rank'] <= 3 && $this->points->available() && (float) $tourney['tourney_prize_' . $row['rank']] > 0) ? $this->points->format($tourney['tourney_prize_' . $row['rank']]) : '',
+				'PRIZE'		=> ($row['rank'] <= 3 && $this->points->available() && (float) $tourney['tourney_prize_' . $row['rank']] > 0) ? $this->points->format($tourney['tourney_prize_' . $row['rank']]) . ' ' . $this->points->name() : '',
 				'S_ME'		=> $is_member && (int) $row['user_id'] === $me,
 			]);
 		}

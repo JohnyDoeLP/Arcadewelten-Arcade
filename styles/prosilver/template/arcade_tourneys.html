@@ -9,7 +9,7 @@
 <table class="table1 aw-duel-table aw-tourney-table">
 	<thead>
 		<tr>
-			<th>{{ lang('AW_ARCADE_TOURNEY') }}</th>
+			<th class="aw-col-name">{{ lang('AW_ARCADE_TOURNEY') }}</th>
 			<th>{{ lang('AW_ARCADE_TOURNEY_PERIOD') }}</th>
 			<th>{{ lang('AW_ARCADE_TOURNEY_GAMES') }}</th>
 			<th>{{ lang('AW_ARCADE_TOURNEY_PLAYERS') }}</th>
@@ -19,7 +19,7 @@
 	<tbody>
 	{% for t in rows %}
 		<tr class="{{ loop.index is odd ? 'bg1' : 'bg2' }}">
-			<td><a href="{{ t.U_VIEW }}"><strong>{{ t.NAME }}</strong></a></td>
+			<td class="aw-col-name"><a href="{{ t.U_VIEW }}"><strong>{{ t.NAME }}</strong></a></td>
 			<td>{{ t.START }} – {{ t.END }}</td>
 			<td>{{ t.GAMES }}</td>
 			<td>{{ t.PLAYERS }}</td>
