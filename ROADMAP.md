@@ -31,6 +31,8 @@ phpBB 4.0 changes a lot under the hood (no ACP/MCP/UCP modules any more, Doctrin
 
 ## Later / optional
 
+- To think about: own placement on every game card for members ("You: place 4 of 9", "not played yet")
+- To think about: one line "Last record: <member> in <game>" on the category tiles, hidden on small screens so the tiles do not get crowded
 - Notification for administrators when a game is reported (phpBB bell, e-mail optional in the UCP) – switchable, so nobody gets more notifications than wanted
 - Points interface: other points systems can be connected (detected automatically when installed, or attached by other extensions through a phpBB event). The existing Ultimate Points support stays exactly as it is – nothing changes in Ultimate Points itself or in how the arcade uses it.
 - Shoutbox support: new records and duel results in mChat or AJAX Chat, only offered in the ACP when one of them is installed – built once somebody actually uses it
