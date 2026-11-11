@@ -1,6 +1,6 @@
 # Arcadewelten Arcade für phpBB 3.3
 
-**Version 0.17.0-beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen.**
+**Beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen. Aktuelle Version: siehe [neuestes Release](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/latest).**
 
 Selbst gehostete Spielhalle für phpBB 3.3: Spieleliste mit Kategorien, Bestenlisten, Pokale und Ruhmeshalle.
 Keine Verbindungen nach außen, keine Werbung, kein Lizenzserver, keine Spiel-Limits. Open Source unter der GPL-2.0.

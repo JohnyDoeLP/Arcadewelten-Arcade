@@ -1,6 +1,6 @@
 # Arcadewelten Arcade for phpBB 3.3
 
-**Version 0.17.0-beta – in development, please test on a copy of your board first.**
+**Beta – in development, please test on a copy of your board first. Current version: see the [latest release](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/latest).**
 
 A self-hosted arcade for phpBB 3.3: game list with categories, highscores, trophies and a hall of fame.
 No external connections, no ads, no licence server, no play limits. Open source under the GPL-2.0.
