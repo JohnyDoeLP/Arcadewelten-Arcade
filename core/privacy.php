@@ -128,6 +128,7 @@ class privacy
 		}
 
 		$paragraphs[] = ['AW_ARCADE_PRIVACY_LOCAL'];
+		$paragraphs[] = ['AW_ARCADE_PRIVACY_BROWSER'];
 		$paragraphs[] = ['AW_ARCADE_PRIVACY_LEGAL'];
 
 		return $paragraphs;

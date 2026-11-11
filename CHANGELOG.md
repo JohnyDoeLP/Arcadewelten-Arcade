@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Privacy section: new paragraph about the browser’s local storage (cinema mode setting, save data of Flash games stored by Ruffle)
+
 ## 0.19.0-beta (2026-11-11)
 
 - **Tournament changes in the forum:** a tournament remembers its start topic. If the end, the games or the prizes of a running tournament change in the ACP, the ArcadeBot replies there (“Tournament change: the tournament now ends on … (previously …)”, “New: …”, “No longer included: …”, “New prizes: …”), so subscribers get a notification. Games from categories with a password or group visibility are only counted. When the tournament ends, the result stays a separate topic and the start topic gets a short final reply linking to it. Deleted or locked start topics are left alone
