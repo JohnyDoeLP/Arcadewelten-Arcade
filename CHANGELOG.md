@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Privacy section: the paragraph about external connections now clearly refers to the arcade itself; advertising the board shows on all pages is covered by the rest of the privacy policy
+
 ## 0.20.0-beta (2026-11-11)
 
 - **Drop-down menu in the header:** a click on “Arcade” opens a menu with arcade, tournaments (with a “live” marker while one runs), duels (members only, with the number of open challenges) and “random game”. Tournaments and duels only appear if switched on; the whole menu and “random game” can be switched off in the settings (then the link leads straight to the arcade as before)

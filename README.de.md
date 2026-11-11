@@ -11,7 +11,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 
 - **Alles auf deinem Server:** Spielhalle, Spiele und der Flash-Emulator Ruffle werden ausschließlich von deinem eigenen Server geladen. Es gibt keinen Lizenzserver und keine Verbindung zu einem Dienst des Herstellers.
 - **Läuft auch mit Werbeblockern und DNS-Filtern** (z. B. Pi-hole oder die Sperrliste der Fritzbox), weil es nichts gibt, was blockiert werden könnte. Selbst in einem Netz ohne Zugang zu fremden Servern funktioniert alles.
-- **Keine Werbung, kein Tracking:** Beim Spielen gehen keine Daten an Dritte. Der passende Abschnitt für die Datenschutzerklärung wird automatisch erzeugt.
+- **Keine Werbung, kein Tracking:** Die Erweiterung selbst bindet nichts davon ein, beim Spielen gehen keine Daten an Dritte. Ob du in deinem Forum Werbung schaltest, bleibt deine Entscheidung. Der passende Abschnitt für die Datenschutzerklärung wird automatisch erzeugt.
 - **Kein Abo, keine Limits, Open Source:** Die Spielhalle gehört dir. Auch wenn das Projekt eines Tages eingestellt würde, läuft sie weiter.
 
 ## Funktionen

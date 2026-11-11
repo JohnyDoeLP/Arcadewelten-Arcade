@@ -11,7 +11,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 
 - **Everything on your server:** the arcade, the games and the Flash emulator Ruffle are loaded from your own server only. There is no licence server and no connection to any service of the maker.
 - **Works with ad blockers and DNS filters** (e.g. Pi-hole or a router blocklist), because there is nothing to block. Even on a network without access to external servers everything works.
-- **No ads, no tracking:** no data goes to third parties while playing. The matching section for the privacy policy is generated automatically.
+- **No ads, no tracking:** the extension itself includes none of this, and no data goes to third parties while playing. Whether you show ads on your board stays your decision. The matching section for the privacy policy is generated automatically.
 - **No subscription, no limits, open source:** the arcade belongs to you. Even if the project were discontinued one day, it keeps running.
 
 ## Features
