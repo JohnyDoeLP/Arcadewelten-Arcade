@@ -438,6 +438,70 @@ class forum
 	/**
 	 * URL of the game's topic if it exists and the current user may read it.
 	 */
+	/**
+	 * Short reply in the start topic of a running tournament: what changed.
+	 *
+	 * @param array $lines one line per change (already in board language)
+	 * @return bool
+	 */
+	public function reply_tourney_change(array $tourney, array $lines)
+	{
+		if (!$lines)
+		{
+			return false;
+		}
+
+		$text = '[b]' . $this->lang('AW_ARCADE_POST_TOURNEY_CHANGE') . '[/b]' . "\n" . implode("\n", $lines) . "\n\n"
+			. '[url=' . $this->url('arcadehall/tourney/' . (int) $tourney['tourney_id']) . ']' . $this->lang('AW_ARCADE_POST_TOURNEY_TO') . '[/url]';
+
+		return $this->reply_to_start($tourney, $text);
+	}
+
+	/**
+	 * Final reply in the start topic, pointing to the result topic.
+	 */
+	public function reply_tourney_closed(array $tourney, $result_topic_id)
+	{
+		$link = $result_topic_id
+			? generate_board_url() . '/viewtopic.' . $this->php_ext . '?t=' . (int) $result_topic_id
+			: $this->url('arcadehall/tourney/' . (int) $tourney['tourney_id']);
+
+		return $this->reply_to_start($tourney, $this->lang('AW_ARCADE_POST_TOURNEY_CLOSED') . "\n\n[url=" . $link . ']' . $this->lang('AW_ARCADE_POST_TOURNEY_CLOSED_LINK') . '[/url]');
+	}
+
+	/**
+	 * Board-language texts for change replies (used by the tournament jobs).
+	 */
+	public function post_lang(...$args)
+	{
+		return $this->post_language()->lang(...$args);
+	}
+
+	/**
+	 * Reply as the bot in the start topic, if it still exists.
+	 */
+	protected function reply_to_start(array $tourney, $text)
+	{
+		$topic_id = (int) (isset($tourney['tourney_topic_id']) ? $tourney['tourney_topic_id'] : 0);
+
+		if (!$topic_id || !$this->posts_tourneys())
+		{
+			return false;
+		}
+
+		$result = $this->db->sql_query('SELECT forum_id, topic_title, topic_status FROM ' . TOPICS_TABLE . ' WHERE topic_id = ' . (int) $topic_id);
+		$topic = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		// Deleted or moved to the bin: nothing to reply to. A locked topic stays locked.
+		if (!$topic || (int) $topic['topic_status'] === ITEM_LOCKED || (int) $topic['topic_status'] === ITEM_MOVED)
+		{
+			return false;
+		}
+
+		return (bool) $this->post((int) $topic['forum_id'], 'Re: ' . $topic['topic_title'], $text, $topic_id);
+	}
+
 	public function topic_url(array $game)
 	{
 		$topic_id = isset($game['game_topic_id']) ? (int) $game['game_topic_id'] : 0;
@@ -468,7 +532,7 @@ class forum
 	 *
 	 * @return int topic id (0 on failure)
 	 */
-	protected function post($forum_id, $subject, $text)
+	protected function post($forum_id, $subject, $text, $reply_to = 0)
 	{
 		$bot = $this->bot();
 
@@ -476,6 +540,8 @@ class forum
 		{
 			return 0;
 		}
+
+		$mode = $reply_to ? 'reply' : 'post';
 
 		if (!function_exists('submit_post'))
 		{
@@ -494,7 +560,7 @@ class forum
 
 		$data = [
 			'forum_id'				=> (int) $forum_id,
-			'topic_id'				=> 0,
+			'topic_id'				=> (int) $reply_to,
 			'icon_id'				=> 0,
 			'enable_bbcode'			=> true,
 			'enable_smilies'		=> true,
@@ -525,7 +591,7 @@ class forum
 
 		try
 		{
-			submit_post('post', $subject, $bot['username'], POST_NORMAL, $poll, $data);
+			submit_post($mode, $subject, $bot['username'], POST_NORMAL, $poll, $data);
 		}
 		finally
 		{

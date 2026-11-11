@@ -13,16 +13,15 @@ Suggestions are welcome – the list grows with the community.
 - 0.16 – forum integration (ArcadeBot): game topics as discussion threads, season top 10
 - 0.17 – favourites, medals next to posts, bulk editing in the ACP, "report game"
 - 0.18 – tournaments with overall ranking, countdown and prizes; importer recognises wrongly filled installation files
+- 0.19 – tournament changes as replies in the start topic, optional deletion of game folders
 
 ## Next
 
-1. **Tournament changes in the forum**: the start topic of a tournament is remembered; if the end, the games or the prizes of a running tournament change in the ACP, the ArcadeBot posts a short reply there (e.g. "Change: the tournament now ends on 11.11.2026 at 16:00"), so subscribers are notified and the change stays traceable. The result stays a separate topic; the start topic gets a short final reply with a link to it
-2. **Delete game files when removing a game (optional)**: when deleting a game in the ACP, an unticked checkbox "also delete the game folder from the server". Only the game's own folder under `arcade/games/` is touched (name checked, no paths outside), never if another game uses the same folder; files PHP may not delete (e.g. uploaded by FTP under a different user) are listed so they can be removed by FTP
-3. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
-4. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-5. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-6. **Statistics page** per member: favourite game, play time, best ranks
-7. **Highscore certificates** for season winners (image, generated with GD)
+1. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
+2. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
+3. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+4. **Statistics page** per member: favourite game, play time, best ranks
+5. **Highscore certificates** for season winners (image, generated with GD)
 
 ## phpBB 4
 

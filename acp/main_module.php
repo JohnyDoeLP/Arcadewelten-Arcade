@@ -455,6 +455,9 @@ class main_module
 
 			if (confirm_box(true))
 			{
+				// Decide about the folder before the game row is gone (shared-folder check).
+				$files = $this->request->variable('delete_files', 0) ? $this->games->delete_game_dir($game) : null;
+
 				$this->scores->delete_game_scores($game_id);
 				$this->ratings->delete_game($game_id);
 				$this->recent->delete_game($game_id);
@@ -463,13 +466,32 @@ class main_module
 				$this->favorites->delete_game($game_id);
 				$this->reports->delete_game($game_id);
 				$this->games->delete_game($game_id);
-				trigger_error($this->language->lang('ACP_AW_ARCADE_GAME_DELETED') . adm_back_link($this->u_action));
+
+				$message = $this->language->lang($files !== null ? 'ACP_AW_ARCADE_GAME_REMOVED' : 'ACP_AW_ARCADE_GAME_DELETED');
+
+				if ($files !== null)
+				{
+					$message .= '<br><br>' . $this->language->lang('ACP_AW_ARCADE_FILES_' . strtoupper($files['status']), $this->games->games_path() . $game['game_dir'] . '/');
+
+					if ($files['left'])
+					{
+						$shown = array_slice($files['left'], 0, 50);
+						$message .= '<br><code>' . implode('<br>', array_map('htmlspecialchars', $shown)) . '</code>'
+							. (count($files['left']) > 50 ? '<br>' . $this->language->lang('ACP_AW_ARCADE_FILES_MORE', count($files['left']) - 50) : '');
+					}
+				}
+
+				trigger_error($message . adm_back_link($this->u_action));
 			}
+
+			$this->template->assign_vars([
+				'AW_DELETE_DIR'		=> $this->games->games_path() . $game['game_dir'] . '/',
+			]);
 
 			confirm_box(false, $this->language->lang('ACP_AW_ARCADE_DELETE_GAME_CONFIRM', $game['game_name']), build_hidden_fields([
 				'action'	=> 'delete',
 				'g'			=> $game_id,
-			]));
+			]), '@arcadewelten_arcade/acp_aw_arcade_confirm_delete.html');
 
 			redirect($this->u_action);
 		}
@@ -1233,7 +1255,14 @@ class main_module
 					'tourney_prize_3'	=> $data['tourney_prize_3'],
 				];
 
+				$before_games = $tourney ? $this->tourneys->get_game_ids($tourney_id) : [];
 				$this->tourneys->save($tourney_id, $save, $game_ids);
+
+				// Running tournament: tell the start topic what changed.
+				if ($tourney)
+				{
+					$this->tourney_jobs->changed($tourney, $before_games, $tourney_id);
+				}
 				$this->log_admin($tourney_id ? 'LOG_AW_ARCADE_TOURNEY_EDITED' : 'LOG_AW_ARCADE_TOURNEY_ADDED', [$save['tourney_name']]);
 
 				// Starting right now: announce at once instead of waiting for the cron.

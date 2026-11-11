@@ -409,6 +409,11 @@ class tourneys
 		return (bool) $this->db->sql_affectedrows();
 	}
 
+	public function set_topic($tourney_id, $topic_id)
+	{
+		$this->db->sql_query('UPDATE ' . $this->tourneys_table . ' SET tourney_topic_id = ' . (int) $topic_id . ' WHERE tourney_id = ' . (int) $tourney_id);
+	}
+
 	/* ---------------------------------------------------------------
 	 * Writing (ACP)
 	 * ------------------------------------------------------------- */

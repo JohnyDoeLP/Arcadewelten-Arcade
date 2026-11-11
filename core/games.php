@@ -281,6 +281,81 @@ class games
 	}
 
 	/**
+	 * Remove a game's own folder from the server (optional when deleting a game).
+	 *
+	 * Only a plain folder name directly inside the games folder is touched, never a
+	 * folder that another game uses, and symbolic links are removed without following them.
+	 *
+	 * @return array ['status' => 'deleted'|'partial'|'missing'|'shared'|'invalid', 'left' => [relative paths]]
+	 */
+	public function delete_game_dir(array $game)
+	{
+		$dir = (string) $game['game_dir'];
+
+		if (!preg_match('/^[A-Za-z0-9_\-]+$/', $dir))
+		{
+			return ['status' => 'invalid', 'left' => []];
+		}
+
+		$sql = 'SELECT COUNT(game_id) AS other
+			FROM ' . $this->games_table . "
+			WHERE game_dir = '" . $this->db->sql_escape($dir) . "'
+				AND game_id <> " . (int) $game['game_id'];
+		$result = $this->db->sql_query($sql);
+		$other = (int) $this->db->sql_fetchfield('other');
+		$this->db->sql_freeresult($result);
+
+		if ($other > 0)
+		{
+			return ['status' => 'shared', 'left' => []];
+		}
+
+		$base = realpath($this->games_fs_path());
+		$path = $this->games_fs_path() . $dir;
+
+		if ($base === false || is_link($path))
+		{
+			return ['status' => 'invalid', 'left' => []];
+		}
+
+		if (!is_dir($path))
+		{
+			return ['status' => 'missing', 'left' => []];
+		}
+
+		$real = realpath($path);
+
+		if ($real === false || strpos($real, $base . DIRECTORY_SEPARATOR) !== 0 || dirname($real) !== $base)
+		{
+			return ['status' => 'invalid', 'left' => []];
+		}
+
+		$left = [];
+		$items = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($real, \FilesystemIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::CHILD_FIRST
+		);
+
+		foreach ($items as $item)
+		{
+			$file = $item->getPathname();
+			$ok = ($item->isDir() && !$item->isLink()) ? @rmdir($file) : @unlink($file);
+
+			if (!$ok)
+			{
+				$left[] = $dir . '/' . ltrim(str_replace('\\', '/', substr($file, strlen($real))), '/');
+			}
+		}
+
+		if (!@rmdir($real) && !$left)
+		{
+			$left[] = $dir . '/';
+		}
+
+		return ['status' => $left ? 'partial' : 'deleted', 'left' => $left];
+	}
+
+	/**
 	 * Set the play counter of all games (or one game) back to zero.
 	 */
 	public function reset_plays($game_id = 0)

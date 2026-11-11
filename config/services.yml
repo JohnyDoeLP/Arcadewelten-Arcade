@@ -84,6 +84,7 @@ services:
             - '@arcadewelten.arcade.access'
             - '@log'
             - '@user'
+            - '@arcadewelten.arcade.games'
 
     arcadewelten.arcade.cron.task.tourneys:
         class: arcadewelten\arcade\cron\task\tourneys

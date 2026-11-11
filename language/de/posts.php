@@ -64,4 +64,12 @@ $lang = array_merge($lang, [
 	],
 	'AW_ARCADE_POST_TOURNEY_EMPTY'			=> 'An diesem Turnier hat niemand teilgenommen.',
 	'AW_ARCADE_POST_TOURNEY_FULL'			=> 'Zur vollständigen Wertung',
+	'AW_ARCADE_POST_TOURNEY_CHANGE'			=> 'Änderung am Turnier:',
+	'AW_ARCADE_POST_TOURNEY_CHANGE_END'		=> 'Das Turnier endet jetzt am %1$s Uhr (bisher %2$s Uhr).',
+	'AW_ARCADE_POST_TOURNEY_CHANGE_ADDED'	=> 'Neu dabei: %s',
+	'AW_ARCADE_POST_TOURNEY_CHANGE_REMOVED'	=> 'Nicht mehr dabei: %s (bisherige Ergebnisse darin zählen nicht mehr)',
+	'AW_ARCADE_POST_TOURNEY_CHANGE_PRIZES'	=> 'Neue Prämien: %s',
+	'AW_ARCADE_POST_TOURNEY_CHANGE_NO_PRIZES'	=> 'Es gibt keine Prämien mehr.',
+	'AW_ARCADE_POST_TOURNEY_CLOSED'			=> 'Das Turnier ist beendet – vielen Dank fürs Mitspielen!',
+	'AW_ARCADE_POST_TOURNEY_CLOSED_LINK'	=> 'Zum Turnierergebnis',
 ]);

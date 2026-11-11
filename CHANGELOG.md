@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.19.0-beta (2026-11-11)
+
+- **Tournament changes in the forum:** a tournament remembers its start topic. If the end, the games or the prizes of a running tournament change in the ACP, the ArcadeBot replies there (“Tournament change: the tournament now ends on … (previously …)”, “New: …”, “No longer included: …”, “New prizes: …”), so subscribers get a notification. Games from categories with a password or group visibility are only counted. When the tournament ends, the result stays a separate topic and the start topic gets a short final reply linking to it. Deleted or locked start topics are left alone
+- **Delete game files (optional):** deleting a game in the ACP now offers the checkbox “Also delete the game folder from the server” (unticked by default). Only the game’s own folder directly inside the games folder is removed – never a folder another game uses, never anything outside, symbolic links are removed without following them. Files PHP may not delete (e.g. uploaded by FTP under a different user) are listed so they can be removed by FTP
+
 ## 0.18.2-beta (2026-11-10)
 
 - Fix: in tournaments a result of 0 earned a place and tournament points. Only results above 0 count now; existing 0 results disappear from the ranking at once
