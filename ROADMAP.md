@@ -24,7 +24,7 @@ Suggestions are welcome – the list grows with the community.
 4. **Arcade block on the board index**: optional block with new games and categories next to the latest records
 5. **Statistics page** per member: favourite game, play time, best ranks
 6. **Highscore certificates** for season winners (image, generated with GD)
-7. **Warning for games that load external content**: the importer looks through a game's own files (locally, no lookups on the internet) for addresses on other servers, e.g. ad or tracking scripts, or games that are only an embed of an external game portal, and shows a note in the import list such as "loads content from portal.cdn.example.com". The admin decides; nothing is blocked automatically. While such a game is active, the privacy section no longer claims "no data is sent to third parties", and the ACP reminds the admin to add the external service to the privacy policy
+7. **Warning for games that load external content**: the importer looks through a game's own files (locally, no lookups on the internet) for addresses on other servers, e.g. ad or tracking scripts, or games that are only an embed of an external game portal, and shows a note in the import list such as "loads content from portal.cdn.example.com". The admin decides; nothing is blocked automatically. While such a game is active, the privacy section no longer claims "no data is sent to third parties", and the ACP reminds the admin to add the external service to the privacy policy. Optionally, players are asked before such a game starts ("This game loads content from ajax.aspnetcdn.com. Continue?"); only after their click is the game loaded, the consent applies to that game only and is kept in the browser at most, never on the server
 
 ## phpBB 4
 
