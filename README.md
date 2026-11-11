@@ -2,10 +2,17 @@
 
 **Beta – in development, please test on a copy of your board first. Current version: see the [latest release](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/latest).**
 
-A self-hosted arcade for phpBB 3.3: game list with categories, highscores, trophies and a hall of fame.
+A self-hosted arcade for phpBB 3.3: game list with categories, highscores, tournaments, duels and a hall of fame.
 No external connections, no ads, no licence server, no play limits. Open source under the GPL-2.0.
 
 Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.md` und `INSTALL.de.md`.
+
+## Independent and privacy-friendly
+
+- **Everything on your server:** the arcade, the games and the Flash emulator Ruffle are loaded from your own server only. There is no licence server and no connection to any service of the maker.
+- **Works with ad blockers and DNS filters** (e.g. Pi-hole or a router blocklist), because there is nothing to block. Even on a network without access to external servers everything works.
+- **No ads, no tracking:** no data goes to third parties while playing. The matching section for the privacy policy is generated automatically.
+- **No subscription, no limits, open source:** the arcade belongs to you. Even if the project were discontinued one day, it keeps running.
 
 ## Features
 
