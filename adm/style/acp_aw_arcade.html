@@ -125,6 +125,20 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_NAV_MENU') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_NAV_MENU_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_nav_menu" value="1"{% if AW_NAV_MENU %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_nav_menu" value="0"{% if not AW_NAV_MENU %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_NAV_RANDOM') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_NAV_RANDOM_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_nav_random" value="1"{% if AW_NAV_RANDOM %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_nav_random" value="0"{% if not AW_NAV_RANDOM %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_TOURNEYS_ON') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_TOURNEYS_ON_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="aw_tourneys" value="1"{% if AW_TOURNEYS %} checked{% endif %}> {{ lang('YES') }}</label>

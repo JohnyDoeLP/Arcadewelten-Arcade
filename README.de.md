@@ -15,6 +15,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 - Kino-Modus („Licht aus“), Handy-/Touch-Spiele mit Vollbild-Start (auch auf dem iPhone), Leiste „Zuletzt gespielt“
 - Favoriten (Herz), Medaillen 🥇🥈🥉 neben Beiträgen, „Spiel melden“ mit Liste im ACP, Massenbearbeitung von Mindestzeit, Höchstpunktzahl und Punkten
 - Foren-Anbindung (ArcadeBot): neue Spiele und Saison-Top-10 automatisch als Forenbeiträge, Spielthema als Diskussionsthema, eigenes News-Forum pro Kategorie
+- Untermenü „Spielhalle“ im Kopfbereich mit Turnieren, Duellen und „Zufälliges Spiel“ (abschaltbar)
 - Turniere: mehrere Spiele über einen Zeitraum, Gesamtwertung nach Turnierpunkten, Countdown, optionale Prämien (Ultimate Points) und Beiträge des ArcadeBots zu Start und Ende
 - Duelle: Mitglieder fordern sich mit ihrem Rekord heraus, mit phpBB-Benachrichtigungen; „Neu“-Schild für frisch installierte Spiele
 - Spiele bewerten: 1–5 Sterne pro Mitglied und Spiel (nur nach dem Spielen, änderbar), Durchschnitt in der Spieleliste; Spieleliste sortierbar nach Name, Bewertung, Beliebtheit und Neuheit

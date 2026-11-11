@@ -79,3 +79,7 @@ arcadewelten_arcade_tourney:
     defaults: { _controller: arcadewelten.arcade.controller.main:tourney }
     requirements:
         tourney_id: \d+
+
+arcadewelten_arcade_random:
+    path: /arcadehall/random
+    defaults: { _controller: arcadewelten.arcade.controller.main:random }

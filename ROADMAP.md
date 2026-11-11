@@ -14,6 +14,7 @@ Suggestions are welcome – the list grows with the community.
 - 0.17 – favourites, medals next to posts, bulk editing in the ACP, "report game"
 - 0.18 – tournaments with overall ranking, countdown and prizes; importer recognises wrongly filled installation files
 - 0.19 – tournament changes as replies in the start topic, optional deletion of game folders
+- 0.20 – drop-down menu in the header with “random game”, privacy note on browser storage
 
 ## Next
 

@@ -230,6 +230,22 @@ class games
 		return $total;
 	}
 
+	/**
+	 * A random active game outside the given categories (0 if there is none).
+	 */
+	public function random_game_id(array $exclude_cats = [])
+	{
+		$result = $this->db->sql_query('SELECT g.game_id FROM ' . $this->games_table . ' g WHERE ' . $this->where(0, true, '', $exclude_cats));
+		$ids = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$ids[] = (int) $row['game_id'];
+		}
+		$this->db->sql_freeresult($result);
+
+		return $ids ? $ids[array_rand($ids)] : 0;
+	}
+
 	protected function where($cat_id, $only_active, $search, array $exclude_cats = [])
 	{
 		$where = ['1 = 1'];

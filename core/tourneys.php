@@ -90,6 +90,22 @@ class tourneys
 		return $rows;
 	}
 
+	/**
+	 * Is any tournament running right now? (header menu, one small query)
+	 */
+	public function has_running()
+	{
+		$sql = 'SELECT tourney_id FROM ' . $this->tourneys_table . '
+			WHERE tourney_finished = 0
+				AND tourney_start <= ' . (int) time() . '
+				AND tourney_end > ' . (int) time();
+		$result = $this->db->sql_query_limit($sql, 1);
+		$found = (bool) $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return $found;
+	}
+
 	public static function status(array $tourney)
 	{
 		if (!empty($tourney['tourney_finished']) || (int) $tourney['tourney_end'] <= time())

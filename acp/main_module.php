@@ -172,6 +172,8 @@ class main_module
 			$this->config->set('aw_arcade_duel_days', max(1, min(30, $this->request->variable('aw_duel_days', 7))));
 			$this->config->set('aw_arcade_duel_max', max(1, min(50, $this->request->variable('aw_duel_max', 5))));
 			$this->config->set('aw_arcade_tourneys', $this->request->variable('aw_tourneys', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_nav_menu', $this->request->variable('aw_nav_menu', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_nav_random', $this->request->variable('aw_nav_random', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_news_forum', $this->request->variable('aw_news_forum', 0));
 			$this->config->set('aw_arcade_favorites', $this->request->variable('aw_favorites', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_reports', $this->request->variable('aw_reports', 0) ? 1 : 0);
@@ -227,6 +229,8 @@ class main_module
 			'AW_DUEL_DAYS'			=> (int) $this->config['aw_arcade_duel_days'],
 			'AW_DUEL_MAX'			=> (int) $this->config['aw_arcade_duel_max'],
 			'AW_TOURNEYS'			=> (bool) $this->config['aw_arcade_tourneys'],
+			'AW_NAV_MENU'			=> (bool) $this->config['aw_arcade_nav_menu'],
+			'AW_NAV_RANDOM'			=> (bool) $this->config['aw_arcade_nav_random'],
 			'AW_POST_TOURNEYS'		=> (bool) $this->config['aw_arcade_post_tourneys'],
 			'AW_BOT'				=> ($bot = $this->forum->bot()) ? $bot['username'] : '',
 			'AW_POST_GAMES'			=> (bool) $this->config['aw_arcade_post_games'],

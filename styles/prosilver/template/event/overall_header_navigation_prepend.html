@@ -1,7 +1,24 @@
 {% if S_AW_ARCADE_ALLOWED %}
+{% if S_AW_NAV_MENU %}
+<li class="dropdown-container" data-skip-responsive="true">
+	<a href="{{ U_AW_ARCADE }}" class="dropdown-trigger" title="{{ lang('AW_ARCADE') }}" role="menuitem">
+		<i class="icon fa-gamepad fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE') }}</span>{% if AW_NAV_DUELS_OPEN %} <strong class="badge">{{ AW_NAV_DUELS_OPEN }}</strong>{% endif %}
+	</a>
+	<div class="dropdown">
+		<div class="pointer"><div class="pointer-inner"></div></div>
+		<ul class="dropdown-contents" role="menu">
+			<li><a href="{{ U_AW_ARCADE }}" role="menuitem"><i class="icon fa-gamepad fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE') }}</span></a></li>
+			{% if U_AW_NAV_TOURNEYS %}<li><a href="{{ U_AW_NAV_TOURNEYS }}" role="menuitem"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_TOURNEYS') }}</span>{% if S_AW_NAV_TOURNEY_RUNNING %} <span class="aw-nav-live" style="color: #2e9b2e; font-weight: bold;">●&nbsp;{{ lang('AW_ARCADE_NAV_RUNNING') }}</span>{% endif %}</a></li>{% endif %}
+			{% if U_AW_NAV_DUELS %}<li><a href="{{ U_AW_NAV_DUELS }}" role="menuitem"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUELS') }}</span>{% if AW_NAV_DUELS_OPEN %} <strong class="badge">{{ AW_NAV_DUELS_OPEN }}</strong>{% endif %}</a></li>{% endif %}
+			{% if U_AW_NAV_RANDOM %}<li><a href="{{ U_AW_NAV_RANDOM }}" role="menuitem" rel="nofollow"><i class="icon fa-random fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_NAV_RANDOM') }}</span></a></li>{% endif %}
+		</ul>
+	</div>
+</li>
+{% else %}
 <li data-skip-responsive="true">
 	<a href="{{ U_AW_ARCADE }}" title="{{ lang('AW_ARCADE') }}" role="menuitem">
 		<i class="icon fa-gamepad fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE') }}</span>
 	</a>
 </li>
+{% endif %}
 {% endif %}

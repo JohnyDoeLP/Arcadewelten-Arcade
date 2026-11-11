@@ -151,6 +151,21 @@ class listener implements EventSubscriberInterface
 			'S_AW_ARCADE_ALLOWED'	=> $this->access->can_use(),
 			'S_AW_CREDIT'	=> !empty($this->config['aw_arcade_credit']),
 		]);
+
+		// Drop-down menu under "Arcade" in the header (switchable in the ACP).
+		if (!empty($this->config['aw_arcade_nav_menu']) && $this->access->can_use())
+		{
+			$member = $this->user->data['user_id'] != ANONYMOUS && empty($this->user->data['is_bot']);
+
+			$this->template->assign_vars([
+				'S_AW_NAV_MENU'		=> true,
+				'U_AW_NAV_RANDOM'	=> !empty($this->config['aw_arcade_nav_random']) ? $this->helper->route('arcadewelten_arcade_random') : '',
+				'U_AW_NAV_TOURNEYS'	=> $this->tourneys->enabled() ? $this->helper->route('arcadewelten_arcade_tourneys') : '',
+				'S_AW_NAV_TOURNEY_RUNNING'	=> $this->tourneys->enabled() && $this->tourneys->has_running(),
+				'U_AW_NAV_DUELS'	=> ($member && !empty($this->config['aw_arcade_duels'])) ? $this->helper->route('arcadewelten_arcade_duels') : '',
+				'AW_NAV_DUELS_OPEN'	=> ($member && !empty($this->config['aw_arcade_duels'])) ? $this->duels->count_incoming($this->user->data['user_id']) : 0,
+			]);
+		}
 	}
 
 	public function delete_users($event)

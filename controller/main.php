@@ -663,6 +663,31 @@ class main
 		]);
 	}
 
+	/**
+	 * "Random game" from the header menu: only games the visitor may see,
+	 * never from categories with a password.
+	 */
+	public function random()
+	{
+		$this->check_use();
+
+		$exclude = $this->access->hidden_cats();
+		foreach ($this->games->get_cats() as $cat)
+		{
+			if ((string) $cat['cat_password'] !== '')
+			{
+				$exclude[] = (int) $cat['cat_id'];
+			}
+		}
+
+		$is_guest = !$this->is_member();
+		$game_id = ($is_guest && !$this->config['aw_arcade_guest_play']) ? 0 : $this->games->random_game_id($exclude);
+
+		return new \Symfony\Component\HttpFoundation\RedirectResponse($game_id
+			? $this->helper->route('arcadewelten_arcade_play', ['game_id' => $game_id], false)
+			: $this->helper->route('arcadewelten_arcade_index', [], false));
+	}
+
 	/* ---------------------------------------------------------------
 	 * Tournaments
 	 * ------------------------------------------------------------- */
