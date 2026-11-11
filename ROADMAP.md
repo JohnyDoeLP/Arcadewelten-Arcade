@@ -18,12 +18,13 @@ Suggestions are welcome – the list grows with the community.
 
 ## Next
 
-1. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
-2. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-3. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-4. **Statistics page** per member: favourite game, play time, best ranks
-5. **Highscore certificates** for season winners (image, generated with GD)
-6. **Warning for games that load external content**: the importer looks through a game's own files (locally, no lookups on the internet) for addresses on other servers, e.g. ad or tracking scripts, or games that are only an embed of an external game portal, and shows a note in the import list such as "loads content from portal.cdn.example.com". The admin decides; nothing is blocked automatically. While such a game is active, the privacy section no longer claims "no data is sent to third parties", and the ACP reminds the admin to add the external service to the privacy policy
+1. **Jackpot (Ultimate Points, switchable)**: part of every play cost goes into a pot per game; whoever beats the all-time record of that game wins the whole pot, then it starts again at 0. Share set in three levels like the other points settings: global default (with on/off switch), overridable per category and per game (0 = no jackpot there). Current pot shown on the game card and the play page; records from the review list are only paid after approval; hidden without Ultimate Points
+2. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
+3. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
+4. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+5. **Statistics page** per member: favourite game, play time, best ranks
+6. **Highscore certificates** for season winners (image, generated with GD)
+7. **Warning for games that load external content**: the importer looks through a game's own files (locally, no lookups on the internet) for addresses on other servers, e.g. ad or tracking scripts, or games that are only an embed of an external game portal, and shows a note in the import list such as "loads content from portal.cdn.example.com". The admin decides; nothing is blocked automatically. While such a game is active, the privacy section no longer claims "no data is sent to third parties", and the ACP reminds the admin to add the external service to the privacy policy
 
 ## phpBB 4
 
