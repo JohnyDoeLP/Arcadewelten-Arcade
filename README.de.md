@@ -2,7 +2,7 @@
 
 **Beta – in Entwicklung, bitte zuerst an einer Kopie des Forums testen. Aktuelle Version: siehe [neuestes Release](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/latest).**
 
-Selbst gehostete Spielhalle für phpBB 3.3: Spieleliste mit Kategorien, Bestenlisten, Pokale und Ruhmeshalle.
+Selbst gehostete Spielhalle für phpBB 3.3: Spieleliste mit Kategorien, Bestenlisten, Turniere, Duelle und Ruhmeshalle.
 Keine Verbindungen nach außen, keine Werbung, kein Lizenzserver, keine Spiel-Limits. Open Source unter der GPL-2.0.
 
 Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
