@@ -32,6 +32,8 @@ phpBB 4.0 changes a lot under the hood (no ACP/MCP/UCP modules any more, Doctrin
 
 ## Later / optional
 
+- To think about: jackpot top-up by the admin – a field "top up the jackpot by …" when editing a game (one-off, e.g. for a weekend event)
+- To think about: jackpot base amount – after a win the pot starts at a fixed amount instead of 0 (global, per category, per game like the other points settings); note that these points are created by the board, not paid by players
 - To think about: own placement on every game card for members ("You: place 4 of 9", "not played yet")
 - To think about: one line "Last record: <member> in <game>" on the category tiles, hidden on small screens so the tiles do not get crowded
 - Notification for administrators when a game is reported (phpBB bell, e-mail optional in the UCP) – switchable, so nobody gets more notifications than wanted
