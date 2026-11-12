@@ -41,9 +41,13 @@ class scores
 	/** @var tourneys|null */
 	protected $tourneys;
 
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\driver\driver_interface $cache, $scores_table, $games_table, $sessions_table, $cats_table, $flagged_table, \phpbb\config\config $config, duels $duels, ?tourneys $tourneys = null)
+	/** @var jackpot|null */
+	protected $jackpot;
+
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\driver\driver_interface $cache, $scores_table, $games_table, $sessions_table, $cats_table, $flagged_table, \phpbb\config\config $config, duels $duels, ?tourneys $tourneys = null, ?jackpot $jackpot = null)
 	{
 		$this->tourneys = $tourneys;
+		$this->jackpot = $jackpot;
 		$this->duels = $duels;
 		$this->cats_table = $cats_table;
 		$this->flagged_table = $flagged_table;
@@ -207,11 +211,12 @@ class scores
 	 * Store a score; only the personal best per game is kept.
 	 *
 	 * @param int|null $time when the score was reached (approved flagged scores: time of the play)
-	 * @return array ['improved' => bool, 'best' => float, 'duels_won' => int, 'tourneys' => int]
+	 * @return array ['improved' => bool, 'best' => float, 'duels_won' => int, 'tourneys' => int, 'jackpot' => float]
 	 */
 	public function save_score(array $game, $user_id, $score, $time = null)
 	{
 		$tourneys = $this->tourneys ? $this->tourneys->on_score($game, $user_id, $score, $time) : 0;
+		$jackpot = $this->jackpot ? $this->jackpot->on_score($game, $user_id, $score) : 0;
 
 		$score = round((float) $score, 2);
 		$low_wins = (int) $game['game_scoretype'] === games::SCORE_LOW;
@@ -236,7 +241,7 @@ class scores
 			$this->cache->destroy(self::CACHE_KEY);
 			$this->cache->destroy(self::MEDALS_KEY);
 
-			return ['improved' => true, 'best' => $score, 'duels_won' => $this->duels->on_score($game, $user_id, $score), 'tourneys' => $tourneys];
+			return ['improved' => true, 'best' => $score, 'duels_won' => $this->duels->on_score($game, $user_id, $score), 'tourneys' => $tourneys, 'jackpot' => $jackpot];
 		}
 
 		$old = (float) $row['score'];
@@ -256,7 +261,7 @@ class scores
 			WHERE game_id = ' . (int) $game['game_id'] . ' AND user_id = ' . (int) $user_id);
 
 		// Every genuine result counts for open duels, not only a new personal best.
-		return ['improved' => $improved, 'best' => $improved ? $score : $old, 'duels_won' => $this->duels->on_score($game, $user_id, $score), 'tourneys' => $tourneys];
+		return ['improved' => $improved, 'best' => $improved ? $score : $old, 'duels_won' => $this->duels->on_score($game, $user_id, $score), 'tourneys' => $tourneys, 'jackpot' => $jackpot];
 	}
 
 	/**

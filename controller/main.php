@@ -37,8 +37,10 @@ class main
 	protected $tourneys;
 	/** @var \arcadewelten\arcade\core\tourney_jobs */
 	protected $tourney_jobs;
+	/** @var \arcadewelten\arcade\core\jackpot */
+	protected $jackpot;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -60,6 +62,7 @@ class main
 		$this->root_path = $root_path;
 		$this->tourneys = $tourneys;
 		$this->tourney_jobs = $tourney_jobs;
+		$this->jackpot = $jackpot;
 
 		$this->language->add_lang('common', 'arcadewelten/arcade');
 	}
@@ -206,6 +209,7 @@ class main
 				'RATING_STARS'	=> $this->stars($row),
 				'RATING_AVG'	=> $this->format_rating($row),
 				'COST'			=> (!$is_guest && $this->points->active() && ($c = $this->points->value($row, 'cost')) > 0) ? $this->points->format($c) . ' ' . $this->points->name() : '',
+				'JACKPOT'		=> (!$is_guest && $this->jackpot->applies($row)) ? $this->points->format($this->jackpot->pot($row)) . ' ' . $this->points->name() : '',
 				'U_PLAY'		=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => $id]),
 				'U_SCORES'		=> $this->helper->route('arcadewelten_arcade_scores', ['game_id' => $id]),
 			]);
@@ -371,6 +375,9 @@ class main
 			{
 				return $this->pay_form($game, $cost, $this->language->lang('AW_ARCADE_NOT_ENOUGH_POINTS', $this->points->format($cost), $this->points->name(), $this->points->format($this->points->balance($this->user->data['user_id']))));
 			}
+
+			$added = $this->jackpot->on_play($game, $cost);
+			$game['game_jackpot_pot'] = $this->jackpot->pot($game) + $added;
 		}
 
 		$play_id = $is_member ? $this->scores->start_play($this->user->data['user_id'], $game['game_id']) : '';
@@ -517,6 +524,13 @@ class main
 		{
 			$last = $this->request->variable('last', '');
 			$message = $this->language->lang($saved == 2 ? 'AW_ARCADE_MSG_NEW_BEST' : 'AW_ARCADE_MSG_SAVED', $this->format_score($last));
+			$won = (float) $this->request->variable('jackpot', '0');
+
+			if ($won > 0)
+			{
+				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_JACKPOT', $this->points->format($won), $this->points->name());
+			}
+
 			$earned = (float) $this->request->variable('earned', '0');
 
 			if ($earned > 0)
@@ -659,7 +673,7 @@ class main
 				'game_id'	=> (int) $game['game_id'],
 				'saved'		=> $result['improved'] ? 2 : 1,
 				'last'		=> (string) round($score, 2),
-			] + ($earned > 0 ? ['earned' => (string) $earned] : []) + (!empty($result['duels_won']) ? ['duel' => (int) $result['duels_won']] : []) + (!empty($result['tourneys']) ? ['tourney' => (int) $result['tourneys']] : []), false),
+			] + ($earned > 0 ? ['earned' => (string) $earned] : []) + (!empty($result['duels_won']) ? ['duel' => (int) $result['duels_won']] : []) + (!empty($result['tourneys']) ? ['tourney' => (int) $result['tourneys']] : []) + (!empty($result['jackpot']) ? ['jackpot' => (string) $result['jackpot']] : []), false),
 		]);
 	}
 
@@ -1445,6 +1459,11 @@ class main
 			if (array_sum(array_map('floatval', [$this->points->value($game, 'reward_1'), $this->points->value($game, 'reward_2'), $this->points->value($game, 'reward_3')])) > 0)
 			{
 				$parts[] = $this->language->lang('AW_ARCADE_INFO_SEASON', $r[0], $r[1], $r[2], $name);
+			}
+
+			if ($this->jackpot->applies($game))
+			{
+				$parts[] = $this->language->lang('AW_ARCADE_INFO_JACKPOT', $this->points->format($this->jackpot->pot($game)), $name);
 			}
 		}
 

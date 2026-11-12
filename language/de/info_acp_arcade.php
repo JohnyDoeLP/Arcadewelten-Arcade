@@ -28,5 +28,6 @@ $lang = array_merge($lang, [
 	'LOG_AW_ARCADE_TOURNEY_EDITED'	=> '<strong>Spielhalle: Turnier bearbeitet</strong><br>» %s',
 	'LOG_AW_ARCADE_TOURNEY_DELETED'	=> '<strong>Spielhalle: Turnier gelöscht</strong><br>» %s',
 	'LOG_AW_ARCADE_TOURNEY_FINISHED'	=> '<strong>Spielhalle: Turnier beendet</strong><br>» %1$s – %2$s Teilnehmer, %3$s Punkte ausgezahlt',
+	'LOG_AW_ARCADE_JACKPOT_WON'		=> '<strong>Spielhalle: Jackpot gewonnen</strong><br>» %1$s – %2$s, %3$s Punkte',
 	'LOG_AW_ARCADE_DEBUG'			=> '<strong>Spielhalle-Diagnose:</strong> %1$s von %2$s<br>» %3$s',
 ]);

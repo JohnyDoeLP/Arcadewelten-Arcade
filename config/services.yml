@@ -97,6 +97,16 @@ services:
         tags:
             - { name: cron.task }
 
+    arcadewelten.arcade.jackpot:
+        class: arcadewelten\arcade\core\jackpot
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@arcadewelten.arcade.points'
+            - '@log'
+            - '@user'
+            - '%arcadewelten.arcade.tables.games%'
+
     arcadewelten.arcade.scores:
         class: arcadewelten\arcade\core\scores
         arguments:
@@ -110,6 +120,7 @@ services:
             - '@config'
             - '@arcadewelten.arcade.duels'
             - '@arcadewelten.arcade.tourneys'
+            - '@arcadewelten.arcade.jackpot'
 
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer
@@ -250,6 +261,7 @@ services:
             - '%core.root_path%'
             - '@arcadewelten.arcade.tourneys'
             - '@arcadewelten.arcade.tourney_jobs'
+            - '@arcadewelten.arcade.jackpot'
 
     arcadewelten.arcade.listener:
         class: arcadewelten\arcade\event\listener

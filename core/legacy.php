@@ -198,6 +198,11 @@ class legacy
 			{
 				$params['earned'] = (string) $earned;
 			}
+
+			if (!empty($result['jackpot']))
+			{
+				$params['jackpot'] = (string) $result['jackpot'];
+			}
 		}
 
 		return new RedirectResponse($this->helper->route('arcadewelten_arcade_scores', $params, false));

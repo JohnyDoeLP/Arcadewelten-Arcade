@@ -17,7 +17,7 @@ namespace arcadewelten\arcade\core;
  */
 class points
 {
-	const KEYS = ['cost', 'reward_play', 'reward_1', 'reward_2', 'reward_3'];
+	const KEYS = ['cost', 'reward_play', 'reward_1', 'reward_2', 'reward_3', 'jackpot'];
 
 	/** @var \dmzx\ultimatepoints\core\api|null */
 	protected $api;

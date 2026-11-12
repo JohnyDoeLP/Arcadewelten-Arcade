@@ -52,6 +52,8 @@ class main_module
 	protected $tourneys;
 	/** @var \arcadewelten\arcade\core\tourney_jobs */
 	protected $tourney_jobs;
+	/** @var \arcadewelten\arcade\core\jackpot */
+	protected $jackpot;
 	/** @var \phpbb\user */
 	protected $user;
 	/** @var string */
@@ -79,6 +81,7 @@ class main_module
 		$this->reports = $phpbb_container->get('arcadewelten.arcade.reports');
 		$this->tourneys = $phpbb_container->get('arcadewelten.arcade.tourneys');
 		$this->tourney_jobs = $phpbb_container->get('arcadewelten.arcade.tourney_jobs');
+		$this->jackpot = $phpbb_container->get('arcadewelten.arcade.jackpot');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
 
@@ -201,10 +204,12 @@ class main_module
 			if ($this->points->available())
 			{
 				$this->config->set('aw_arcade_points_enable', $this->request->variable('aw_points_enable', 0) ? 1 : 0);
+				$this->config->set('aw_arcade_jackpot_enable', $this->request->variable('aw_jackpot_enable', 0) ? 1 : 0);
 
 				foreach (\arcadewelten\arcade\core\points::KEYS as $key)
 				{
-					$this->config->set('aw_arcade_' . $key, max(0, (float) str_replace(',', '.', $this->request->variable('aw_' . $key, '0'))));
+					$value = max(0, (float) str_replace(',', '.', $this->request->variable('aw_' . $key, '0')));
+					$this->config->set('aw_arcade_' . $key, $key === 'jackpot' ? min(100, $value) : $value);
 				}
 			}
 
@@ -246,6 +251,7 @@ class main_module
 			'AW_SCORES_PER_PAGE'	=> (int) $this->config['aw_arcade_scores_per_page'],
 			'S_AW_POINTS_AVAILABLE'	=> $this->points->available(),
 			'S_AW_POINTS_ENABLE'	=> (bool) $this->config['aw_arcade_points_enable'],
+			'S_AW_JACKPOT_ENABLE'	=> (bool) $this->config['aw_arcade_jackpot_enable'],
 			'AW_POINTS_NAME'		=> $this->points->name(),
 			'AW_SEASON_START'		=> $this->user->format_date((int) $this->config['aw_arcade_season_start']),
 			'U_AW_SEASON'			=> $this->u_action . '&amp;action=season',
@@ -331,6 +337,11 @@ class main_module
 		{
 			$raw = trim(str_replace(',', '.', $this->request->variable('pt_' . $key, '')));
 			$data[$prefix . '_' . $key] = $raw === '' ? -1 : max(0, (float) $raw);
+
+			if ($key === 'jackpot' && $data[$prefix . '_' . $key] > 100)
+			{
+				$data[$prefix . '_' . $key] = 100;
+			}
 		}
 
 		return $data;
@@ -632,6 +643,7 @@ class main_module
 			if ($this->request->variable('reset_scores', 0))
 			{
 				$this->scores->delete_game_scores($game_id);
+				$this->jackpot->reset_record($game_id);
 			}
 
 			if ($this->request->variable('reset_plays', 0))
@@ -1006,7 +1018,7 @@ class main_module
 			}
 			else if ($raw !== '')
 			{
-				$data['game_' . $key] = max(0, (float) $raw);
+				$data['game_' . $key] = $key === 'jackpot' ? min(100, max(0, (float) $raw)) : max(0, (float) $raw);
 			}
 		}
 

@@ -1,7 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.21.0-beta (2026-11-12)
 
+- **Jackpot (Ultimate Points, off by default):** part of every play cost goes into a pot per game. Whoever beats the all-time record of that game wins the whole pot; then it starts again at 0
+  - Share in percent with three levels like the other points settings: global default (ACP → Settings, with on/off switch), per category and per game (empty = inherit, 0 = no jackpot there); also in the bulk editing
+  - Current pot on the game card and the play page; message “JACKPOT! New all-time record …” after a win; admin log entry
+  - The all-time record is kept on the game itself, so it survives season resets; the current best scores become the record on update. Resetting a game’s highscores in the ACP also starts a fresh record (the pot stays)
+  - Records from the review list are only paid after approval; simultaneous results can never pay a pot twice; without Ultimate Points the jackpot does not appear at all
 - Privacy section: the paragraph about external connections now clearly refers to the arcade itself; advertising the board shows on all pages is covered by the rest of the privacy policy
 
 ## 0.20.0-beta (2026-11-11)

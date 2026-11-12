@@ -202,6 +202,14 @@
 		<dl><dt><label for="aw_reward_1">{{ lang('ACP_AW_ARCADE_PT_REWARD_1') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_reward_1" name="aw_reward_1" value="{{ AW_REWARD_1 }}"> {{ AW_POINTS_NAME }}</dd></dl>
 		<dl><dt><label for="aw_reward_2">{{ lang('ACP_AW_ARCADE_PT_REWARD_2') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_reward_2" name="aw_reward_2" value="{{ AW_REWARD_2 }}"> {{ AW_POINTS_NAME }}</dd></dl>
 		<dl><dt><label for="aw_reward_3">{{ lang('ACP_AW_ARCADE_PT_REWARD_3') }}{{ lang('COLON') }}</label></dt><dd><input type="text" class="text" size="8" id="aw_reward_3" name="aw_reward_3" value="{{ AW_REWARD_3 }}"> {{ AW_POINTS_NAME }}</dd></dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_JACKPOT_ENABLE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_JACKPOT_ENABLE_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_jackpot_enable" value="1"{% if S_AW_JACKPOT_ENABLE %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_jackpot_enable" value="0"{% if not S_AW_JACKPOT_ENABLE %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl><dt><label for="aw_jackpot">{{ lang('ACP_AW_ARCADE_PT_JACKPOT') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_PT_JACKPOT_EXPLAIN') }}</span></dt><dd><input type="text" class="text" size="8" id="aw_jackpot" name="aw_jackpot" value="{{ AW_JACKPOT }}"> %</dd></dl>
 		{% endif %}
 	</fieldset>
 		<fieldset>

@@ -143,6 +143,7 @@
 			{% if not AW_CAT_NAME and game.CAT_NAME %}<div class="aw-small">{{ game.CAT_NAME }}</div>{% endif %}
 			{% if game.RATING_COUNT %}<div class="aw-small aw-stars" title="{{ lang('AW_ARCADE_RATING_SUMMARY', game.RATING_AVG, game.RATING_COUNT) }}">{% for i in 1..5 %}<i class="icon fa-fw {% if game.RATING_STARS >= i %}fa-star{% elseif game.RATING_STARS >= i - 0.5 %}fa-star-half-o{% else %}fa-star-o{% endif %}" aria-hidden="true"></i>{% endfor %} <span class="aw-rating-num">{{ game.RATING_AVG }} ({{ game.RATING_COUNT }})</span></div>{% endif %}
 			{% if game.COST %}<div class="aw-small aw-cost"><i class="icon fa-diamond fa-fw" aria-hidden="true"></i> {{ game.COST }}</div>{% endif %}
+			{% if game.JACKPOT %}<div class="aw-small aw-jackpot" title="{{ lang('AW_ARCADE_JACKPOT_EXPLAIN') }}"><i class="icon fa-money fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_JACKPOT') }}{{ lang('COLON') }} <strong>{{ game.JACKPOT }}</strong></div>{% endif %}
 			<div class="aw-small">
 				{% if game.S_GUEST %}{{ lang('AW_ARCADE_GUEST_RELEASED') }}
 				{% elseif game.S_NO_SCORES %}{{ lang('AW_ARCADE_NO_SCORES') }}
