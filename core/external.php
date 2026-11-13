@@ -95,12 +95,21 @@ class external
 		return $hosts;
 	}
 
+	/** Reserved endings that never exist on the internet (placeholders, local networks). */
+	const RESERVED_TLDS = ['invalid', 'test', 'example', 'localhost', 'local', 'lan', 'internal', 'home', 'corp'];
+
+	/** File types a Flash game may load from another server. */
+	const SWF_LOADS = 'swf|xml|jpe?g|png|gif|mp3|flv|f4v|js|json|php|aspx?|txt|cfm';
+
 	/**
 	 * Addresses that a browser would load: in quotes (src="…", 'https://…') or in url(…).
-	 * Addresses only mentioned in comments (licence headers etc.) are not in quotes and are skipped.
+	 * Addresses only mentioned in comments (licence headers etc.) are not in quotes and are skipped,
+	 * and so are plain links (<a href="…">), which only open when somebody clicks them.
 	 */
 	public function hosts_in_text($text)
 	{
+		$text = preg_replace('~<a\b[^>]*>~i', '', $text);
+
 		preg_match_all('~(?:["\'`]|url\(\s*["\']?)\s*(?:https?:)?//([a-z0-9](?:[a-z0-9\-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)+)(?::\d+)?[/"\'`?#)\s]~i', $text, $m);
 
 		return $this->filter($m[1]);
@@ -125,7 +134,9 @@ class external
 			return [];
 		}
 
-		preg_match_all('~https?://([a-z0-9](?:[a-z0-9\-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)+)~i', $data, $m);
+		// Only addresses of files the game could load (e.g. .swf, .xml, .php); bare site addresses in old
+		// games are mostly "more games" links or lists of sites the game may run on (sitelock).
+		preg_match_all('~https?://([a-z0-9](?:[a-z0-9\-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?)+)(?::\d+)?/[^\s"\'<>\x00-\x1f]*\.(?:' . self::SWF_LOADS . ')\b~i', $data, $m);
 
 		return $this->filter($m[1]);
 	}
@@ -142,7 +153,7 @@ class external
 			$host = strtolower(rtrim($host, '.'));
 
 			// Needs a real top-level domain; skips things like "a.b" from minified code.
-			if (!preg_match('~\.[a-z]{2,24}$~', $host) || in_array($host, self::IGNORE, true))
+			if (!preg_match('~\.([a-z]{2,24})$~', $host, $tld) || in_array($host, self::IGNORE, true) || in_array($tld[1], self::RESERVED_TLDS, true))
 			{
 				continue;
 			}

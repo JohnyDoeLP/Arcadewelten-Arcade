@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.22.1-beta (2026-11-13)
+
+- External content check: far fewer false alarms. Plain links (`<a href>`, e.g. “share on Twitter”) and placeholder addresses (`.invalid`, `.test`, …) are no longer reported; in Flash games only addresses of files a game could load (e.g. `.swf`, `.xml`, `.php`) count, not the lists of game sites or “more games” links inside old games. Please run “check all games” once after the update
+
 ## 0.22.0-beta (2026-11-13)
 
 - **Results of 0** no longer go into the highscores: they count as played, but give no place, no trophy, no duel and no reward per round. Existing 0 entries are removed on update
