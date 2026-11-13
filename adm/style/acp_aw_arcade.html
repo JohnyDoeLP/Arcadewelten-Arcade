@@ -400,7 +400,7 @@
 <form id="aw_games" method="post" action="{{ U_ACTION }}">
 	<fieldset>
 		<legend>{{ lang('ACP_AW_ARCADE_INSTALLED', AW_TOTAL_GAMES) }}</legend>
-		<p class="small"><a href="{{ U_AW_CHECK_EXTERNAL_ALL }}">{{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_ALL') }}</a> – {{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_EXPLAIN') }}</p>
+		<p><a class="button2" href="{{ U_AW_CHECK_EXTERNAL_ALL }}">{{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_ALL') }}</a> <span class="small">{{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_EXPLAIN') }}</span></p>
 		<p>
 			<a href="{{ U_ACTION }}&amp;fc=-1">{{ lang('AW_ARCADE_ALL_GAMES') }}</a>
 			{% for c in loops.cat_options %} &bull; <a href="{{ U_ACTION }}&amp;fc={{ c.ID }}"{% if c.S_SEL %} style="font-weight:bold"{% endif %}>{{ c.NAME }}</a>{% endfor %}

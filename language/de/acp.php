@@ -329,7 +329,7 @@ $lang = array_merge($lang, [
 	],
 	'ACP_AW_ARCADE_EXTERNAL_CHECK_NOW'	=> 'Jetzt prüfen',
 	'ACP_AW_ARCADE_EXTERNAL_CHECK_ALL'	=> 'Alle Spiele auf fremde Inhalte prüfen',
-	'ACP_AW_ARCADE_EXTERNAL_CHECK_EXPLAIN'	=> 'durchsucht die Spieldateien auf deinem Server nach Adressen anderer Server (Werbung, Tracking, eingebettete Portal-Spiele). Nötig, wenn du Dateien per FTP geändert hast.',
+	'ACP_AW_ARCADE_EXTERNAL_CHECK_EXPLAIN'	=> 'Durchsucht die Spieldateien auf deinem Server nach Adressen anderer Server (Werbung, Tracking, eingebettete Portal-Spiele). Nötig, wenn du Dateien per FTP geändert hast.',
 	'ACP_AW_ARCADE_EXTERNAL_CHECKED'	=> '%1$d Spiele geprüft, %2$d davon nennen fremde Server.',
 	'ACP_AW_ARCADE_EXTERNAL_CONSENT'	=> 'Vor Spielen mit fremden Inhalten fragen',
 	'ACP_AW_ARCADE_EXTERNAL_CONSENT_EXPLAIN'	=> 'Nennt ein Spiel fremde Server, sieht der Spieler vor dem Start einen Hinweis und das Spiel lädt erst nach seinem Klick. Die Antwort wird höchstens im Browser des Spielers gespeichert.',

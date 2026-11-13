@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- ACP → Games: “Check all games for external content” is now a button instead of a small text link
 - External content check: the board's own domain is recognised with and without “www.” as well as all its subdomains, on any domain
 
 ## 0.22.1-beta (2026-11-13)
