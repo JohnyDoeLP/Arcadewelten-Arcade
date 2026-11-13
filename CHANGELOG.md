@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- External content check: the board's own domain is recognised with and without “www.” as well as all its subdomains, on any domain
+
 ## 0.22.1-beta (2026-11-13)
 
 - External content check: far fewer false alarms. Plain links (`<a href>`, e.g. “share on Twitter”) and placeholder addresses (`.invalid`, `.test`, …) are no longer reported; in Flash games only addresses of files a game could load (e.g. `.swf`, `.xml`, `.php`) count, not the lists of game sites or “more games” links inside old games. Please run “check all games” once after the update

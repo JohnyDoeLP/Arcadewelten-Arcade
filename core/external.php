@@ -143,9 +143,11 @@ class external
 
 	protected function filter(array $hosts)
 	{
-		$own = strtolower((string) $this->config['server_name']);
+		// The board's own domain, whatever it is (from the board settings and the current request),
+		// counts as "own" – with and without "www.", including all its subdomains.
+		$own = preg_replace('~^www\.~', '', strtolower((string) $this->config['server_name']));
 		$current = strtolower((string) $this->request->server('HTTP_HOST', ''));
-		$current = preg_replace('~:\d+$~', '', $current);
+		$current = preg_replace(['~:\d+$~', '~^www\.~'], '', $current);
 		$out = [];
 
 		foreach ($hosts as $host)
@@ -158,7 +160,9 @@ class external
 				continue;
 			}
 
-			if ($host === $own || $host === $current || ($own !== '' && substr($host, -strlen('.' . $own)) === '.' . $own))
+			$bare = preg_replace('~^www\.~', '', $host);
+
+			if ($this->is_own($bare, $own) || $this->is_own($bare, $current))
 			{
 				continue;
 			}
@@ -167,6 +171,11 @@ class external
 		}
 
 		return array_keys($out);
+	}
+
+	protected function is_own($host, $own)
+	{
+		return $own !== '' && ($host === $own || substr($host, -strlen('.' . $own)) === '.' . $own);
 	}
 
 	/**
