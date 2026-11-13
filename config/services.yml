@@ -127,6 +127,7 @@ services:
         arguments:
             - '@config'
             - '@request'
+            - '@cache.driver'
 
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer

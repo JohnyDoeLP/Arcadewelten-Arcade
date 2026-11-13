@@ -20,6 +20,7 @@ class external
 	/** Files that are looked at, and how much of them. */
 	const EXTENSIONS = ['html', 'htm', 'js', 'mjs', 'css', 'json', 'xml', 'swf'];
 	const MAX_FILES = 400;
+	const CHECK_VERSION = 2;
 	const MAX_BYTES = 20971520;
 
 	/** Hosts that only appear as names, never as something a browser loads. */
@@ -31,11 +32,73 @@ class external
 
 	protected $config;
 	protected $request;
+	protected $cache;
 
-	public function __construct(\phpbb\config\config $config, \phpbb\request\request_interface $request)
+	public function __construct(\phpbb\config\config $config, \phpbb\request\request_interface $request, ?\phpbb\cache\driver\driver_interface $cache = null)
 	{
 		$this->config = $config;
 		$this->request = $request;
+		$this->cache = $cache;
+	}
+
+	/**
+	 * Like scan_dir(), but remembers the result until a file in the folder changes.
+	 * Used for the import list, which is shown on every visit of the games page.
+	 */
+	public function scan_dir_cached($path)
+	{
+		return $this->remember('ext', $path, function () use ($path) {
+			return $this->scan_dir($path);
+		});
+	}
+
+	/**
+	 * Cache the result of $work for a game folder until a file in it changes.
+	 */
+	public function remember($kind, $path, callable $work)
+	{
+		$path = rtrim($path, '/\\');
+
+		if (!$this->cache || !is_dir($path))
+		{
+			return $work();
+		}
+
+		// The arcade version is part of the key, so improved checks never use old results.
+		$key = '_aw_arcade_' . $kind . '_' . sha1($path . '|' . $this->config['aw_arcade_version'] . '|' . self::CHECK_VERSION . '|' . $this->fingerprint($path));
+		$value = $this->cache->get($key);
+
+		if ($value === false)
+		{
+			$value = $work();
+			$this->cache->put($key, $value, 7 * 86400);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Changes whenever a file in the folder is added, removed or changed (names, sizes, times).
+	 */
+	protected function fingerprint($path)
+	{
+		$parts = [];
+		$items = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS));
+
+		foreach ($items as $item)
+		{
+			if ($item->isFile() && in_array(strtolower($item->getExtension()), self::EXTENSIONS, true))
+			{
+				$parts[] = $item->getPathname() . ':' . $item->getSize() . ':' . $item->getMTime();
+			}
+
+			if (count($parts) > self::MAX_FILES)
+			{
+				break;
+			}
+		}
+
+		return sha1(implode('|', $parts));
 	}
 
 	/**

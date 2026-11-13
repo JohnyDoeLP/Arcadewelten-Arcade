@@ -635,7 +635,7 @@ class main_module
 				'S_SUPPORTED'	=> $g['supported'],
 				'REASON'		=> $this->import_reason($g),
 				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
-				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir($this->games->games_fs_path() . $g['dir'])) : '',
+				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir_cached($this->games->games_fs_path() . $g['dir'])) : '',
 			]);
 		}
 

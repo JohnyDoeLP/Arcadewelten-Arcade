@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.22.2-beta (2026-11-13)
 
+- ACP → Games loads much faster with many games in the folder: the import list remembers the results of reading and checking each game folder until a file in it changes, and already installed games are no longer inspected on every visit
 - ACP → Games: “Check all games for external content” is now a button instead of a small text link
 - External content check: the board's own domain is recognised with and without “www.” as well as all its subdomains, on any domain
 

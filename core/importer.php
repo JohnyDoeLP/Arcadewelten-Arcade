@@ -65,8 +65,17 @@ class importer
 				continue;
 			}
 
-			$game = $this->parse($dir);
-			$game['installed'] = isset($installed[$dir]);
+			// Installed games are only listed, not inspected: no need to read their files again.
+			if (isset($installed[$dir]))
+			{
+				$found[$dir] = ['dir' => $dir, 'installed' => true, 'supported' => true];
+				continue;
+			}
+
+			$game = $this->external ? $this->external->remember('parse', $base . $dir, function () use ($dir) {
+				return $this->parse($dir);
+			}) : $this->parse($dir);
+			$game['installed'] = false;
 			$found[$dir] = $game;
 		}
 
