@@ -92,6 +92,72 @@ class scores
 			return 'too_high';
 		}
 
+		$outlier = $this->outlier($game, (int) $play['user_id'], (float) $score);
+
+		if ($outlier !== '')
+		{
+			if (!empty($this->config['aw_arcade_outlier_notice']))
+			{
+				// "Notice only": the score counts, the admins get a note in the review list.
+				$this->flag($game, (int) $play['user_id'], $score, $play, $outlier . '_note');
+				return '';
+			}
+
+			return $outlier;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Far beyond everything seen so far?
+	 *
+	 * Compared with the game's record (needs enough entries in its highscore list) and
+	 * with the player's own best (needs enough own attempts). "Far" = the set factor,
+	 * e.g. 20 times as high – or, if the lowest score wins, a 20th of it.
+	 *
+	 * @return string '' or 'outlier_record' / 'outlier_own'
+	 */
+	public function outlier(array $game, $user_id, $score)
+	{
+		$factor = (float) $this->config['aw_arcade_outlier_factor'];
+		$min = max(1, (int) $this->config['aw_arcade_outlier_min']);
+
+		if ($factor <= 1 || $score <= 0)
+		{
+			return '';
+		}
+
+		$low = (int) $game['game_scoretype'] === games::SCORE_LOW;
+		$beyond = function ($reference) use ($score, $factor, $low) {
+			return $reference > 0 && ($low ? $score * $factor < $reference : $score > $reference * $factor);
+		};
+
+		$sql = 'SELECT COUNT(score) AS entries, ' . ($low ? 'MIN' : 'MAX') . '(score) AS best
+			FROM ' . $this->scores_table . '
+			WHERE game_id = ' . (int) $game['game_id'];
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		if ((int) $row['entries'] >= $min && $beyond((float) $row['best']))
+		{
+			return 'outlier_record';
+		}
+
+		$sql = 'SELECT score, score_plays
+			FROM ' . $this->scores_table . '
+			WHERE game_id = ' . (int) $game['game_id'] . '
+				AND user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		$own = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		if ($own && (int) $own['score_plays'] >= $min && $beyond((float) $own['score']))
+		{
+			return 'outlier_own';
+		}
+
 		return '';
 	}
 
@@ -215,6 +281,12 @@ class scores
 	 */
 	public function save_score(array $game, $user_id, $score, $time = null)
 	{
+		// 0 (or less) means "nothing reached": counted as played, but no highscore entry.
+		if (round((float) $score, 2) <= 0)
+		{
+			return ['improved' => false, 'best' => 0.0, 'duels_won' => 0, 'tourneys' => 0, 'jackpot' => 0, 'zero' => true];
+		}
+
 		$tourneys = $this->tourneys ? $this->tourneys->on_score($game, $user_id, $score, $time) : 0;
 		$jackpot = $this->jackpot ? $this->jackpot->on_score($game, $user_id, $score) : 0;
 

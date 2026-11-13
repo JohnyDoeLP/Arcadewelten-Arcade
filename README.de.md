@@ -24,6 +24,8 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 - Foren-Anbindung (ArcadeBot): neue Spiele und Saison-Top-10 automatisch als Forenbeiträge, Spielthema als Diskussionsthema, eigenes News-Forum pro Kategorie
 - Untermenü „Spielhalle“ im Kopfbereich mit Turnieren, Duellen und „Zufälliges Spiel“ (abschaltbar)
 - Jackpot (mit Ultimate Points, abschaltbar): ein Teil der Spielkosten wandert in einen Topf pro Spiel, wer den Allzeit-Rekord knackt, gewinnt ihn – einstellbar global, pro Kategorie und pro Spiel
+- Schutz vor Schummeln: Mindestspielzeit, Höchstpunktzahl und Ausreißer-Erkennung mit Prüfliste im ACP
+- Warnung vor Spielen, die Inhalte fremder Server laden (lokale Prüfung), mit optionalem Hinweis an die Spieler vor dem Start
 - Turniere: mehrere Spiele über einen Zeitraum, Gesamtwertung nach Turnierpunkten, Countdown, optionale Prämien (Ultimate Points) und Beiträge des ArcadeBots zu Start und Ende
 - Duelle: Mitglieder fordern sich mit ihrem Rekord heraus, mit phpBB-Benachrichtigungen; „Neu“-Schild für frisch installierte Spiele
 - Spiele bewerten: 1–5 Sterne pro Mitglied und Spiel (nur nach dem Spielen, änderbar), Durchschnitt in der Spieleliste; Spieleliste sortierbar nach Name, Bewertung, Beliebtheit und Neuheit

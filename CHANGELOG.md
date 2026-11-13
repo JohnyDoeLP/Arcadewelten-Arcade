@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.22.0-beta (2026-11-13)
+
+- **Results of 0** no longer go into the highscores: they count as played, but give no place, no trophy, no duel and no reward per round. Existing 0 entries are removed on update
+- **Reset ratings and play counters** in three levels: per game (game edit), per category (category edit, for all its games) and globally (ACP → Settings, with confirmation)
+- **Outlier detection:** results far beyond the game’s record or the player’s own best (default 20 times, “lowest wins” correspondingly) go to the review list with the reason. Only with enough history (default 5 entries / own attempts), factor and history adjustable, 0 = off. Optional “only report”: the result counts at once and the review list shows a note with “Done”
+- **External content check:** the arcade searches a game’s own files for addresses of other servers (ads, tracking, CDN libraries, embeds of game portals) – locally only, no lookups on the internet
+  - Warning in the import list, the games list and the game edit page; checked automatically on import and when saving a game, plus “check all games” in the ACP (needed once after the update and after FTP changes)
+  - While an active game names other servers, the privacy section no longer says “no data to third parties” and the settings page reminds the admin to add the services to the privacy policy
+  - Optional (on by default): players see a note with the servers before such a game starts; the game is only loaded after their click, “do not ask again” is kept in their browser only
+
 ## 0.21.0-beta (2026-11-12)
 
 - **Jackpot (Ultimate Points, off by default):** part of every play cost goes into a pot per game. Whoever beats the all-time record of that game wins the whole pot; then it starts again at 0
@@ -7,7 +17,6 @@
   - Current pot on the game card and the play page; message “JACKPOT! New all-time record …” after a win; admin log entry
   - The all-time record is kept on the game itself, so it survives season resets; the current best scores become the record on update. Resetting a game’s highscores in the ACP also starts a fresh record (the pot stays)
   - Records from the review list are only paid after approval; simultaneous results can never pay a pot twice; without Ultimate Points the jackpot does not appear at all
-- Privacy section: the paragraph about external connections now clearly refers to the arcade itself; advertising the board shows on all pages is covered by the rest of the privacy policy
 
 ## 0.20.0-beta (2026-11-11)
 

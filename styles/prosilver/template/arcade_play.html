@@ -22,7 +22,18 @@
 <div class="aw-play-wrap">
 	<div id="aw-stage" class="aw-stage" style="max-width: {{ AW_GAME_WIDTH }}px; aspect-ratio: {{ AW_GAME_WIDTH }} / {{ AW_GAME_HEIGHT }};">
 		{% if S_AW_HTML5 %}
-		<iframe id="aw-frame" src="{{ AW_GAME_URL }}" title="{{ AW_GAME_NAME }}" allow="autoplay; fullscreen" allowfullscreen></iframe>
+		<iframe id="aw-frame" {% if AW_EXT_HOSTS %}data-src{% else %}src{% endif %}="{{ AW_GAME_URL }}" title="{{ AW_GAME_NAME }}" allow="autoplay; fullscreen" allowfullscreen></iframe>
+		{% endif %}
+		{% if AW_EXT_HOSTS %}
+		<div class="aw-ext-gate" id="aw-ext-gate">
+			<p><strong><i class="icon fa-exclamation-triangle fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_EXT_TITLE') }}</strong></p>
+			<p>{{ lang('AW_ARCADE_EXT_TEXT') }}</p>
+			<p class="aw-ext-hosts">{{ AW_EXT_HOSTS }}</p>
+			<p class="small">{{ lang('AW_ARCADE_EXT_PRIVACY') }}</p>
+			<p><label><input type="checkbox" id="aw-ext-remember"> {{ lang('AW_ARCADE_EXT_REMEMBER') }}</label></p>
+			<p><button type="button" class="button" id="aw-ext-ok"><i class="icon fa-play fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_EXT_CONTINUE') }}</span></button>
+			<a class="button" href="{{ U_AW_ARCADE }}"><span>{{ lang('AW_ARCADE_EXT_LEAVE') }}</span></a></p>
+		</div>
 		{% endif %}
 		<noscript><p class="error">{{ lang('AW_ARCADE_NEED_JS') }}</p></noscript>
 		{% if S_AW_TOUCH %}<button type="button" class="aw-touch-start" id="aw-touch-start" hidden><i class="icon fa-expand" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_TOUCH_START') }}</span></button>{% endif %}
@@ -240,6 +251,13 @@
 	});
 	try { if (window.localStorage.getItem('awArcadeCinema') === '1') { cinema(true); } } catch (e) {}
 
+	var startGame = function () {
+	{% if S_AW_HTML5 %}
+		var frame = document.getElementById('aw-frame');
+		if (frame && !frame.getAttribute('src') && frame.getAttribute('data-src')) {
+			frame.setAttribute('src', frame.getAttribute('data-src'));
+		}
+	{% endif %}
 	{% if S_AW_FLASH %}
 	window.RufflePlayer = window.RufflePlayer || {};
 	window.RufflePlayer.config = {
@@ -271,6 +289,30 @@
 		stage.innerHTML = '<p class="error">{{ lang('AW_ARCADE_RUFFLE_MISSING')|e('js') }}</p>';
 	};
 	document.head.appendChild(s);
+	{% endif %}
+	};
+
+	{% if AW_EXT_HOSTS %}
+	/* The game names other servers: load it only after the player agreed.
+	 * "Remember" keeps the answer for this game in this browser only. */
+	var extKey = 'awArcadeExtOk' + {{ AW_GAME_ID }};
+	var gate = document.getElementById('aw-ext-gate');
+	var agreed = false;
+	try { agreed = window.localStorage.getItem(extKey) === '1'; } catch (e) {}
+	if (agreed) {
+		gate.parentNode.removeChild(gate);
+		startGame();
+	} else {
+		document.getElementById('aw-ext-ok').addEventListener('click', function () {
+			if (document.getElementById('aw-ext-remember').checked) {
+				try { window.localStorage.setItem(extKey, '1'); } catch (e) {}
+			}
+			gate.parentNode.removeChild(gate);
+			startGame();
+		});
+	}
+	{% else %}
+	startGame();
 	{% endif %}
 })();
 </script>

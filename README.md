@@ -24,6 +24,8 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 - Forum integration (ArcadeBot): new games and the season top 10 posted automatically, game topic as discussion thread, own news forum per category
 - “Arcade” drop-down menu in the header with tournaments, duels and “random game” (switchable)
 - Jackpot (with Ultimate Points, switchable): part of the play costs goes into a pot per game; whoever beats the all-time record wins it – adjustable globally, per category and per game
+- Cheat protection: minimum play time, maximum score and outlier detection with a review list in the ACP
+- Warning for games that load content from other servers (local check), with an optional note to players before they start
 - Tournaments: several games over a period, overall ranking by tournament points, countdown, optional prizes (Ultimate Points) and ArcadeBot topics at start and end
 - Duels: members challenge each other with their record, with phpBB notifications; “New” badge for recently installed games
 - Game ratings: 1–5 stars per member and game (only after playing, changeable), average shown in the game list; game list sortable by name, rating, popularity and newest

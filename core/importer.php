@@ -24,8 +24,12 @@ class importer
 	protected $config;
 	protected $root_path;
 
-	public function __construct(games $games, \phpbb\config\config $config, $root_path)
+	/** @var external|null */
+	protected $external;
+
+	public function __construct(games $games, \phpbb\config\config $config, $root_path, ?external $external = null)
 	{
+		$this->external = $external;
 		$this->games = $games;
 		$this->config = $config;
 		$this->root_path = $root_path;
@@ -350,6 +354,8 @@ class importer
 					'game_width'		=> $g['width'],
 					'game_height'		=> $g['height'],
 					'game_active'		=> $active ? 1 : 0,
+					'game_external'			=> $this->external ? implode(',', $this->external->scan_dir($this->games->games_fs_path() . $g['dir'])) : '',
+					'game_external_checked'	=> $this->external ? 1 : 0,
 					'game_plays'		=> 0,
 				]);
 				$count++;

@@ -154,6 +154,17 @@ class ratings
 	}
 
 	/**
+	 * Remove the ratings of several games (category reset) or of all games (empty list = all).
+	 */
+	public function reset(array $game_ids = [])
+	{
+		$where = $game_ids ? ' WHERE ' . $this->db->sql_in_set('game_id', array_map('intval', $game_ids)) : '';
+
+		$this->db->sql_query('DELETE FROM ' . $this->ratings_table . $where);
+		$this->db->sql_query('UPDATE ' . $this->games_table . ' SET game_rating_sum = 0, game_rating_count = 0' . $where);
+	}
+
+	/**
 	 * Remove the ratings of deleted members and fix the totals of their games.
 	 */
 	public function delete_users(array $user_ids)

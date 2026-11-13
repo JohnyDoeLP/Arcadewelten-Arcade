@@ -430,6 +430,9 @@ class main
 			'AW_GAME_WIDTH'		=> (int) $game['game_width'],
 			'AW_GAME_HEIGHT'	=> (int) $game['game_height'],
 			'AW_GAME_URL'		=> $board_url . $this->games->games_path() . rawurlencode($game['game_dir']) . '/' . rawurlencode($game['game_file']) . $this->cache_buster($game),
+			// Ask before a game that names other servers is loaded (switchable in the ACP).
+			'AW_EXT_HOSTS'		=> !empty($this->config['aw_arcade_external_consent']) ? implode(', ', \arcadewelten\arcade\core\external::split($game['game_external'])) : '',
+			'AW_GAME_ID'		=> (int) $game['game_id'],
 			'AW_BOARD_URL'		=> $board_url,
 			'AW_RUFFLE_URL'		=> $board_url . 'ext/arcadewelten/arcade/styles/all/theme/ruffle/',
 			'AW_PLAY_ID'		=> $play_id,
@@ -523,7 +526,9 @@ class main
 		else if ($saved)
 		{
 			$last = $this->request->variable('last', '');
-			$message = $this->language->lang($saved == 2 ? 'AW_ARCADE_MSG_NEW_BEST' : 'AW_ARCADE_MSG_SAVED', $this->format_score($last));
+			$message = (float) $last <= 0
+				? $this->language->lang('AW_ARCADE_MSG_ZERO')
+				: $this->language->lang($saved == 2 ? 'AW_ARCADE_MSG_NEW_BEST' : 'AW_ARCADE_MSG_SAVED', $this->format_score($last));
 			$won = (float) $this->request->variable('jackpot', '0');
 
 			if ($won > 0)

@@ -79,6 +79,21 @@
 			<dd><input type="number" id="aw_min_time" name="aw_min_time" min="0" max="600" value="{{ AW_MIN_TIME }}"> {{ lang('ACP_AW_ARCADE_SECONDS') }}</dd>
 		</dl>
 		<dl>
+			<dt><label for="aw_outlier_factor">{{ lang('ACP_AW_ARCADE_OUTLIER_FACTOR') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_OUTLIER_FACTOR_EXPLAIN') }}</span></dt>
+			<dd><input type="number" id="aw_outlier_factor" name="aw_outlier_factor" min="0" max="1000" value="{{ AW_OUTLIER_FACTOR }}"> {{ lang('ACP_AW_ARCADE_OUTLIER_TIMES') }}</dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_outlier_min">{{ lang('ACP_AW_ARCADE_OUTLIER_MIN') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_OUTLIER_MIN_EXPLAIN') }}</span></dt>
+			<dd><input type="number" id="aw_outlier_min" name="aw_outlier_min" min="1" max="100" value="{{ AW_OUTLIER_MIN }}"></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_OUTLIER_NOTICE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_OUTLIER_NOTICE_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_outlier_notice" value="1"{% if AW_OUTLIER_NOTICE %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_outlier_notice" value="0"{% if not AW_OUTLIER_NOTICE %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_CREDIT') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CREDIT_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="aw_credit" value="1"{% if AW_CREDIT %} checked{% endif %}> {{ lang('YES') }}</label>
@@ -90,6 +105,13 @@
 			<dd>
 				<label><input type="radio" class="radio" name="aw_privacy" value="1"{% if AW_PRIVACY %} checked{% endif %}> {{ lang('YES') }}</label>
 				<label><input type="radio" class="radio" name="aw_privacy" value="0"{% if not AW_PRIVACY %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_EXTERNAL_CONSENT') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_EXTERNAL_CONSENT_EXPLAIN') }}</span>{% if AW_EXTERNAL_GAMES %}<br><strong class="error">{{ lang('ACP_AW_ARCADE_EXTERNAL_PRIVACY_TODO', AW_EXTERNAL_GAMES) }}</strong>{% endif %}</dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_external_consent" value="1"{% if AW_EXTERNAL_CONSENT %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_external_consent" value="0"{% if not AW_EXTERNAL_CONSENT %} checked{% endif %}> {{ lang('NO') }}</label>
 			</dd>
 		</dl>
 		<dl>
@@ -267,6 +289,12 @@
 	<p>{{ lang('ACP_AW_ARCADE_PLAYS_RESET_EXPLAIN') }}</p>
 	<p><a class="button2" href="{{ U_AW_RESET_PLAYS }}">{{ lang('ACP_AW_ARCADE_PLAYS_RESET') }}</a></p>
 </fieldset>
+
+<fieldset>
+	<legend>{{ lang('ACP_AW_ARCADE_RATINGS_RESET') }}</legend>
+	<p>{{ lang('ACP_AW_ARCADE_RATINGS_RESET_EXPLAIN') }}</p>
+	<p><a class="button2" href="{{ U_AW_RESET_RATINGS }}">{{ lang('ACP_AW_ARCADE_RATINGS_RESET') }}</a></p>
+</fieldset>
 {% endif %}
 
 {# ================= Games ================= #}
@@ -338,12 +366,20 @@
 		{% include '@arcadewelten_arcade/acp_aw_arcade_point_fields.html' %}
 		{% endif %}
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_EXTERNAL') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_EXTERNAL_HINT') }}</span></dt>
+			<dd>{% if AW_GAME_EXTERNAL %}<strong class="error">⚠ {{ AW_GAME_EXTERNAL }}</strong>{% elseif S_AW_GAME_EXTERNAL_CHECKED %}{{ lang('ACP_AW_ARCADE_EXTERNAL_NONE') }}{% else %}{{ lang('ACP_AW_ARCADE_EXTERNAL_NOT_CHECKED') }}{% endif %}</dd>
+		</dl>
+		<dl>
 			<dt><label for="reset_scores">{{ lang('ACP_AW_ARCADE_RESET_SCORES') }}{{ lang('COLON') }}</label></dt>
 			<dd><label><input type="checkbox" id="reset_scores" name="reset_scores" value="1"> {{ lang('ACP_AW_ARCADE_RESET_SCORES_EXPLAIN') }}</label></dd>
 		</dl>
 		<dl>
 			<dt><label for="reset_plays">{{ lang('ACP_AW_ARCADE_PLAYS_RESET') }}{{ lang('COLON') }}</label></dt>
 			<dd><label><input type="checkbox" id="reset_plays" name="reset_plays" value="1"> {{ lang('ACP_AW_ARCADE_RESET_PLAYS_GAME') }}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="reset_ratings">{{ lang('ACP_AW_ARCADE_RATINGS_RESET') }}{{ lang('COLON') }}</label></dt>
+			<dd><label><input type="checkbox" id="reset_ratings" name="reset_ratings" value="1"> {{ lang('ACP_AW_ARCADE_RESET_RATINGS_GAME') }}</label></dd>
 		</dl>
 		<dl>
 			<dt><label for="reset_ratings">{{ lang('ACP_AW_ARCADE_RATING') }}{{ lang('COLON') }}</label><br><span>{{ GAME_RATING }}</span></dt>
@@ -358,9 +394,13 @@
 
 {% else %}
 
+{% if AW_UNCHECKED %}
+<div class="errorbox"><p>{{ lang('ACP_AW_ARCADE_EXTERNAL_UNCHECKED', AW_UNCHECKED) }} <a href="{{ U_AW_CHECK_EXTERNAL }}">{{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_NOW') }}</a></p></div>
+{% endif %}
 <form id="aw_games" method="post" action="{{ U_ACTION }}">
 	<fieldset>
 		<legend>{{ lang('ACP_AW_ARCADE_INSTALLED', AW_TOTAL_GAMES) }}</legend>
+		<p class="small"><a href="{{ U_AW_CHECK_EXTERNAL_ALL }}">{{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_ALL') }}</a> – {{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_EXPLAIN') }}</p>
 		<p>
 			<a href="{{ U_ACTION }}&amp;fc=-1">{{ lang('AW_ARCADE_ALL_GAMES') }}</a>
 			{% for c in loops.cat_options %} &bull; <a href="{{ U_ACTION }}&amp;fc={{ c.ID }}"{% if c.S_SEL %} style="font-weight:bold"{% endif %}>{{ c.NAME }}</a>{% endfor %}
@@ -384,7 +424,7 @@
 			{% for g in loops.games %}
 				<tr>
 					<td><input type="checkbox" class="aw-gid" name="game_ids[]" value="{{ g.ID }}"></td>
-					<td><strong>{{ g.NAME }}</strong>{% if g.S_NEW %} <strong class="aw-acp-new">{{ lang('AW_ARCADE_NEW') }}</strong>{% endif %}{% if g.S_TOUCH %} <i class="icon fa-mobile fa-fw" aria-hidden="true" title="{{ lang('ACP_AW_ARCADE_TOUCH') }}"></i>{% endif %}<br><span class="small">{{ g.DIR }}</span></td>
+					<td><strong>{{ g.NAME }}</strong>{% if g.S_NEW %} <strong class="aw-acp-new">{{ lang('AW_ARCADE_NEW') }}</strong>{% endif %}{% if g.S_TOUCH %} <i class="icon fa-mobile fa-fw" aria-hidden="true" title="{{ lang('ACP_AW_ARCADE_TOUCH') }}"></i>{% endif %}<br><span class="small">{{ g.DIR }}</span>{% if g.EXTERNAL %}<br><span class="small error" title="{{ lang('ACP_AW_ARCADE_EXTERNAL_HINT') }}">⚠ {{ lang('ACP_AW_ARCADE_EXTERNAL_LOADS', g.EXTERNAL) }}</span>{% endif %}</td>
 					<td>{{ g.CAT }}</td>
 					<td>{{ g.SAVE_TYPE }}</td>
 					<td>{{ g.PLAYS }}</td>
@@ -466,7 +506,7 @@
 					<td><strong>{{ g.NAME }}</strong><br><span class="small">{{ g.DIR }}</span></td>
 					<td>{{ g.SAVE_TYPE }}</td>
 					<td>{{ g.SIZE }}</td>
-					<td>{% if g.S_SUPPORTED %}{{ lang('ACP_AW_ARCADE_READY') }}{% if g.NOTE %}<br><span class="small">{{ g.NOTE }}</span>{% endif %}{% else %}<span class="error">{{ g.REASON }}</span>{% endif %}</td>
+					<td>{% if g.S_SUPPORTED %}{{ lang('ACP_AW_ARCADE_READY') }}{% if g.NOTE %}<br><span class="small">{{ g.NOTE }}</span>{% endif %}{% if g.EXTERNAL %}<br><span class="small error" title="{{ lang('ACP_AW_ARCADE_EXTERNAL_HINT') }}">⚠ {{ lang('ACP_AW_ARCADE_EXTERNAL_LOADS', g.EXTERNAL) }}</span>{% endif %}{% else %}<span class="error">{{ g.REASON }}</span>{% endif %}</td>
 				</tr>
 			{% endfor %}
 			</tbody>
@@ -496,6 +536,13 @@
 	<fieldset>
 		<legend>{{ CAT_NAME }}</legend>
 		{% include '@arcadewelten_arcade/acp_aw_arcade_cat_fields.html' %}
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_CAT_RESET') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_RESET_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="checkbox" name="cat_reset_plays" value="1"> {{ lang('ACP_AW_ARCADE_CAT_RESET_PLAYS') }}</label><br>
+				<label><input type="checkbox" name="cat_reset_ratings" value="1"> {{ lang('ACP_AW_ARCADE_CAT_RESET_RATINGS') }}</label>
+			</dd>
+		</dl>
 	</fieldset>
 	<fieldset class="submit-buttons">
 		<input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}">
@@ -571,7 +618,7 @@
 			<td>{{ f.SECONDS }} {{ lang('ACP_AW_ARCADE_SECONDS') }}</td>
 			<td>{{ f.REASON }}</td>
 			<td>{{ f.DATE }}</td>
-			<td class="actions"><a href="{{ f.U_APPROVE }}">{{ lang('ACP_AW_ARCADE_APPROVE') }}</a> &bull; <a href="{{ f.U_DELETE }}">{{ lang('DELETE') }}</a></td>
+			<td class="actions">{% if f.S_NOTE %}<a href="{{ f.U_DELETE }}">{{ lang('ACP_AW_ARCADE_NOTE_DONE') }}</a>{% else %}<a href="{{ f.U_APPROVE }}">{{ lang('ACP_AW_ARCADE_APPROVE') }}</a> &bull; <a href="{{ f.U_DELETE }}">{{ lang('DELETE') }}</a>{% endif %}</td>
 		</tr>
 	{% else %}
 		<tr><td colspan="7">{{ lang('ACP_AW_ARCADE_REVIEW_EMPTY') }}</td></tr>

@@ -127,6 +127,13 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_LOGIN_FOR_SCORES'	=> 'Highscores are only visible to registered members.',
 	'AW_ARCADE_MSG_NOSESSION'	=> 'Your score could not be saved because the game session expired or was invalid. Please start the game again from the arcade.',
 	'AW_ARCADE_MSG_SAVED'		=> 'Saved: %s points. You did not beat your personal best this time.',
+	'AW_ARCADE_MSG_ZERO'		=> '0 points this time – that counts as played, but does not go into the highscores. Better luck next time!',
+	'AW_ARCADE_EXT_TITLE'		=> 'Note about this game',
+	'AW_ARCADE_EXT_TEXT'		=> 'This game may load content from other servers when it starts. Your IP address is sent to these servers:',
+	'AW_ARCADE_EXT_PRIVACY'		=> 'The game is only loaded once you click “Start game”. See our privacy policy for details.',
+	'AW_ARCADE_EXT_REMEMBER'	=> 'Do not ask again for this game (stored in your browser only)',
+	'AW_ARCADE_EXT_CONTINUE'	=> 'Start game',
+	'AW_ARCADE_EXT_LEAVE'		=> 'Back to the arcade',
 	'AW_ARCADE_MSG_NEW_BEST'	=> 'New personal best: %s points!',
 
 	'AW_ARCADE_PASSWORD_EXPLAIN'	=> 'This category is password protected.',

@@ -16,15 +16,15 @@ Suggestions are welcome – the list grows with the community.
 - 0.19 – tournament changes as replies in the start topic, optional deletion of game folders
 - 0.20 – drop-down menu in the header with “random game”, privacy note on browser storage
 - 0.21 – jackpot per game with three-level settings
+- 0.22 – outlier detection, external content check with player notice, resets for ratings and play counters, results of 0 leave the highscores
 
 ## Next
 
-1. **Outlier detection** for the plausibility check: results far above the previous record or the player's own best (e.g. 20 times as high) are flagged with a reason; only with enough history per game, factor adjustable, "notice only" mode in which the score counts immediately and is only marked for the admin – nobody is blocked by mistake
-2. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-3. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-4. **Statistics page** per member: favourite game, play time, best ranks
-5. **Highscore certificates** for season winners (image, generated with GD)
-6. **Warning for games that load external content**: the importer looks through a game's own files (locally, no lookups on the internet) for addresses on other servers, e.g. ad or tracking scripts, or games that are only an embed of an external game portal, and shows a note in the import list such as "loads content from portal.cdn.example.com". The admin decides; nothing is blocked automatically. While such a game is active, the privacy section no longer claims "no data is sent to third parties", and the ACP reminds the admin to add the external service to the privacy policy. Optionally, players are asked before such a game starts ("This game loads content from ajax.aspnetcdn.com. Continue?"); only after their click is the game loaded, the consent applies to that game only and is kept in the browser at most, never on the server. Optional "strict mode": a Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
+1. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
+2. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+3. **Statistics page** per member: favourite game, play time, best ranks
+4. **Highscore certificates** for season winners (image, generated with GD)
+5. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
 ## phpBB 4
 

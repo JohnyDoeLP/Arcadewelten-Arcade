@@ -379,6 +379,51 @@ class games
 		$this->db->sql_query('UPDATE ' . $this->games_table . ' SET game_plays = 0' . ($game_id ? ' WHERE game_id = ' . (int) $game_id : ''));
 	}
 
+	/**
+	 * Ids of all games in one category.
+	 */
+	public function cat_game_ids($cat_id)
+	{
+		$result = $this->db->sql_query('SELECT game_id FROM ' . $this->games_table . ' WHERE cat_id = ' . (int) $cat_id);
+		$ids = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$ids[] = (int) $row['game_id'];
+		}
+		$this->db->sql_freeresult($result);
+
+		return $ids;
+	}
+
+	/**
+	 * Store the result of the external content check for one game.
+	 */
+	public function set_external($game_id, array $hosts)
+	{
+		$this->db->sql_query('UPDATE ' . $this->games_table . " SET game_external = '" . $this->db->sql_escape(implode(',', $hosts)) . "', game_external_checked = 1
+			WHERE game_id = " . (int) $game_id);
+	}
+
+	/**
+	 * Games still to check, or (with $active_only) active games that name other servers.
+	 *
+	 * @return array rows with game_id, game_name, game_dir, game_external
+	 */
+	public function external_games($unchecked = false, $active_only = false)
+	{
+		$where = $unchecked ? 'game_external_checked = 0' : "game_external <> ''" . ($active_only ? ' AND game_active = 1' : '');
+		$result = $this->db->sql_query('SELECT game_id, game_name, game_dir, game_external FROM ' . $this->games_table . ' WHERE ' . $where . ' ORDER BY game_name');
+		$rows = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		return $rows;
+	}
+
+	public function reset_plays_cat($cat_id)
+	{
+		$this->db->sql_query('UPDATE ' . $this->games_table . ' SET game_plays = 0 WHERE cat_id = ' . (int) $cat_id);
+	}
+
 	public function count_play($game_id)
 	{
 		$this->db->sql_query('UPDATE ' . $this->games_table . ' SET game_plays = game_plays + 1 WHERE game_id = ' . (int) $game_id);

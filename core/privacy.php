@@ -127,7 +127,7 @@ class privacy
 			$paragraphs[] = ['AW_ARCADE_PRIVACY_DEBUG'];
 		}
 
-		$paragraphs[] = ['AW_ARCADE_PRIVACY_LOCAL'];
+		$paragraphs[] = [$this->has_external_games() ? (!empty($this->config['aw_arcade_external_consent']) ? 'AW_ARCADE_PRIVACY_LOCAL_EXTERNAL' : 'AW_ARCADE_PRIVACY_LOCAL_EXTERNAL_NOASK') : 'AW_ARCADE_PRIVACY_LOCAL'];
 		$paragraphs[] = ['AW_ARCADE_PRIVACY_BROWSER'];
 		$paragraphs[] = ['AW_ARCADE_PRIVACY_LEGAL'];
 
@@ -182,6 +182,18 @@ class privacy
 			FROM ' . $this->cats_table . "
 			WHERE cat_password <> ''";
 		$result = $this->db->sql_query_limit($sql, 1);
+		$found = (bool) $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return $found;
+	}
+
+	/**
+	 * Is any active game known to name other servers? (local check at import / in the ACP)
+	 */
+	protected function has_external_games()
+	{
+		$result = $this->db->sql_query_limit('SELECT game_id FROM ' . $this->games_table . " WHERE game_external <> '' AND game_active = 1", 1);
 		$found = (bool) $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 

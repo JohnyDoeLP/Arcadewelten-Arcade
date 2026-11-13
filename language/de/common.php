@@ -127,6 +127,13 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_LOGIN_FOR_SCORES'	=> 'Die Bestenlisten sind nur für angemeldete Mitglieder sichtbar.',
 	'AW_ARCADE_MSG_NOSESSION'	=> 'Deine Punkte konnten nicht gespeichert werden, weil die Spielsitzung abgelaufen oder ungültig war. Bitte starte das Spiel erneut über die Spielhalle.',
 	'AW_ARCADE_MSG_SAVED'		=> 'Gespeichert: %s Punkte. Deinen persönlichen Rekord hast du diesmal nicht geknackt.',
+	'AW_ARCADE_MSG_ZERO'		=> 'Diesmal 0 Punkte – das zählt als gespielt, kommt aber nicht in die Bestenliste. Nächstes Mal klappt’s!',
+	'AW_ARCADE_EXT_TITLE'		=> 'Hinweis zu diesem Spiel',
+	'AW_ARCADE_EXT_TEXT'		=> 'Dieses Spiel lädt beim Start möglicherweise Inhalte von fremden Servern. Dabei wird deine IP-Adresse an diese Server übertragen:',
+	'AW_ARCADE_EXT_PRIVACY'		=> 'Das Spiel wird erst geladen, wenn du auf „Spiel starten“ klickst. Näheres steht in unserer Datenschutzerklärung.',
+	'AW_ARCADE_EXT_REMEMBER'	=> 'Für dieses Spiel nicht mehr fragen (wird nur in deinem Browser gespeichert)',
+	'AW_ARCADE_EXT_CONTINUE'	=> 'Spiel starten',
+	'AW_ARCADE_EXT_LEAVE'		=> 'Zurück zur Spielhalle',
 	'AW_ARCADE_MSG_NEW_BEST'	=> 'Neuer persönlicher Rekord: %s Punkte!',
 
 	'AW_ARCADE_PASSWORD_EXPLAIN'	=> 'Diese Kategorie ist mit einem Passwort geschützt.',

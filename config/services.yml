@@ -122,12 +122,19 @@ services:
             - '@arcadewelten.arcade.tourneys'
             - '@arcadewelten.arcade.jackpot'
 
+    arcadewelten.arcade.external:
+        class: arcadewelten\arcade\core\external
+        arguments:
+            - '@config'
+            - '@request'
+
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer
         arguments:
             - '@arcadewelten.arcade.games'
             - '@config'
             - '%core.root_path%'
+            - '@arcadewelten.arcade.external'
 
     arcadewelten.arcade.access:
         class: arcadewelten\arcade\core\access

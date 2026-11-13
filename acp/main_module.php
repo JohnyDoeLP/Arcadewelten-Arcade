@@ -52,6 +52,8 @@ class main_module
 	protected $tourneys;
 	/** @var \arcadewelten\arcade\core\tourney_jobs */
 	protected $tourney_jobs;
+	/** @var \arcadewelten\arcade\core\external */
+	protected $external;
 	/** @var \arcadewelten\arcade\core\jackpot */
 	protected $jackpot;
 	/** @var \phpbb\user */
@@ -81,6 +83,7 @@ class main_module
 		$this->reports = $phpbb_container->get('arcadewelten.arcade.reports');
 		$this->tourneys = $phpbb_container->get('arcadewelten.arcade.tourneys');
 		$this->tourney_jobs = $phpbb_container->get('arcadewelten.arcade.tourney_jobs');
+		$this->external = $phpbb_container->get('arcadewelten.arcade.external');
 		$this->jackpot = $phpbb_container->get('arcadewelten.arcade.jackpot');
 		$this->user = $phpbb_container->get('user');
 		$this->root_path = $phpbb_container->getParameter('core.root_path');
@@ -140,6 +143,18 @@ class main_module
 			return;
 		}
 
+		if ($this->request->variable('action', '') === 'reset_ratings')
+		{
+			if (confirm_box(true))
+			{
+				$this->ratings->reset();
+				trigger_error($this->language->lang('ACP_AW_ARCADE_RATINGS_RESET_DONE') . adm_back_link($this->u_action));
+			}
+
+			confirm_box(false, $this->language->lang('ACP_AW_ARCADE_RATINGS_RESET_CONFIRM'), build_hidden_fields(['action' => 'reset_ratings']));
+			redirect($this->u_action);
+		}
+
 		if ($this->request->variable('action', '') === 'reset_plays')
 		{
 			if (confirm_box(true))
@@ -168,6 +183,7 @@ class main_module
 			$this->config->set('aw_arcade_debug', $this->request->variable('aw_debug', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_credit', $this->request->variable('aw_credit', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_privacy', $this->request->variable('aw_privacy', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_external_consent', $this->request->variable('aw_external_consent', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_ratings', $this->request->variable('aw_ratings', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_recent', $this->request->variable('aw_recent', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_new_days', max(0, min(365, $this->request->variable('aw_new_days', 14))));
@@ -198,6 +214,9 @@ class main_module
 			}
 			$this->config->set('aw_arcade_bot_id', $bot_id);
 			$this->config->set('aw_arcade_min_time', max(0, min(600, $this->request->variable('aw_min_time', 5))));
+			$this->config->set('aw_arcade_outlier_factor', max(0, min(1000, $this->request->variable('aw_outlier_factor', 20))));
+			$this->config->set('aw_arcade_outlier_min', max(1, min(100, $this->request->variable('aw_outlier_min', 5))));
+			$this->config->set('aw_arcade_outlier_notice', $this->request->variable('aw_outlier_notice', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_games_per_page', max(5, min(200, $this->request->variable('aw_games_per_page', 30))));
 			$this->config->set('aw_arcade_scores_per_page', max(5, min(200, $this->request->variable('aw_scores_per_page', 25))));
 
@@ -227,6 +246,8 @@ class main_module
 			'AW_DEBUG'				=> (bool) $this->config['aw_arcade_debug'],
 			'AW_CREDIT'				=> (bool) $this->config['aw_arcade_credit'],
 			'AW_PRIVACY'			=> (bool) $this->config['aw_arcade_privacy'],
+			'AW_EXTERNAL_CONSENT'	=> (bool) $this->config['aw_arcade_external_consent'],
+			'AW_EXTERNAL_GAMES'		=> implode(', ', array_column($this->games->external_games(false, true), 'game_name')),
 			'AW_RATINGS'			=> (bool) $this->config['aw_arcade_ratings'],
 			'AW_RECENT'				=> (bool) $this->config['aw_arcade_recent'],
 			'AW_NEW_DAYS'			=> (int) $this->config['aw_arcade_new_days'],
@@ -246,6 +267,9 @@ class main_module
 			'AW_POST_BATCH'			=> (int) $this->config['aw_arcade_post_batch'],
 			'U_AW_FIND_BOT'			=> append_sid($this->phpbb_root_path_web() . 'memberlist.php', 'mode=searchuser&amp;form=aw_settings&amp;field=aw_bot&amp;select_single=true'),
 			'U_AW_PRIVACY'			=> generate_board_url() . '/ucp.php?mode=privacy#' . \arcadewelten\arcade\core\privacy::ANCHOR,
+			'AW_OUTLIER_FACTOR'		=> (int) $this->config['aw_arcade_outlier_factor'],
+			'AW_OUTLIER_MIN'		=> (int) $this->config['aw_arcade_outlier_min'],
+			'AW_OUTLIER_NOTICE'		=> (bool) $this->config['aw_arcade_outlier_notice'],
 			'AW_MIN_TIME'			=> (int) $this->config['aw_arcade_min_time'],
 			'AW_GAMES_PER_PAGE'		=> (int) $this->config['aw_arcade_games_per_page'],
 			'AW_SCORES_PER_PAGE'	=> (int) $this->config['aw_arcade_scores_per_page'],
@@ -256,6 +280,7 @@ class main_module
 			'AW_SEASON_START'		=> $this->user->format_date((int) $this->config['aw_arcade_season_start']),
 			'U_AW_SEASON'			=> $this->u_action . '&amp;action=season',
 			'U_AW_RESET_PLAYS'		=> $this->u_action . '&amp;action=reset_plays',
+			'U_AW_RESET_RATINGS'	=> $this->u_action . '&amp;action=reset_ratings',
 		]);
 
 		foreach (\arcadewelten\arcade\core\points::KEYS as $key)
@@ -371,6 +396,40 @@ class main_module
 	{
 		$action = $this->request->variable('action', '');
 		$game_id = $this->request->variable('g', 0);
+
+		// Check games for addresses of other servers (all games, or only the unchecked ones)
+		if ($action === 'check_external')
+		{
+			if (!check_link_hash($this->request->variable('hash', ''), 'aw_arcade_external'))
+			{
+				trigger_error($this->language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
+
+			$checked = 0;
+			$found = [];
+			$all = $this->request->variable('all', 0);
+			$rows = $all ? $this->games->list_games(0, 0, 100000, false) : $this->games->external_games(true);
+
+			foreach ($rows as $row)
+			{
+				$hosts = $this->external->scan_dir($this->games->games_fs_path() . $row['game_dir']);
+				$this->games->set_external($row['game_id'], $hosts);
+				$checked++;
+
+				if ($hosts)
+				{
+					$found[] = '<strong>' . utf8_htmlspecialchars($row['game_name']) . '</strong>: ' . utf8_htmlspecialchars(implode(', ', $hosts));
+				}
+			}
+
+			$message = $this->language->lang('ACP_AW_ARCADE_EXTERNAL_CHECKED', $checked, count($found));
+			if ($found)
+			{
+				$message .= '<br><br>' . implode('<br>', $found);
+			}
+
+			trigger_error($message . adm_back_link($this->u_action));
+		}
 
 		// Import from the games folder
 		if ($this->request->is_set_post('import'))
@@ -491,7 +550,7 @@ class main_module
 					if ($files['left'])
 					{
 						$shown = array_slice($files['left'], 0, 50);
-						$message .= '<br><code>' . implode('<br>', array_map('htmlspecialchars', $shown)) . '</code>'
+						$message .= '<br><code>' . implode('<br>', array_map('utf8_htmlspecialchars', $shown)) . '</code>'
 							. (count($files['left']) > 50 ? '<br>' . $this->language->lang('ACP_AW_ARCADE_FILES_MORE', count($files['left']) - 50) : '');
 					}
 				}
@@ -541,6 +600,7 @@ class main_module
 				'S_GUEST'		=> (bool) $row['game_guest'],
 				'S_TOUCH'		=> (bool) $row['game_touch'],
 				'S_NEW'			=> $this->games->is_new($row),
+				'EXTERNAL'		=> isset($row['game_external']) ? implode(', ', \arcadewelten\arcade\core\external::split($row['game_external'])) : '',
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;g=' . (int) $row['game_id'],
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;g=' . (int) $row['game_id'],
 			]);
@@ -575,6 +635,7 @@ class main_module
 				'S_SUPPORTED'	=> $g['supported'],
 				'REASON'		=> $this->import_reason($g),
 				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
+				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir($this->games->games_fs_path() . $g['dir'])) : '',
 			]);
 		}
 
@@ -594,6 +655,9 @@ class main_module
 			'AW_FILTER_CAT'		=> $filter_cat,
 			'AW_SEARCH'			=> $search,
 			'AW_IMPORTABLE'		=> $importable,
+			'AW_UNCHECKED'		=> count($this->games->external_games(true)),
+			'U_AW_CHECK_EXTERNAL'		=> $this->u_action . '&amp;action=check_external&amp;hash=' . generate_link_hash('aw_arcade_external'),
+			'U_AW_CHECK_EXTERNAL_ALL'	=> $this->u_action . '&amp;action=check_external&amp;all=1&amp;hash=' . generate_link_hash('aw_arcade_external'),
 			'AW_GAMES_PATH'		=> $this->games->games_path(),
 			'S_AW_GAMES_DIR'	=> is_dir($this->games->games_fs_path()),
 		]);
@@ -656,6 +720,14 @@ class main_module
 				$this->ratings->delete_game($game_id);
 			}
 
+			// Files may have changed by FTP since the import: check again.
+			$this->games->set_external($game_id, $this->external->scan_dir($this->games->games_fs_path() . $game['game_dir']));
+
+			if ($this->request->variable('reset_ratings', 0))
+			{
+				$this->ratings->delete_game($game_id);
+			}
+
 			$this->scores->purge_cache();
 
 			trigger_error($this->language->lang('ACP_AW_ARCADE_UPDATED') . adm_back_link($this->u_action));
@@ -693,6 +765,8 @@ class main_module
 			'S_AW_RATINGS'		=> (bool) $this->config['aw_arcade_ratings'],
 			'AW_MIN_TIME'		=> (int) $this->config['aw_arcade_min_time'],
 			'U_EDIT_ACTION'		=> $this->u_action . '&amp;action=edit&amp;g=' . (int) $game['game_id'],
+			'AW_GAME_EXTERNAL'	=> implode(', ', \arcadewelten\arcade\core\external::split($game['game_external'])),
+			'S_AW_GAME_EXTERNAL_CHECKED'	=> !empty($game['game_external_checked']),
 			'U_BACK'			=> $this->u_action,
 		]);
 	}
@@ -714,8 +788,10 @@ class main_module
 			}
 
 			$flag = $this->scores->get_flag($flag_id);
+			$is_note = $flag && substr((string) $flag['flag_reason'], -5) === '_note';
 
-			if ($flag && $action === 'approve' && ($game = $this->games->get_game($flag['game_id'], false)))
+			// A note was already counted: "done" only removes it from the list.
+			if ($flag && !$is_note && $action === 'approve' && ($game = $this->games->get_game($flag['game_id'], false)))
 			{
 				$this->scores->save_score($game, $flag['user_id'], $flag['score'], (int) $flag['flag_time']);
 				$this->points->reward_round($flag['user_id'], $game, $flag['score']);
@@ -760,6 +836,7 @@ class main_module
 				'SCORE'		=> $row['score'] + 0,
 				'SECONDS'	=> (int) $row['play_seconds'],
 				'REASON'	=> $this->language->lang('ACP_AW_ARCADE_FLAG_' . strtoupper($row['flag_reason'])),
+				'S_NOTE'	=> substr((string) $row['flag_reason'], -5) === '_note',
 				'DATE'		=> $this->user->format_date($row['flag_time']),
 				'U_APPROVE'	=> $this->u_action . '&amp;action=approve&amp;f=' . (int) $row['flag_id'] . '&amp;hash=' . $hash,
 				'U_DELETE'	=> $this->u_action . '&amp;action=delete&amp;f=' . (int) $row['flag_id'] . '&amp;hash=' . $hash,
@@ -846,6 +923,16 @@ class main_module
 
 				$this->games->update_cat($cat_id, ['cat_name' => $name]);
 				$this->save_cat_details($cat_id);
+
+				if ($this->request->variable('cat_reset_plays', 0))
+				{
+					$this->games->reset_plays_cat($cat_id);
+				}
+
+				if ($this->request->variable('cat_reset_ratings', 0) && ($ids = $this->games->cat_game_ids($cat_id)))
+				{
+					$this->ratings->reset($ids);
+				}
 
 				trigger_error($this->language->lang('ACP_AW_ARCADE_UPDATED') . adm_back_link($this->u_action));
 			}
