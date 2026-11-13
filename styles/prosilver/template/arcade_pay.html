@@ -10,6 +10,14 @@
 		<p><strong>{{ lang('AW_ARCADE_PAY_EXPLAIN', AW_COST, AW_POINTS_NAME) }}</strong></p>
 		<p>{{ lang('AW_ARCADE_YOUR_BALANCE', AW_BALANCE, AW_POINTS_NAME) }}</p>
 		{% if AW_POINTS_INFO %}<p class="aw-small">{{ AW_POINTS_INFO }}</p>{% endif %}
+		{% if AW_EXT_HOSTS %}
+		<div class="aw-ext-gate aw-ext-pay">
+			<p><strong><i class="icon fa-exclamation-triangle fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_EXT_TITLE') }}</strong></p>
+			<p>{{ lang('AW_ARCADE_EXT_TEXT') }}</p>
+			<p class="aw-ext-hosts">{{ AW_EXT_HOSTS }}</p>
+			<p class="small">{{ lang('AW_ARCADE_EXT_PRIVACY_PAY') }}</p>
+		</div>
+		{% endif %}
 		<p>
 			<button class="button" type="submit" name="aw_pay" value="1"><i class="icon fa-play fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_PAY_AND_PLAY', AW_COST, AW_POINTS_NAME) }}</span></button>
 			<a class="button" href="{{ U_AW_ARCADE }}"><span>{{ lang('CANCEL') }}</span></a>

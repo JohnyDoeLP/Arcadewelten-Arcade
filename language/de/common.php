@@ -131,6 +131,7 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_EXT_TITLE'		=> 'Hinweis zu diesem Spiel',
 	'AW_ARCADE_EXT_TEXT'		=> 'Dieses Spiel lädt beim Start möglicherweise Inhalte von fremden Servern. Dabei wird deine IP-Adresse an diese Server übertragen:',
 	'AW_ARCADE_EXT_PRIVACY'		=> 'Das Spiel wird erst geladen, wenn du auf „Spiel starten“ klickst. Näheres steht in unserer Datenschutzerklärung.',
+	'AW_ARCADE_EXT_PRIVACY_PAY'	=> 'Mit dem Knopf „Für … spielen“ bist du damit einverstanden; das Spiel startet danach sofort. Näheres steht in unserer Datenschutzerklärung.',
 	'AW_ARCADE_EXT_REMEMBER'	=> 'Für dieses Spiel nicht mehr fragen (wird nur in deinem Browser gespeichert)',
 	'AW_ARCADE_EXT_CONTINUE'	=> 'Spiel starten',
 	'AW_ARCADE_EXT_LEAVE'		=> 'Zurück zur Spielhalle',

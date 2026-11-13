@@ -357,6 +357,7 @@ class main
 
 		$is_member = $this->is_member();
 		$cost = $this->points->active() ? $this->points->value($game, 'cost') : 0;
+		$paid = false;
 
 		if ($is_member && $cost > 0)
 		{
@@ -378,6 +379,8 @@ class main
 
 			$added = $this->jackpot->on_play($game, $cost);
 			$game['game_jackpot_pot'] = $this->jackpot->pot($game) + $added;
+			// The note about other servers was shown on the pay page already.
+			$paid = true;
 		}
 
 		$play_id = $is_member ? $this->scores->start_play($this->user->data['user_id'], $game['game_id']) : '';
@@ -431,7 +434,7 @@ class main
 			'AW_GAME_HEIGHT'	=> (int) $game['game_height'],
 			'AW_GAME_URL'		=> $board_url . $this->games->games_path() . rawurlencode($game['game_dir']) . '/' . rawurlencode($game['game_file']) . $this->cache_buster($game),
 			// Ask before a game that names other servers is loaded (switchable in the ACP).
-			'AW_EXT_HOSTS'		=> !empty($this->config['aw_arcade_external_consent']) ? implode(', ', \arcadewelten\arcade\core\external::split($game['game_external'])) : '',
+			'AW_EXT_HOSTS'		=> $paid ? '' : $this->external_hosts($game),
 			'AW_GAME_ID'		=> (int) $game['game_id'],
 			'AW_BOARD_URL'		=> $board_url,
 			'AW_RUFFLE_URL'		=> $board_url . 'ext/arcadewelten/arcade/styles/all/theme/ruffle/',
@@ -529,18 +532,18 @@ class main
 			$message = (float) $last <= 0
 				? $this->language->lang('AW_ARCADE_MSG_ZERO')
 				: $this->language->lang($saved == 2 ? 'AW_ARCADE_MSG_NEW_BEST' : 'AW_ARCADE_MSG_SAVED', $this->format_score($last));
-			$won = (float) $this->request->variable('jackpot', '0');
-
-			if ($won > 0)
-			{
-				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_JACKPOT', $this->points->format($won), $this->points->name());
-			}
-
 			$earned = (float) $this->request->variable('earned', '0');
 
 			if ($earned > 0)
 			{
 				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_EARNED', $this->points->format($earned), $this->points->name());
+			}
+
+			$won = (float) $this->request->variable('jackpot', '0');
+
+			if ($won > 0)
+			{
+				$message .= ' ' . $this->language->lang('AW_ARCADE_MSG_JACKPOT', $this->points->format($won), $this->points->name());
 			}
 
 			if (($won = $this->request->variable('duel', 0)) > 0)
@@ -1410,6 +1413,20 @@ class main
 		return $this->helper->render('@arcadewelten_arcade/arcade_password.html', $cat['cat_name']);
 	}
 
+	/**
+	 * Other servers a game names, as a list for the consent note
+	 * ('' when there are none or the note is switched off in the ACP).
+	 */
+	protected function external_hosts(array $game)
+	{
+		if (empty($this->config['aw_arcade_external_consent']) || empty($game['game_external']))
+		{
+			return '';
+		}
+
+		return implode(', ', \arcadewelten\arcade\core\external::split($game['game_external']));
+	}
+
 	protected function pay_form(array $game, $cost, $error = '')
 	{
 		add_form_key('aw_arcade_pay');
@@ -1420,6 +1437,8 @@ class main
 			'AW_BALANCE'	=> $this->points->format($this->points->balance($this->user->data['user_id'])),
 			'AW_POINTS_NAME'	=> $this->points->name(),
 			'AW_POINTS_INFO'	=> $this->points_info($game),
+			// Show the note about other servers before anything is charged.
+			'AW_EXT_HOSTS'		=> $this->external_hosts($game),
 			'AW_ERROR'		=> $error,
 			'U_AW_ACTION'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $game['game_id']]),
 			'U_AW_ARCADE'	=> $this->helper->route('arcadewelten_arcade_index'),

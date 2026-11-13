@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.22.3-beta (2026-11-13)
+
+- Games with costs and other servers: the note about the other servers now appears on the pay page, right above the button. Nothing is charged before the player has seen it, and after paying the game starts at once without a second prompt. Free games keep the prompt on the game page
+- After a round, the reward for the round is now named before a jackpot win, so the two amounts no longer read like one
+
 ## 0.22.2-beta (2026-11-13)
 
 - ACP → Games loads much faster with many games in the folder: the import list remembers the results of reading and checking each game folder until a file in it changes, and already installed games are no longer inspected on every visit

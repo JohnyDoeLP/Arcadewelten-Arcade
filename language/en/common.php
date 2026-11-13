@@ -131,6 +131,7 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_EXT_TITLE'		=> 'Note about this game',
 	'AW_ARCADE_EXT_TEXT'		=> 'This game may load content from other servers when it starts. Your IP address is sent to these servers:',
 	'AW_ARCADE_EXT_PRIVACY'		=> 'The game is only loaded once you click “Start game”. See our privacy policy for details.',
+	'AW_ARCADE_EXT_PRIVACY_PAY'	=> 'By clicking “Play for …” you agree to this; the game then starts right away. See our privacy policy for details.',
 	'AW_ARCADE_EXT_REMEMBER'	=> 'Do not ask again for this game (stored in your browser only)',
 	'AW_ARCADE_EXT_CONTINUE'	=> 'Start game',
 	'AW_ARCADE_EXT_LEAVE'		=> 'Back to the arcade',
