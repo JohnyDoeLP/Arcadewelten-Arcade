@@ -17,7 +17,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 ## Features
 
 - phpBB permissions: user permission “Can use the arcade”, categories visible only for selected user groups (e.g. 18+)
-- Game list with category tiles (image, number of games, category champion), search and pagination; optional password per category; 18 bundled category images, own images can simply be put into `images/arcade/cats/`
+- Game list with category tiles (image, number of games, category champion), search and pagination; optional password per category; 22 bundled category images (including Easter and Christmas), own images can simply be put into `images/arcade/cats/`
 - “Who is online” shows who is in the arcade and what is being played – without game names from password-protected categories, from group-limited categories (for everybody without access) and from categories where you switch it off
 - Cinema mode (“lights off”), mobile/touch games with fullscreen start (iPhone included), “recently played” bar
 - Favourites (heart), medals 🥇🥈🥉 next to posts, “report game” with a list in the ACP, bulk editing of minimum time, maximum score and points
@@ -111,4 +111,4 @@ Ruffle is licensed under MIT / Apache-2.0, see `styles/all/theme/ruffle/LICENSE_
 
 ## Category images
 
-The 18 images in `images/cats/` were made for Arcadewelten with AI assistance (ChatGPT) and are released under **CC0** – they may be used, modified and redistributed without restriction, also independently of this extension. They contain no third-party characters or trademarks.
+The 22 images in `images/cats/` were made for Arcadewelten with AI assistance (ChatGPT) and are released under **CC0** – they may be used, modified and redistributed without restriction, also independently of this extension. They contain no third-party characters or trademarks.

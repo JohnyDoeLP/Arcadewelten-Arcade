@@ -17,7 +17,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 ## Funktionen
 
 - Rechte über phpBB: Benutzerrecht „Kann die Spielhalle benutzen“, Kategorien nur für bestimmte Benutzergruppen sichtbar (z. B. Ü18)
-- Spieleliste mit Kategorie-Kacheln (Bild, Spielanzahl, Kategorie-Champion), Suche und Seitenaufteilung; optional Passwort pro Kategorie; 18 mitgelieferte Kategorie-Bilder, eigene Bilder einfach in `images/arcade/cats/` ablegen
+- Spieleliste mit Kategorie-Kacheln (Bild, Spielanzahl, Kategorie-Champion), Suche und Seitenaufteilung; optional Passwort pro Kategorie; 22 mitgelieferte Kategorie-Bilder (auch Ostern und Weihnachten), eigene Bilder einfach in `images/arcade/cats/` ablegen
 - „Wer ist online?“ zeigt, wer in der Spielhalle ist und was gerade gespielt wird – ohne Spielnamen aus Kategorien mit Passwort, aus Gruppen-Kategorien (für alle ohne Zugriff) und aus Kategorien, in denen du es abschaltest
 - Kino-Modus („Licht aus“), Handy-/Touch-Spiele mit Vollbild-Start (auch auf dem iPhone), Leiste „Zuletzt gespielt“
 - Favoriten (Herz), Medaillen 🥇🥈🥉 neben Beiträgen, „Spiel melden“ mit Liste im ACP, Massenbearbeitung von Mindestzeit, Höchstpunktzahl und Punkten
@@ -104,7 +104,7 @@ Die Spielhalle hängt an die Datenschutzerklärung des Forums (`ucp.php?mode=pri
 
 ## Kategorie-Bilder
 
-Die 18 Bilder in `images/cats/` wurden für Arcadewelten mit KI-Unterstützung (ChatGPT) erstellt und stehen unter **CC0** – sie dürfen ohne Einschränkung genutzt, verändert und weitergegeben werden, auch unabhängig von dieser Erweiterung. Sie enthalten keine fremden Figuren oder Marken.
+Die 22 Bilder in `images/cats/` wurden für Arcadewelten mit KI-Unterstützung (ChatGPT) erstellt und stehen unter **CC0** – sie dürfen ohne Einschränkung genutzt, verändert und weitergegeben werden, auch unabhängig von dieser Erweiterung. Sie enthalten keine fremden Figuren oder Marken.
 
 ## Lizenz
 

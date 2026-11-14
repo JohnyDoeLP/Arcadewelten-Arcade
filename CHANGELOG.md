@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.22.4-beta (2026-11-14)
+
+- Four new bundled category images for seasonal categories: Easter (bunny, egg) and Christmas (gift, bauble), selectable in the category image list; 22 bundled images in total (CC0 like the others)
+
 ## 0.22.3-beta (2026-11-13)
 
 - Games with costs and other servers: the note about the other servers now appears on the pay page, right above the button. Nothing is charged before the player has seen it, and after paying the game starts at once without a second prompt. Free games keep the prompt on the game page

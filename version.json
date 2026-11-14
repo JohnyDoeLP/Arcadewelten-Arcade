@@ -2,9 +2,9 @@
 	"stable": {},
 	"unstable": {
 		"0": {
-			"current": "0.22.3-beta",
-			"announcement": "https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/tag/v0.22.3-beta",
-			"download": "https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/tag/v0.22.3-beta",
+			"current": "0.22.4-beta",
+			"announcement": "https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/tag/v0.22.4-beta",
+			"download": "https://github.com/JohnyDoeLP/Arcadewelten-Arcade/releases/tag/v0.22.4-beta",
 			"eol": null,
 			"security": false
 		}
