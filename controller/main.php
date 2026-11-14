@@ -1439,6 +1439,7 @@ class main
 			'AW_POINTS_INFO'	=> $this->points_info($game),
 			// Show the note about other servers before anything is charged.
 			'AW_EXT_HOSTS'		=> $this->external_hosts($game),
+			'AW_GAME_ID'		=> (int) $game['game_id'],
 			'AW_ERROR'		=> $error,
 			'U_AW_ACTION'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $game['game_id']]),
 			'U_AW_ARCADE'	=> $this->helper->route('arcadewelten_arcade_index'),

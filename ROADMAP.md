@@ -20,9 +20,6 @@ Suggestions are welcome – the list grows with the community.
 
 ## Next
 
-Small things that come along with the next update:
-- Pay page note about other servers: text uses the full box width, names the real button (“Play for 100 Points”), and gets a tick box “Do not show this note for this game again” (stored in the player's browser only, shared with the prompt of free games)
-
 1. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
 2. **Arcade block on the board index**: optional block with new games and categories next to the latest records
 3. **Statistics page** per member: favourite game, play time, best ranks

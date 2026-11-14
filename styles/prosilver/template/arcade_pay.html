@@ -3,7 +3,7 @@
 
 <h2 class="aw-title">{{ AW_GAME_NAME }}</h2>
 
-<form method="post" action="{{ U_AW_ACTION }}">
+<form method="post" action="{{ U_AW_ACTION }}" id="aw-pay-form">
 <div class="panel">
 	<div class="inner">
 		{% if AW_ERROR %}<p class="error">{{ AW_ERROR }}</p>{% endif %}
@@ -11,11 +11,12 @@
 		<p>{{ lang('AW_ARCADE_YOUR_BALANCE', AW_BALANCE, AW_POINTS_NAME) }}</p>
 		{% if AW_POINTS_INFO %}<p class="aw-small">{{ AW_POINTS_INFO }}</p>{% endif %}
 		{% if AW_EXT_HOSTS %}
-		<div class="aw-ext-gate aw-ext-pay">
+		<div class="aw-ext-gate aw-ext-pay" id="aw-ext-pay">
 			<p><strong><i class="icon fa-exclamation-triangle fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_EXT_TITLE') }}</strong></p>
 			<p>{{ lang('AW_ARCADE_EXT_TEXT') }}</p>
 			<p class="aw-ext-hosts">{{ AW_EXT_HOSTS }}</p>
-			<p class="small">{{ lang('AW_ARCADE_EXT_PRIVACY_PAY') }}</p>
+			<p class="small">{{ lang('AW_ARCADE_EXT_PRIVACY_PAY', lang('AW_ARCADE_PAY_AND_PLAY', AW_COST, AW_POINTS_NAME)) }}</p>
+			<p class="small"><label><input type="checkbox" id="aw-ext-pay-hide"> {{ lang('AW_ARCADE_EXT_HIDE_NOTE') }}</label></p>
 		</div>
 		{% endif %}
 		<p>
@@ -26,6 +27,26 @@
 	</div>
 </div>
 </form>
+{% if AW_EXT_HOSTS %}
+<script>
+(function () {
+	/* Same browser-only memory as the prompt of free games. */
+	var key = 'awArcadeExtOk' + {{ AW_GAME_ID }};
+	var box = document.getElementById('aw-ext-pay');
+	try {
+		if (window.localStorage.getItem(key) === '1') {
+			box.parentNode.removeChild(box);
+			return;
+		}
+	} catch (e) {}
+	document.getElementById('aw-pay-form').addEventListener('submit', function () {
+		if (document.getElementById('aw-ext-pay-hide').checked) {
+			try { window.localStorage.setItem(key, '1'); } catch (e) {}
+		}
+	});
+})();
+</script>
+{% endif %}
 
 {% include '@arcadewelten_arcade/arcade_credit.html' %}
 

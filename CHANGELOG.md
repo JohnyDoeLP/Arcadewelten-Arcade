@@ -3,6 +3,7 @@
 ## 0.22.4-beta (2026-11-14)
 
 - Four new bundled category images for seasonal categories: Easter (bunny, egg) and Christmas (gift, bauble), selectable in the category image list; 22 bundled images in total (CC0 like the others)
+- Pay page note about other servers: the text uses the full width, names the real button (“Play for 100 Points”) and has a tick box “Do not show this note for this game again” (stored in the player's browser only, shared with the prompt of free games)
 
 ## 0.22.3-beta (2026-11-13)
 

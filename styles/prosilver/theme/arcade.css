@@ -194,3 +194,4 @@ table.table1.aw-tourney-table td.aw-col-name { text-align: left; }
 .aw-ext-gate p { margin: 4px 0; max-width: 560px; }
 .aw-ext-hosts { font-family: monospace; font-weight: bold; word-break: break-all; }
 .aw-ext-gate.aw-ext-pay { position: static; inset: auto; z-index: auto; align-items: flex-start; text-align: left; margin: 8px 0; border: 1px solid #e0c060; border-radius: 4px; }
+.aw-ext-gate.aw-ext-pay p { max-width: none; }
