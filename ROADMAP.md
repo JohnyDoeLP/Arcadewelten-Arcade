@@ -21,6 +21,9 @@ Suggestions are welcome – the list grows with the community.
 
 ## Next
 
+Small things that come along with the next update:
+- Game cards: long game names end before the favourite heart (shortened with “…”, full name on hover)
+
 1. **Arcade block on the board index**: optional block with new games and categories next to the latest records
 2. **Sitemap for search engines**: the arcade provides its own `sitemap.xml` with the arcade start page, categories and games that guests and bots may see (hidden, password and group-only categories stay out); works without a sitemap extension, can be submitted in Google Search Console and is named in the board's robots.txt
 3. **Statistics page** per member: favourite game, play time, best ranks
