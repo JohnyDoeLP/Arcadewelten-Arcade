@@ -1,14 +1,28 @@
 /* Arcadewelten Arcade */
+
+/* Colours follow the board style: lines and tile backgrounds are neutral
+ * grey with transparency, accents use the colour of the link or text they
+ * sit on. Style authors can override these variables in their own CSS. */
+:root {
+	--aw-line: rgba(128, 128, 128, 0.4);
+	--aw-tile-bg: rgba(128, 128, 128, 0.08);
+	--aw-tile-bg-strong: rgba(128, 128, 128, 0.16);
+	--aw-thumb-bg: rgba(128, 128, 128, 0.14);
+	--aw-note-bg: rgba(224, 168, 0, 0.12);
+	--aw-note-line: rgba(224, 168, 0, 0.6);
+	--aw-won: #2e9b2e;
+	--aw-lost: #d03030;
+}
 .aw-title { margin-top: 0.5em; }
 
 .aw-cats .inner { display: flex; flex-wrap: wrap; gap: 6px; }
-.aw-cat { display: inline-block; padding: 4px 10px; border: 1px solid #c7c3bf; border-radius: 4px; text-decoration: none; }
-.aw-cat-active { font-weight: bold; border-color: #105289; }
+.aw-cat { display: inline-block; padding: 4px 10px; border: 1px solid var(--aw-line); border-radius: 4px; text-decoration: none; }
+.aw-cat-active { font-weight: bold; border-color: currentColor; }
 .aw-count { opacity: 0.6; font-size: 0.9em; }
 
 .aw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 10px 0; }
-.aw-card { display: flex; gap: 8px; padding: 8px; border: 1px solid #c7c3bf; border-radius: 6px; background: rgba(255, 255, 255, 0.35); }
-.aw-thumb { flex: 0 0 64px; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: rgba(0, 0, 0, 0.06); }
+.aw-card { display: flex; gap: 8px; padding: 8px; border: 1px solid var(--aw-line); border-radius: 6px; background: var(--aw-tile-bg); }
+.aw-thumb { flex: 0 0 64px; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 4px; background: var(--aw-thumb-bg); }
 .aw-thumb img { max-width: 100%; max-height: 100%; }
 .aw-thumb .icon { font-size: 28px; opacity: 0.5; }
 .aw-card-body { min-width: 0; }
@@ -42,7 +56,7 @@
 .aw-podium-score { opacity: 0.8; }
 .aw-hall h3 { margin-top: 0; }
 .aw-hall-list { display: flex; flex-wrap: wrap; gap: 12px; }
-.aw-hall-entry { flex: 1 1 180px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid #c7c3bf; border-radius: 6px; background: rgba(255, 255, 255, 0.35); }
+.aw-hall-entry { flex: 1 1 180px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--aw-line); border-radius: 6px; background: var(--aw-tile-bg); }
 .aw-hall-entry .aw-cup { font-size: 30px; }
 .aw-place-1 .aw-cup { font-size: 38px; }
 .aw-hall-user { font-weight: bold; font-size: 1.15em; }
@@ -54,7 +68,7 @@
 .aw-step-1 { order: 2; }
 .aw-step-2 { order: 1; }
 .aw-step-3 { order: 3; }
-.aw-step-avatar { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.08); margin-bottom: 4px; border: 3px solid #9fa4ab; }
+.aw-step-avatar { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--aw-thumb-bg); margin-bottom: 4px; border: 3px solid #9fa4ab; }
 .aw-step-1 .aw-step-avatar { width: 84px; height: 84px; border-color: #d4a017; }
 .aw-step-3 .aw-step-avatar { border-color: #b8713a; }
 .aw-step-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -79,10 +93,10 @@
 
 /* Category tiles */
 .aw-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; padding: 4px 2px 10px; margin-bottom: 6px; }
-.aw-tile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 8px 6px; border: 1px solid #c7c3bf; border-radius: 8px; background: rgba(255, 255, 255, 0.35); text-decoration: none; }
-.aw-tile:hover { border-color: #105289; text-decoration: none; }
-.aw-tile-active { border: 2px solid #105289; background: rgba(255, 255, 255, 0.6); }
-.aw-tile-img { position: relative; width: 72px; height: 72px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.07); }
+.aw-tile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 8px 6px; border: 1px solid var(--aw-line); border-radius: 8px; background: var(--aw-tile-bg); text-decoration: none; }
+.aw-tile:hover { border-color: currentColor; text-decoration: none; }
+.aw-tile-active { border: 2px solid currentColor; background: var(--aw-tile-bg-strong); }
+.aw-tile-img { position: relative; width: 72px; height: 72px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--aw-thumb-bg); }
 .aw-tile-img img { width: 100%; height: 100%; object-fit: cover; }
 .aw-tile-img .icon { font-size: 32px; opacity: 0.55; }
 .aw-tile-locked .aw-tile-img { filter: grayscale(1); }
@@ -103,7 +117,7 @@
 .aw-rate-star.aw-on { color: #e0a800; }
 .aw-rate-buttons:hover .aw-rate-star { color: #e0a800; }
 .aw-rate-buttons .aw-rate-star:hover ~ .aw-rate-star { color: #b8b8b8; }
-.aw-rate-star:focus-visible { outline: 2px solid #105289; border-radius: 3px; }
+.aw-rate-star:focus-visible { outline: 2px solid currentColor; border-radius: 3px; }
 .aw-rate-msg { font-weight: bold; }
 .aw-sort { float: left; margin: 0 8px; line-height: 2.2em; }
 
@@ -133,8 +147,8 @@ html.aw-cinema .aw-points-info, html.aw-cinema .aw-touch-hint { position: relati
 .aw-recent { margin: 10px 0; }
 .aw-recent h3 { margin: 0 0 6px; }
 .aw-recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
-.aw-recent-item { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 96px; padding: 6px; border: 1px solid #c7c3bf; border-radius: 6px; background: rgba(255, 255, 255, 0.35); text-decoration: none; text-align: center; }
-.aw-recent-item:hover { border-color: #105289; text-decoration: none; }
+.aw-recent-item { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 96px; padding: 6px; border: 1px solid var(--aw-line); border-radius: 6px; background: var(--aw-tile-bg); text-decoration: none; text-align: center; }
+.aw-recent-item:hover { border-color: currentColor; text-decoration: none; }
 .aw-recent-name { font-size: 0.9em; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .aw-tile-groups { right: auto; left: 3px; }
 
@@ -150,15 +164,15 @@ html.aw-cinema .aw-points-info, html.aw-cinema .aw-touch-hint { position: relati
 .aw-duel-form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .aw-duel-table td { vertical-align: middle; }
 .aw-inline-form { display: inline; }
-.aw-duel-won { color: #2a8a2a; }
-.aw-duel-lost { color: #b02020; }
+.aw-duel-won { color: var(--aw-won); }
+.aw-duel-lost { color: var(--aw-lost); }
 .aw-duel-banner .icon { color: #e0a800; }
-table.table1.aw-duel-table thead th { color: #333; font-weight: bold; background: none; text-transform: none; font-size: 1em; padding: 4px; }
+table.table1.aw-duel-table thead th { color: inherit; font-weight: bold; background: none; text-transform: none; font-size: 1em; padding: 4px; }
 
 /* Favourites */
 .aw-card { position: relative; }
 .aw-card-fav { position: absolute; top: 4px; right: 4px; margin: 0; }
-.aw-card-fav .aw-fav { background: rgba(255, 255, 255, 0.85); border: 1px solid #c7c3bf; border-radius: 50%; width: 28px; height: 28px; padding: 0; cursor: pointer; color: #888; line-height: 26px; }
+.aw-card-fav .aw-fav { background: rgba(128, 128, 128, 0.25); border: 1px solid var(--aw-line); border-radius: 50%; width: 28px; height: 28px; padding: 0; cursor: pointer; color: #888; line-height: 26px; }
 .aw-fav.aw-fav-on, .aw-fav.aw-fav-on .icon { color: #d31141; }
 .aw-favorites h3 .icon { color: #d31141; }
 .aw-medals { white-space: nowrap; }
@@ -193,5 +207,5 @@ table.table1.aw-tourney-table td.aw-col-name { text-align: left; }
 .aw-ext-gate { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; padding: 16px; text-align: center; background: rgba(255, 248, 225, 0.97); color: #333; overflow: auto; }
 .aw-ext-gate p { margin: 4px 0; max-width: 560px; }
 .aw-ext-hosts { font-family: monospace; font-weight: bold; word-break: break-all; }
-.aw-ext-gate.aw-ext-pay { position: static; inset: auto; z-index: auto; align-items: flex-start; text-align: left; margin: 8px 0; border: 1px solid #e0c060; border-radius: 4px; }
+.aw-ext-gate.aw-ext-pay { position: static; inset: auto; z-index: auto; align-items: flex-start; text-align: left; margin: 8px 0; border: 1px solid var(--aw-note-line); border-radius: 4px; background: var(--aw-note-bg); color: inherit; }
 .aw-ext-gate.aw-ext-pay p { max-width: none; }

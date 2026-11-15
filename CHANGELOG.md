@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.23.0-beta (2026-11-15)
+
+- **Dark styles:** the arcade now follows the colours of the board style. Tiles, cards and lines are neutral and see-through instead of white, the selected category and hover frames use the style's link colour, table headings and the note about other servers on the pay page use the style's text colour. Light styles look nearly unchanged
+- Style authors can adjust the arcade colours with CSS variables (`--aw-line`, `--aw-tile-bg`, `--aw-note-bg`, … at the top of `arcade.css`)
+
 ## 0.22.5-beta (2026-11-14)
 
 - Pay page note about other servers: the text uses the full width, names the real button (“Play for 100 Points”) and has a tick box “Do not show this note for this game again” (stored in the player's browser only, shared with the prompt of free games)

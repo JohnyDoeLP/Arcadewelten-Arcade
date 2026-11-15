@@ -33,6 +33,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 - Records in the forum: next to posts, in profiles, latest records on the board index
 - Guests only see games you release for them; no highscores or protected categories for guests
 - Flash games via [Ruffle](https://ruffle.rs) (self-hosted, no CDN)
+- Fits light and dark styles (based on prosilver): borders and tiles take on the colours of the style; style authors can adjust the colours with CSS variables (`--aw-…` in `arcade.css`)
 - Import of existing games from a games folder (install files are parsed, never executed); the score interface is detected from the game file itself
 - Optional: [Ultimate Points](https://github.com/dmzx/Ultimate-Points-Extension) integration – cost per game, reward per round, season prizes for places 1–3, monthly season close with preview
 - Plausibility check against manipulated scores: minimum play time and maximum score; suspicious results go to a review list in the ACP

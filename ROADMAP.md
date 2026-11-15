@@ -17,15 +17,15 @@ Suggestions are welcome – the list grows with the community.
 - 0.20 – drop-down menu in the header with “random game”, privacy note on browser storage
 - 0.21 – jackpot per game with three-level settings
 - 0.22 – outlier detection, external content check with player notice, resets for ratings and play counters, results of 0 leave the highscores
+- 0.23 – arcade adapts to light and dark styles
 
 ## Next
 
-1. **Dark styles**: arcade CSS adapts to the colours of any style instead of fixed light colours
-2. **Arcade block on the board index**: optional block with new games and categories next to the latest records
-3. **Sitemap for search engines**: the arcade provides its own `sitemap.xml` with the arcade start page, categories and games that guests and bots may see (hidden, password and group-only categories stay out); works without a sitemap extension, can be submitted in Google Search Console and is named in the board's robots.txt
-4. **Statistics page** per member: favourite game, play time, best ranks
-5. **Highscore certificates** for season winners (image, generated with GD)
-6. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
+1. **Arcade block on the board index**: optional block with new games and categories next to the latest records
+2. **Sitemap for search engines**: the arcade provides its own `sitemap.xml` with the arcade start page, categories and games that guests and bots may see (hidden, password and group-only categories stay out); works without a sitemap extension, can be submitted in Google Search Console and is named in the board's robots.txt
+3. **Statistics page** per member: favourite game, play time, best ranks
+4. **Highscore certificates** for season winners (image, generated with GD)
+5. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
 ## phpBB 4
 
