@@ -86,6 +86,7 @@
 
 /* Points */
 .aw-points-info { text-align: center; margin: 4px 0; }
+.panel.aw-points-info { padding: 4px 10px; }
 .aw-cost { font-weight: bold; }
 
 /* Credit line */
@@ -144,6 +145,10 @@ html.aw-cinema #aw-cinema { box-shadow: 0 0 0 2px #e0a800; }
 html.aw-cinema .aw-points-info, html.aw-cinema .aw-touch-hint { position: relative; z-index: 9001; color: #ddd; }
 
 /* Recently played */
+/* Favourites, recently played and the game list sit in phpBB panels, so
+ * every style gives them its own readable text colours. */
+.panel.aw-recent { margin: 4px 0; }
+.aw-grid-panel .aw-grid { margin: 0; }
 .aw-recent { margin: 10px 0; }
 .aw-recent h3 { margin: 0 0 6px; }
 .aw-recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -189,7 +194,7 @@ table.table1.aw-duel-table thead th { color: inherit; font-weight: bold; backgro
 .aw-tourney-banner .button { margin-left: auto; }
 .aw-tourney-head p { margin: 4px 0; }
 .aw-countdown { font-variant-numeric: tabular-nums; }
-.aw-tourney-games-title { margin-top: 12px; }
+.aw-tourney-games-title { margin-top: 12px; font-size: 1.6em; }
 .aw-tourney-games { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
 .aw-tourney-game { margin: 0; }
 .aw-tourney-game h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font-size: 1.1em; }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.23.1-beta (2026-11-15)
+
+- Styles with a dark page background but dark body text (e.g. Silver Xmas Modern): the game list with search and sorting, favourites, “recently played” and the cost line on the game page now sit in phpBB panels, so the style's own panel colours keep all text readable; the games heading on the tournament page is a page heading
+
 ## 0.23.0-beta (2026-11-15)
 
 - **Dark styles:** the arcade now follows the colours of the board style. Tiles, cards and lines are neutral and see-through instead of white, the selected category and hover frames use the style's link colour, table headings and the note about other servers on the pay page use the style's text colour. Light styles look nearly unchanged

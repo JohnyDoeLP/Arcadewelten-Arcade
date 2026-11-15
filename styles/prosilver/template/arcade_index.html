@@ -65,7 +65,7 @@
 {% endif %}
 
 {% if loops.favorites|length %}
-<div class="aw-recent aw-favorites">
+<div class="panel aw-recent aw-favorites"><div class="inner">
 	<h3><i class="icon fa-heart fa-fw" aria-hidden="true"></i> {{ lang('AW_ARCADE_FAVORITES') }}</h3>
 	<div class="aw-recent-list">
 		{% for r in loops.favorites %}
@@ -75,11 +75,11 @@
 		</a>
 		{% endfor %}
 	</div>
-</div>
+</div></div>
 {% endif %}
 
 {% if loops.recent|length %}
-<div class="aw-recent">
+<div class="panel aw-recent"><div class="inner">
 	<h3>{{ lang('AW_ARCADE_RECENT') }}</h3>
 	<div class="aw-recent-list">
 		{% for r in loops.recent %}
@@ -89,7 +89,7 @@
 		</a>
 		{% endfor %}
 	</div>
-</div>
+</div></div>
 {% endif %}
 
 {% if U_AW_DUELS or U_AW_TOURNEYS %}
@@ -99,6 +99,7 @@
 </p>
 {% endif %}
 
+<div class="panel aw-grid-panel"><div class="inner">
 <div class="action-bar bar-top">
 	<div class="search-box" role="search">
 		<form method="get" action="{{ U_AW_SEARCH }}">
@@ -158,9 +159,10 @@
 	</div>
 	{% endfor %}
 </div>
-{% else %}
-{% if not S_AW_GUEST %}<div class="panel"><div class="inner"><p>{{ lang('AW_ARCADE_NO_GAMES') }}</p></div></div>{% endif %}
+{% elseif not S_AW_GUEST %}
+<p>{{ lang('AW_ARCADE_NO_GAMES') }}</p>
 {% endif %}
+</div></div>
 
 {% if loops.pagination|length %}
 <div class="action-bar bar-bottom"><div class="pagination">{% include 'pagination.html' %}</div></div>
