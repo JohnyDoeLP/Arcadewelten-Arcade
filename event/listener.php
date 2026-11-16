@@ -35,7 +35,10 @@ class listener implements EventSubscriberInterface
 	/** @var \arcadewelten\arcade\core\tourneys */
 	protected $tourneys;
 
-	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config, \arcadewelten\arcade\core\tourneys $tourneys)
+	/** @var \arcadewelten\arcade\core\games */
+	protected $games;
+
+	public function __construct(\arcadewelten\arcade\core\legacy $legacy, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request_interface $request, \phpbb\user $user, \phpbb\language\language $language, \phpbb\config\config $config, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\games $games)
 	{
 		$this->config = $config;
 		$this->user = $user;
@@ -52,6 +55,7 @@ class listener implements EventSubscriberInterface
 		$this->template = $template;
 		$this->request = $request;
 		$this->tourneys = $tourneys;
+		$this->games = $games;
 	}
 
 	public static function getSubscribedEvents()
@@ -272,7 +276,14 @@ class listener implements EventSubscriberInterface
 
 	public function latest_records()
 	{
-		if (!$this->is_member() || !$this->access->can_use())
+		if (!$this->access->can_use())
+		{
+			return;
+		}
+
+		$this->index_block();
+
+		if (!$this->is_member())
 		{
 			return;
 		}
@@ -288,5 +299,102 @@ class listener implements EventSubscriberInterface
 		}
 
 		$this->template->assign_var('U_AW_ARCADE_HALL', $this->helper->route('arcadewelten_arcade_index'));
+	}
+
+	/**
+	 * Arcade block on the board index: newest games, categories, running tournament.
+	 * Shown to everybody who may use the arcade; hidden, password and
+	 * group-only categories stay out, exactly as on the arcade pages.
+	 */
+	protected function index_block()
+	{
+		if (empty($this->config['aw_arcade_index_block']))
+		{
+			return;
+		}
+
+		$is_guest = !$this->is_member();
+
+		if ($is_guest)
+		{
+			$this->games->set_guest_mode(true);
+		}
+
+		$hidden = $this->access->hidden_cats();
+		$exclude = $hidden;
+		$total = 0;
+
+		foreach ($this->games->get_cats() as $c)
+		{
+			$cid = (int) $c['cat_id'];
+
+			if (in_array($cid, $hidden, true))
+			{
+				continue;
+			}
+
+			$locked = $is_guest ? $this->access->is_protected($c) : !$this->access->has_access($c);
+
+			if ($locked)
+			{
+				// No games from locked categories; guests do not see them at all.
+				$exclude[] = $cid;
+
+				if ($is_guest)
+				{
+					continue;
+				}
+			}
+
+			if (!(int) $c['game_count'])
+			{
+				continue;
+			}
+
+			$total += (int) $c['game_count'];
+
+			if (!empty($this->config['aw_arcade_index_cats']))
+			{
+				$this->template->assign_block_vars('aw_index_cats', [
+					'NAME'	=> $c['cat_name'],
+					'COUNT'	=> (int) $c['game_count'],
+					'U_CAT'	=> $this->helper->route('arcadewelten_arcade_cat', ['cat_id' => $cid]),
+				]);
+			}
+		}
+
+		$limit = max(1, min(12, (int) $this->config['aw_arcade_index_games']));
+
+		foreach ($this->games->list_games(0, 0, $limit, true, '', $exclude, 'new') as $row)
+		{
+			$image = '';
+
+			if ($row['game_image'] !== '' && $row['game_image'] !== null)
+			{
+				$image = generate_board_url() . '/' . $this->games->games_path() . rawurlencode($row['game_dir']) . '/' . rawurlencode($row['game_image']);
+			}
+
+			$this->template->assign_block_vars('aw_index_games', [
+				'NAME'		=> $row['game_name'],
+				'IMAGE'		=> $image,
+				'S_TOUCH'	=> (bool) $row['game_touch'],
+				'U_PLAY'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $row['game_id']]),
+			]);
+		}
+
+		$tourney_text = '';
+
+		if ($this->tourneys->enabled() && ($running = $this->tourneys->get_running()))
+		{
+			$tourney_text = $this->language->lang('AW_ARCADE_INDEX_TOURNEY', $running[0]['tourney_name'], $this->user->format_date($running[0]['tourney_end']));
+		}
+
+		$this->template->assign_vars([
+			'S_AW_INDEX_BLOCK'	=> true,
+			'AW_INDEX_TOTAL'	=> $total,
+			'AW_INDEX_TOURNEY'	=> $tourney_text,
+			'U_AW_TOURNEYS'		=> $this->helper->route('arcadewelten_arcade_tourneys'),
+			'U_AW_ARCADE_HALL'	=> $this->helper->route('arcadewelten_arcade_index'),
+		]);
 	}
 }

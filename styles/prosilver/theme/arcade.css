@@ -214,3 +214,19 @@ table.table1.aw-tourney-table td.aw-col-name { text-align: left; }
 .aw-ext-hosts { font-family: monospace; font-weight: bold; word-break: break-all; }
 .aw-ext-gate.aw-ext-pay { position: static; inset: auto; z-index: auto; align-items: flex-start; text-align: left; margin: 8px 0; border: 1px solid var(--aw-note-line); border-radius: 4px; background: var(--aw-note-bg); color: inherit; }
 .aw-ext-gate.aw-ext-pay p { max-width: none; }
+
+/* Arcade block on the board index */
+.aw-index-block .aw-index-all { float: right; font-size: 0.85em; font-weight: normal; }
+.aw-index-block .aw-recent-list { margin-top: 6px; }
+.aw-index-cats { margin: 8px 0 0; }
+.aw-index-tourney { margin: 6px 0 0; }
+.aw-gold { color: #d4a017; }
+
+/* Long game names end before the favourite heart */
+.aw-card .aw-game-name { display: block; padding-right: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Duels: columns line up under their headings (first column stays left) */
+table.table1.aw-duel-table th,
+table.table1.aw-duel-table td { text-align: center; }
+table.table1.aw-duel-table th:first-child,
+table.table1.aw-duel-table td:first-child { text-align: left; }

@@ -170,7 +170,11 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_INFO_SEASON'		=> 'Saisonprämie Platz 1/2/3: %1$s / %2$s / %3$s %4$s',
 	'AW_ARCADE_MSG_EARNED'		=> 'Dafür bekommst du %1$s %2$s.',
 
-	'AW_ARCADE_CREDIT'			=> 'Spielhalle: %s',
+	'AW_ARCADE_CREDIT'			=> 'Spielhalle powered by %s',
+	'AW_ARCADE_INDEX_TITLE'		=> 'Spielhalle – neue Spiele',
+	'AW_ARCADE_INDEX_ALL'		=> [1 => '1 Spiel', 2 => 'Alle %d Spiele'],
+	'AW_ARCADE_INDEX_CATS'		=> 'Kategorien:',
+	'AW_ARCADE_INDEX_TOURNEY'	=> 'Turnier läuft: %1$s – bis %2$s',
 
 	'AW_ARCADE_CATEGORIES'		=> 'Kategorien',
 

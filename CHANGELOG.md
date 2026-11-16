@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.24.0-beta (2026-11-16)
+
+- **Arcade block on the board index:** at the bottom of the board index the arcade now shows its newest games as tiles, a line with all visible categories and their game counts, and – while a tournament runs – a line with its name and end. Visible to everybody who may use the arcade, guests and search engines included; hidden, password and group-only categories stay out. Three new ACP settings: block on/off, number of games (1–12), category line on/off
+- Game cards: long game names end with “…” before the favourite heart; the full name shows on hover
+- Credit line is now “Spielhalle powered by Arcadewelten Arcade” and links to the arcade section on arcadewelten.eu
+- Duels: the table columns line up under their headings, like in the tournament tables
+
 ## 0.23.1-beta (2026-11-15)
 
 - Styles with a dark page background but dark body text (e.g. Silver Xmas Modern): the game list with search and sorting, favourites, “recently played” and the cost line on the game page now sit in phpBB panels, so the style's own panel colours keep all text readable; the games heading on the tournament page is a page heading

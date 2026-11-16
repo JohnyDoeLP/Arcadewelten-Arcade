@@ -1,9 +1,33 @@
+{% if S_AW_INDEX_BLOCK or loops.aw_latest_records|length %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+{% endif %}
+{% if S_AW_INDEX_BLOCK %}
+<div class="stat-block aw-index-block">
+	<h3>{{ lang('AW_ARCADE_INDEX_TITLE') }} <span class="aw-index-all"><a href="{{ U_AW_ARCADE_HALL }}">{{ lang('AW_ARCADE_INDEX_ALL', AW_INDEX_TOTAL) }}</a></span></h3>
+	{% if loops.aw_index_games|length %}
+	<div class="aw-recent-list aw-index-games">
+		{% for g in loops.aw_index_games %}
+		<a class="aw-recent-item" href="{{ g.U_PLAY }}" title="{{ g.NAME }}">
+			<span class="aw-thumb">{% if g.IMAGE %}<img src="{{ g.IMAGE }}" alt="" loading="lazy">{% else %}<i class="icon fa-gamepad" aria-hidden="true"></i>{% endif %}</span>
+			<span class="aw-recent-name">{% if g.S_TOUCH %}<i class="icon fa-mobile aw-touch" aria-hidden="true"></i> {% endif %}{{ g.NAME }}</span>
+		</a>
+		{% endfor %}
+	</div>
+	{% endif %}
+	{% if loops.aw_index_cats|length %}
+	<p class="aw-index-cats"><strong>{{ lang('AW_ARCADE_INDEX_CATS') }}</strong> {% for c in loops.aw_index_cats %}<a href="{{ c.U_CAT }}">{{ c.NAME }}</a>&nbsp;({{ c.COUNT }}){% if not loop.last %} &middot; {% endif %}{% endfor %}</p>
+	{% endif %}
+	{% if AW_INDEX_TOURNEY %}
+	<p class="aw-index-tourney"><i class="icon fa-trophy aw-gold" aria-hidden="true"></i> <a href="{{ U_AW_TOURNEYS }}">{{ AW_INDEX_TOURNEY }}</a></p>
+	{% endif %}
+</div>
+{% endif %}
 {% if loops.aw_latest_records|length %}
 <div class="stat-block aw-latest-records">
 	<h3><a href="{{ U_AW_ARCADE_HALL }}">{{ lang('AW_ARCADE_LATEST_RECORDS') }}</a></h3>
 	<p>
 	{% for r in loops.aw_latest_records %}
-		<i class="icon fa-trophy" style="color:#d4a017" aria-hidden="true"></i> {{ r.USER }} – <a href="{{ r.U_SCORES }}">{{ r.GAME }}</a> <span class="responsive-hide">({{ r.DATE }})</span>{% if not loop.last %}<br>{% endif %}
+		<i class="icon fa-trophy aw-gold" aria-hidden="true"></i> {{ r.USER }} – <a href="{{ r.U_SCORES }}">{{ r.GAME }}</a> <span class="responsive-hide">({{ r.DATE }})</span>{% if not loop.last %}<br>{% endif %}
 	{% endfor %}
 	</p>
 </div>

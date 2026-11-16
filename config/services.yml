@@ -289,6 +289,7 @@ services:
             - '@language'
             - '@config'
             - '@arcadewelten.arcade.tourneys'
+            - '@arcadewelten.arcade.games'
         tags:
             - { name: event.listener }
 

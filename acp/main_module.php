@@ -193,6 +193,9 @@ class main_module
 			$this->config->set('aw_arcade_tourneys', $this->request->variable('aw_tourneys', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_nav_menu', $this->request->variable('aw_nav_menu', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_nav_random', $this->request->variable('aw_nav_random', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_index_block', $this->request->variable('aw_index_block', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_index_games', max(1, min(12, $this->request->variable('aw_index_games', 6))));
+			$this->config->set('aw_arcade_index_cats', $this->request->variable('aw_index_cats', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_news_forum', $this->request->variable('aw_news_forum', 0));
 			$this->config->set('aw_arcade_favorites', $this->request->variable('aw_favorites', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_reports', $this->request->variable('aw_reports', 0) ? 1 : 0);
@@ -257,6 +260,9 @@ class main_module
 			'AW_TOURNEYS'			=> (bool) $this->config['aw_arcade_tourneys'],
 			'AW_NAV_MENU'			=> (bool) $this->config['aw_arcade_nav_menu'],
 			'AW_NAV_RANDOM'			=> (bool) $this->config['aw_arcade_nav_random'],
+			'AW_INDEX_BLOCK'		=> (bool) $this->config['aw_arcade_index_block'],
+			'AW_INDEX_GAMES'		=> (int) $this->config['aw_arcade_index_games'],
+			'AW_INDEX_CATS'			=> (bool) $this->config['aw_arcade_index_cats'],
 			'AW_POST_TOURNEYS'		=> (bool) $this->config['aw_arcade_post_tourneys'],
 			'AW_BOT'				=> ($bot = $this->forum->bot()) ? $bot['username'] : '',
 			'AW_POST_GAMES'			=> (bool) $this->config['aw_arcade_post_games'],
