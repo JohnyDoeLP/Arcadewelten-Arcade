@@ -129,6 +129,16 @@ services:
             - '@request'
             - '@cache.driver'
 
+    arcadewelten.arcade.sitemap:
+        class: arcadewelten\arcade\core\sitemap
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@arcadewelten.arcade.tourneys'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.cats%'
+            - '%arcadewelten.arcade.tables.cat_groups%'
+
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer
         arguments:
@@ -270,6 +280,7 @@ services:
             - '@arcadewelten.arcade.tourneys'
             - '@arcadewelten.arcade.tourney_jobs'
             - '@arcadewelten.arcade.jackpot'
+            - '@arcadewelten.arcade.sitemap'
 
     arcadewelten.arcade.listener:
         class: arcadewelten\arcade\event\listener

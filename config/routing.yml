@@ -83,3 +83,7 @@ arcadewelten_arcade_tourney:
 arcadewelten_arcade_random:
     path: /arcadehall/random
     defaults: { _controller: arcadewelten.arcade.controller.main:random }
+
+arcadewelten_arcade_sitemap:
+    path: /arcadehall/sitemap.xml
+    defaults: { _controller: arcadewelten.arcade.controller.main:sitemap }

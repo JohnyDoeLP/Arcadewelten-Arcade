@@ -56,6 +56,8 @@ class main_module
 	protected $external;
 	/** @var \arcadewelten\arcade\core\jackpot */
 	protected $jackpot;
+	/** @var \arcadewelten\arcade\core\sitemap */
+	protected $sitemap;
 	/** @var \phpbb\user */
 	protected $user;
 	/** @var string */
@@ -71,6 +73,7 @@ class main_module
 		$this->config = $phpbb_container->get('config');
 		$this->games = $phpbb_container->get('arcadewelten.arcade.games');
 		$this->scores = $phpbb_container->get('arcadewelten.arcade.scores');
+		$this->sitemap = $phpbb_container->get('arcadewelten.arcade.sitemap');
 		$this->importer = $phpbb_container->get('arcadewelten.arcade.importer');
 		$this->access = $phpbb_container->get('arcadewelten.arcade.access');
 		$this->points = $phpbb_container->get('arcadewelten.arcade.points');
@@ -196,6 +199,7 @@ class main_module
 			$this->config->set('aw_arcade_index_block', $this->request->variable('aw_index_block', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_index_games', max(1, min(12, $this->request->variable('aw_index_games', 6))));
 			$this->config->set('aw_arcade_index_cats', $this->request->variable('aw_index_cats', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_sitemap', $this->request->variable('aw_sitemap', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_news_forum', $this->request->variable('aw_news_forum', 0));
 			$this->config->set('aw_arcade_favorites', $this->request->variable('aw_favorites', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_reports', $this->request->variable('aw_reports', 0) ? 1 : 0);
@@ -263,6 +267,9 @@ class main_module
 			'AW_INDEX_BLOCK'		=> (bool) $this->config['aw_arcade_index_block'],
 			'AW_INDEX_GAMES'		=> (int) $this->config['aw_arcade_index_games'],
 			'AW_INDEX_CATS'			=> (bool) $this->config['aw_arcade_index_cats'],
+			'AW_SITEMAP'			=> (bool) $this->config['aw_arcade_sitemap'],
+			'AW_SITEMAP_URL'		=> $this->sitemap ? $this->sitemap->url() : '',
+			'S_AW_SITEMAP_GUESTS'	=> $this->sitemap ? $this->sitemap->guests_may_play() : true,
 			'AW_POST_TOURNEYS'		=> (bool) $this->config['aw_arcade_post_tourneys'],
 			'AW_BOT'				=> ($bot = $this->forum->bot()) ? $bot['username'] : '',
 			'AW_POST_GAMES'			=> (bool) $this->config['aw_arcade_post_games'],

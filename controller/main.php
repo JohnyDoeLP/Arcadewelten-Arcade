@@ -37,10 +37,13 @@ class main
 	protected $tourneys;
 	/** @var \arcadewelten\arcade\core\tourney_jobs */
 	protected $tourney_jobs;
+	/** @var \arcadewelten\arcade\core\sitemap|null */
+	protected $sitemap;
+
 	/** @var \arcadewelten\arcade\core\jackpot */
 	protected $jackpot;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot, ?\arcadewelten\arcade\core\sitemap $sitemap = null)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -63,6 +66,7 @@ class main
 		$this->tourneys = $tourneys;
 		$this->tourney_jobs = $tourney_jobs;
 		$this->jackpot = $jackpot;
+		$this->sitemap = $sitemap;
 
 		$this->language->add_lang('common', 'arcadewelten/arcade');
 	}
@@ -717,6 +721,23 @@ class main
 	/**
 	 * List: running, planned and finished tournaments.
 	 */
+	/**
+	 * sitemap.xml of the arcade: the pages a guest may open.
+	 */
+	public function sitemap()
+	{
+		$xml = $this->sitemap ? $this->sitemap->xml() : '';
+
+		if ($xml === '')
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_SITEMAP');
+		}
+
+		return new \Symfony\Component\HttpFoundation\Response($xml, 200, [
+			'Content-Type'	=> 'application/xml; charset=UTF-8',
+		]);
+	}
+
 	public function tourneys()
 	{
 		$this->check_use();

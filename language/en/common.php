@@ -142,6 +142,7 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_WRONG_PASSWORD'		=> 'The password is wrong.',
 	'AW_ARCADE_UNLOCK'				=> 'Unlock',
 	'AW_ARCADE_NO_GAME'				=> 'This game does not exist or is disabled.',
+	'AW_ARCADE_NO_SITEMAP'		=> 'There is no sitemap right now: the arcade is not open to guests, or it has no games for guests.',
 	'AW_ARCADE_NO_CAT'				=> 'This category does not exist.',
 
 	'AW_ARCADE_HALL_OF_FAME'	=> 'Hall of fame – most records',

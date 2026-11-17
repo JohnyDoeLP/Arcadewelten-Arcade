@@ -142,6 +142,7 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_WRONG_PASSWORD'		=> 'Das Passwort ist falsch.',
 	'AW_ARCADE_UNLOCK'				=> 'Freischalten',
 	'AW_ARCADE_NO_GAME'				=> 'Dieses Spiel gibt es nicht oder es ist deaktiviert.',
+	'AW_ARCADE_NO_SITEMAP'		=> 'Es gibt gerade keine Sitemap: Die Spielhalle ist für Gäste nicht freigegeben oder hat keine Spiele für Gäste.',
 	'AW_ARCADE_NO_CAT'				=> 'Diese Kategorie gibt es nicht.',
 
 	'AW_ARCADE_HALL_OF_FAME'	=> 'Ruhmeshalle – die meisten Rekorde',

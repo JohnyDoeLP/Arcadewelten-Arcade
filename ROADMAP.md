@@ -19,13 +19,13 @@ Suggestions are welcome – the list grows with the community.
 - 0.22 – outlier detection, external content check with player notice, resets for ratings and play counters, results of 0 leave the highscores
 - 0.23 – arcade adapts to light and dark styles
 - 0.24 – arcade block on the board index, powered-by line
+- 0.25 – sitemap.xml for search engines
 
 ## Next
 
-1. **Sitemap for search engines**: the arcade provides its own `sitemap.xml` with the arcade start page, categories and games that guests and bots may see (hidden, password and group-only categories stay out); works without a sitemap extension, can be submitted in Google Search Console and is named in the board's robots.txt
-2. **Statistics page** per member: favourite game, play time, best ranks
-3. **Highscore certificates** for season winners (image, generated with GD)
-4. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
+1. **Statistics page** per member: favourite game, play time, best ranks
+2. **Highscore certificates** for season winners (image, generated with GD)
+3. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
 ## phpBB 4
 

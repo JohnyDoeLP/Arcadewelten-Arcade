@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.25.0-beta (2026-11-17)
+
+- **Sitemap for search engines:** the arcade provides its own `sitemap.xml` with its start page, the categories and the games guests may play, plus the tournament page. It always describes what a guest sees, whoever asks for it; categories with a password, categories limited to user groups, games without guest access and the highscores (which need a login) stay out. The addresses come from the board's own server settings and carry no session id. New ACP setting with the address and the line for robots.txt
+- The sitemap answers 404 while it is switched off or guests may not use the arcade
+
 ## 0.24.0-beta (2026-11-16)
 
 - **Arcade block on the board index:** at the bottom of the board index the arcade now shows its newest games as tiles, a line with all visible categories and their game counts, and – while a tournament runs – a line with its name and end. Visible to everybody who may use the arcade, guests and search engines included; hidden, password and group-only categories stay out. Three new ACP settings: block on/off, number of games (1–12), category line on/off
