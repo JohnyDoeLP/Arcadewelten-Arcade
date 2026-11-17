@@ -179,6 +179,13 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_RECORD_NOTIFY') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_RECORD_NOTIFY_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_record_notify" value="1"{% if AW_RECORD_NOTIFY %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_record_notify" value="0"{% if not AW_RECORD_NOTIFY %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_SITEMAP') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_SITEMAP_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="aw_sitemap" value="1"{% if AW_SITEMAP %} checked{% endif %}> {{ lang('YES') }}</label>

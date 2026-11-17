@@ -1,0 +1,13 @@
+Subject: Your arcade record has been beaten: {GAME_NAME}
+
+Hello {USERNAME},
+
+{OTHER_NAME} has beaten your record in the arcade of "{SITENAME}".
+
+Game: {GAME_NAME}
+New record: {NEW_SCORE}
+Your score: {OLD_SCORE}
+
+Take first place back: {U_SCORES}
+
+{EMAIL_SIG}

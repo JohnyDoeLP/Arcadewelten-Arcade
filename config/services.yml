@@ -64,6 +64,16 @@ services:
         tags:
             - { name: notification.type }
 
+    arcadewelten.arcade.notification.type.record_beaten:
+        class: arcadewelten\arcade\notification\type\record_beaten
+        shared: false
+        parent: notification.type.base
+        calls:
+            - [set_user_loader, ['@user_loader']]
+            - [set_helper, ['@controller.helper']]
+        tags:
+            - { name: notification.type }
+
     arcadewelten.arcade.tourneys:
         class: arcadewelten\arcade\core\tourneys
         arguments:
@@ -121,6 +131,7 @@ services:
             - '@arcadewelten.arcade.duels'
             - '@arcadewelten.arcade.tourneys'
             - '@arcadewelten.arcade.jackpot'
+            - '@notification_manager'
 
     arcadewelten.arcade.external:
         class: arcadewelten\arcade\core\external

@@ -38,14 +38,18 @@ class scores
 	/** @var duels */
 	protected $duels;
 
+	/** @var \phpbb\notification\manager|null */
+	protected $notifications;
+
 	/** @var tourneys|null */
 	protected $tourneys;
 
 	/** @var jackpot|null */
 	protected $jackpot;
 
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\driver\driver_interface $cache, $scores_table, $games_table, $sessions_table, $cats_table, $flagged_table, \phpbb\config\config $config, duels $duels, ?tourneys $tourneys = null, ?jackpot $jackpot = null)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\driver\driver_interface $cache, $scores_table, $games_table, $sessions_table, $cats_table, $flagged_table, \phpbb\config\config $config, duels $duels, ?tourneys $tourneys = null, ?jackpot $jackpot = null, ?\phpbb\notification\manager $notifications = null)
 	{
+		$this->notifications = $notifications;
 		$this->tourneys = $tourneys;
 		$this->jackpot = $jackpot;
 		$this->duels = $duels;
@@ -287,6 +291,9 @@ class scores
 			return ['improved' => false, 'best' => 0.0, 'duels_won' => 0, 'tourneys' => 0, 'jackpot' => 0, 'zero' => true];
 		}
 
+		// Who holds the record before this score? Needed for the notification.
+		$old_top = $this->notify_records() ? $this->record_holder($game) : null;
+
 		$tourneys = $this->tourneys ? $this->tourneys->on_score($game, $user_id, $score, $time) : 0;
 		$jackpot = $this->jackpot ? $this->jackpot->on_score($game, $user_id, $score) : 0;
 
@@ -312,6 +319,7 @@ class scores
 
 			$this->cache->destroy(self::CACHE_KEY);
 			$this->cache->destroy(self::MEDALS_KEY);
+			$this->notify_record($game, $user_id, $score, $old_top);
 
 			return ['improved' => true, 'best' => $score, 'duels_won' => $this->duels->on_score($game, $user_id, $score), 'tourneys' => $tourneys, 'jackpot' => $jackpot];
 		}
@@ -332,8 +340,65 @@ class scores
 		$this->db->sql_query('UPDATE ' . $this->scores_table . ' SET ' . $this->db->sql_build_array('UPDATE', $data) . '
 			WHERE game_id = ' . (int) $game['game_id'] . ' AND user_id = ' . (int) $user_id);
 
+		if ($improved)
+		{
+			$this->notify_record($game, $user_id, $score, $old_top);
+		}
+
 		// Every genuine result counts for open duels, not only a new personal best.
 		return ['improved' => $improved, 'best' => $improved ? $score : $old, 'duels_won' => $this->duels->on_score($game, $user_id, $score), 'tourneys' => $tourneys, 'jackpot' => $jackpot];
+	}
+
+	public function notify_records()
+	{
+		return $this->notifications && !empty($this->config['aw_arcade_record_notify']);
+	}
+
+	/**
+	 * Who is first in a game right now (null when nobody has a score yet).
+	 * An equal score does not take the first place, the older one keeps it.
+	 */
+	protected function record_holder(array $game)
+	{
+		$order = ((int) $game['game_scoretype'] === games::SCORE_LOW) ? 'ASC' : 'DESC';
+		$sql = 'SELECT user_id, score
+			FROM ' . $this->scores_table . '
+			WHERE game_id = ' . (int) $game['game_id'] . '
+			ORDER BY score ' . $order . ', score_time ASC';
+		$result = $this->db->sql_query_limit($sql, 1);
+		$row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return $row ? $row : null;
+	}
+
+	/**
+	 * Tell the previous record holder that somebody else is first now.
+	 * Nothing happens when the player beats their own record.
+	 */
+	protected function notify_record(array $game, $user_id, $score, $old_top)
+	{
+		if (!$old_top || !$this->notify_records() || (int) $old_top['user_id'] === (int) $user_id)
+		{
+			return;
+		}
+
+		$old = (float) $old_top['score'];
+		$beaten = ((int) $game['game_scoretype'] === games::SCORE_LOW) ? $score < $old : $score > $old;
+
+		if (!$beaten)
+		{
+			return;
+		}
+
+		$this->notifications->add_notifications('arcadewelten.arcade.notification.type.record_beaten', [
+			'game_id'			=> (int) $game['game_id'],
+			'game_name'			=> $game['game_name'],
+			'holder_id'			=> (int) $user_id,
+			'beaten_user_id'	=> (int) $old_top['user_id'],
+			'new_score'			=> $score,
+			'old_score'			=> $old,
+		]);
 	}
 
 	/**

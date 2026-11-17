@@ -20,6 +20,7 @@ Suggestions are welcome – the list grows with the community.
 - 0.23 – arcade adapts to light and dark styles
 - 0.24 – arcade block on the board index, powered-by line
 - 0.25 – sitemap.xml for search engines
+- 0.26 – notification when a record is beaten
 
 ## Next
 

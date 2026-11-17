@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.26.0-beta (2026-11-17)
+
+- **Notification when a record is beaten:** whoever loses first place in a game gets a notification with the new record and their own score, and a link to the highscores. Only first place counts; being overtaken further down the list, improving your own record and an equal score trigger nothing. Every member can switch it off (bell and email separately) in their notification settings, and there is an ACP switch for the whole board
+
 ## 0.25.0-beta (2026-11-17)
 
 - **Sitemap for search engines:** the arcade provides its own `sitemap.xml` with its start page, the categories and the games guests may play, plus the tournament page. It always describes what a guest sees, whoever asks for it; categories with a password, categories limited to user groups, games without guest access and the highscores (which need a login) stay out. The addresses come from the board's own server settings and carry no session id. New ACP setting with the address and the line for robots.txt

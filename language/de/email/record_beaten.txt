@@ -1,0 +1,13 @@
+Subject: Dein Rekord in der Spielhalle wurde überboten: {GAME_NAME}
+
+Hallo {USERNAME},
+
+{OTHER_NAME} hat deinen Rekord in der Spielhalle von „{SITENAME}“ überboten.
+
+Spiel: {GAME_NAME}
+Neuer Rekord: {NEW_SCORE}
+Dein Ergebnis: {OLD_SCORE}
+
+Hol dir den ersten Platz zurück: {U_SCORES}
+
+{EMAIL_SIG}
