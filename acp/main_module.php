@@ -963,6 +963,9 @@ class main_module
 				'CAT_DESC'			=> $cat['cat_desc'],
 				'S_CAT_PROTECTED'	=> $cat['cat_password'] !== '',
 				'S_CAT_ONLINE_HIDE'	=> !empty($cat['cat_online_hide']),
+				'S_CAT_SHOW_MODE'	=> isset($cat['cat_show_mode']) ? (int) $cat['cat_show_mode'] : 0,
+				'CAT_SHOW_FROM'		=> $this->show_date_value($cat, 'cat_show_from'),
+				'CAT_SHOW_TO'		=> $this->show_date_value($cat, 'cat_show_to'),
 				'U_CAT_ACTION'		=> $this->u_action . '&amp;action=edit&amp;c=' . $cat_id,
 				'U_BACK'			=> $this->u_action,
 			]);
@@ -981,6 +984,7 @@ class main_module
 				'COUNT'			=> (int) $cat['game_count'],
 				'S_PROTECTED'	=> $cat['cat_password'] !== '',
 				'S_ONLINE_HIDE'	=> !empty($cat['cat_online_hide']),
+				'S_OUT_OF_SEASON'	=> !\arcadewelten\arcade\core\access::in_season($cat),
 				'GROUPS'		=> $this->group_names($this->access->get_cat_groups($id)),
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;c=' . $id,
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;c=' . $id,
@@ -1065,11 +1069,16 @@ class main_module
 			trigger_error($this->language->lang('ACP_AW_ARCADE_CAT_IMAGE_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
+		$show = $this->read_show_fields();
+
 		$data = [
 			'cat_desc'			=> $this->request->variable('cat_desc', '', true),
 			'cat_image'			=> $image,
 			'cat_news_forum'	=> $this->request->variable('cat_news_forum', 0),
 			'cat_online_hide'	=> $this->request->variable('cat_online_hide', 0) ? 1 : 0,
+			'cat_show_mode'		=> $show['mode'],
+			'cat_show_from'		=> $show['from'],
+			'cat_show_to'		=> $show['to'],
 		] + $this->read_point_fields('cat');
 		$password = $this->request->variable('cat_password', '', true);
 
@@ -1497,5 +1506,92 @@ class main_module
 		}
 
 		return $this->language->lang($key, $g['reason_arg']);
+	}
+
+	/**
+	 * Period of a category from the form: mode plus the two days.
+	 *
+	 * Once: timestamps, from the start of the first day to the end of the
+	 * last one, in the board's time zone. Every year: the year of the chosen
+	 * dates does not matter, only day and month are kept (as MMDD).
+	 */
+	protected function read_show_fields()
+	{
+		$mode = $this->request->variable('cat_show_mode', 0);
+		$mode = in_array($mode, [\arcadewelten\arcade\core\access::SHOW_ONCE, \arcadewelten\arcade\core\access::SHOW_YEARLY], true) ? $mode : \arcadewelten\arcade\core\access::SHOW_ALWAYS;
+
+		if ($mode === \arcadewelten\arcade\core\access::SHOW_ALWAYS)
+		{
+			return ['mode' => $mode, 'from' => 0, 'to' => 0];
+		}
+
+		$from = $this->parse_show_date($this->request->variable('cat_show_from', ''), $mode, false);
+		$to = $this->parse_show_date($this->request->variable('cat_show_to', ''), $mode, true);
+
+		if ($mode === \arcadewelten\arcade\core\access::SHOW_YEARLY && (!$from || !$to))
+		{
+			trigger_error($this->language->lang('ACP_AW_ARCADE_CAT_SHOW_NEED_DAYS') . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		return ['mode' => $mode, 'from' => $from, 'to' => $to];
+	}
+
+	/**
+	 * One date of the form as a timestamp (once) or as MMDD (every year).
+	 */
+	protected function parse_show_date($value, $mode, $end_of_day)
+	{
+		if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', trim($value), $m))
+		{
+			return 0;
+		}
+
+		if ($mode === \arcadewelten\arcade\core\access::SHOW_YEARLY)
+		{
+			return (int) ($m[2] . $m[3]);
+		}
+
+		try
+		{
+			$zone = new \DateTimeZone($this->config['board_timezone'] ? $this->config['board_timezone'] : 'UTC');
+		}
+		catch (\Exception $e)
+		{
+			$zone = new \DateTimeZone('UTC');
+		}
+
+		$date = new \DateTime(trim($value) . ($end_of_day ? ' 23:59:59' : ' 00:00:00'), $zone);
+
+		return (int) $date->getTimestamp();
+	}
+
+	/**
+	 * A stored day as the value of a date field (YYYY-MM-DD).
+	 */
+	protected function show_date_value(array $cat, $field)
+	{
+		$value = isset($cat[$field]) ? (int) $cat[$field] : 0;
+
+		if (!$value)
+		{
+			return '';
+		}
+
+		if ((int) $cat['cat_show_mode'] === \arcadewelten\arcade\core\access::SHOW_YEARLY)
+		{
+			// Only day and month are stored; the year is just for the date field.
+			// A period over new year ends in the following year, so it reads right.
+			$year = (int) date('Y');
+			$wraps = (int) $cat['cat_show_from'] > (int) $cat['cat_show_to'];
+
+			if ($wraps && $field === 'cat_show_to')
+			{
+				$year++;
+			}
+
+			return sprintf('%04d-%02d-%02d', $year, (int) floor($value / 100), $value % 100);
+		}
+
+		return date('Y-m-d', $value);
 	}
 }

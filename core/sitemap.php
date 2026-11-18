@@ -180,7 +180,7 @@ class sitemap
 		$this->db->sql_freeresult($result);
 
 		$cats = [];
-		$result = $this->db->sql_query('SELECT cat_id, cat_password FROM ' . $this->cats_table);
+		$result = $this->db->sql_query('SELECT cat_id, cat_password, cat_show_mode, cat_show_from, cat_show_to FROM ' . $this->cats_table);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$cat_id = (int) $row['cat_id'];
@@ -191,6 +191,12 @@ class sitemap
 			}
 
 			if (isset($limited[$cat_id]) && !array_intersect($limited[$cat_id], $guest_groups))
+			{
+				continue;
+			}
+
+			// Outside its period a category does not exist for visitors.
+			if (!access::in_season($row))
 			{
 				continue;
 			}

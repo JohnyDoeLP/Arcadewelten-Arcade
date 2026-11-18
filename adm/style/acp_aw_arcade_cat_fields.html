@@ -51,6 +51,23 @@
 	</dd>
 </dl>
 <dl>
+	<dt><label for="cat_show_mode">{{ lang('ACP_AW_ARCADE_CAT_SHOW') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_SHOW_EXPLAIN') }}</span></dt>
+	<dd>
+		<select id="cat_show_mode" name="cat_show_mode">
+			<option value="0"{% if S_CAT_SHOW_MODE == 0 %} selected{% endif %}>{{ lang('ACP_AW_ARCADE_CAT_SHOW_ALWAYS') }}</option>
+			<option value="1"{% if S_CAT_SHOW_MODE == 1 %} selected{% endif %}>{{ lang('ACP_AW_ARCADE_CAT_SHOW_ONCE') }}</option>
+			<option value="2"{% if S_CAT_SHOW_MODE == 2 %} selected{% endif %}>{{ lang('ACP_AW_ARCADE_CAT_SHOW_YEARLY') }}</option>
+		</select>
+	</dd>
+	<dd>
+		<label for="cat_show_from">{{ lang('ACP_AW_ARCADE_CAT_SHOW_FROM') }}</label>
+		<input type="date" id="cat_show_from" name="cat_show_from" value="{{ CAT_SHOW_FROM }}">
+		<label for="cat_show_to">{{ lang('ACP_AW_ARCADE_CAT_SHOW_TO') }}</label>
+		<input type="date" id="cat_show_to" name="cat_show_to" value="{{ CAT_SHOW_TO }}">
+	</dd>
+	<dd><span>{{ lang('ACP_AW_ARCADE_CAT_SHOW_HINT') }}</span></dd>
+</dl>
+<dl>
 	<dt><label for="cat_online_hide">{{ lang('ACP_AW_ARCADE_CAT_ONLINE_HIDE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_ONLINE_HIDE_EXPLAIN') }}</span></dt>
 	<dd><label><input type="radio" class="radio" id="cat_online_hide" name="cat_online_hide" value="1"{% if S_CAT_ONLINE_HIDE %} checked{% endif %}> {{ lang('YES') }}</label>
 		<label><input type="radio" class="radio" name="cat_online_hide" value="0"{% if not S_CAT_ONLINE_HIDE %} checked{% endif %}> {{ lang('NO') }}</label></dd>

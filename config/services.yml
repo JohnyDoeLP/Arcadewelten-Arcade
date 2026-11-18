@@ -168,6 +168,7 @@ services:
             - '@passwords.manager'
             - '@dbal.conn'
             - '%arcadewelten.arcade.tables.cat_groups%'
+            - '%arcadewelten.arcade.tables.cats%'
 
     arcadewelten.arcade.points:
         class: arcadewelten\arcade\core\points

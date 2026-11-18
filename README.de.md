@@ -13,6 +13,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 - Optionaler Spielhallen-Block auf der Foren-Übersicht: neue Spiele, Kategorien und Turnier-Hinweis
 - Eigene `sitemap.xml` für Suchmaschinen: Startseite, Kategorien und Gast-Spiele
 - Benachrichtigung, wenn jemand deinen Rekord überbietet (abschaltbar)
+- Kategorien mit Zeitraum: nur zu Weihnachten, Ostern oder Halloween sichtbar
 - **Läuft auch mit Werbeblockern und DNS-Filtern** (z. B. Pi-hole oder die Sperrliste der Fritzbox), weil es nichts gibt, was blockiert werden könnte. Selbst in einem Netz ohne Zugang zu fremden Servern funktioniert alles.
 - **Keine Werbung, kein Tracking:** Die Erweiterung selbst bindet nichts davon ein, beim Spielen gehen keine Daten an Dritte. Ob du in deinem Forum Werbung schaltest, bleibt deine Entscheidung. Der passende Abschnitt für die Datenschutzerklärung wird automatisch erzeugt.
 - **Kein Abo, keine Limits, Open Source:** Die Spielhalle gehört dir. Auch wenn das Projekt eines Tages eingestellt würde, läuft sie weiter.

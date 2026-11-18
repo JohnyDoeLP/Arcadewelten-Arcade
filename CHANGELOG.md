@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.27.0-beta (2026-11-18)
+
+- **Categories with a period:** a category can be set to be visible only in a certain period – once between two dates, or every year between two days, for Christmas, Easter or Halloween. A yearly period may run over new year (1 December to 6 January). Outside it the category and its games are invisible to everybody: no tile, no games in the list, no highscores, no entry in the arcade block and the sitemap, and a direct link answers 404. Records, ratings and comments are kept and are back next time. Administrators still see the category, marked “hidden right now” in the category list
+
 ## 0.26.0-beta (2026-11-17)
 
 - **Notification when a record is beaten:** whoever loses first place in a game gets a notification with the new record and their own score, and a link to the highscores. Only first place counts; being overtaken further down the list, improving your own record and an equal score trigger nothing. Every member can switch it off (bell and email separately) in their notification settings, and there is an ACP switch for the whole board

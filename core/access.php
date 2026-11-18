@@ -20,8 +20,18 @@ namespace arcadewelten\arcade\core;
  */
 class access
 {
+	/** Category is always visible. */
+	const SHOW_ALWAYS = 0;
+	/** Visible once, between two dates (timestamps). */
+	const SHOW_ONCE = 1;
+	/** Visible every year, between two days (stored as MMDD). */
+	const SHOW_YEARLY = 2;
+
 	protected $db;
 	protected $cat_groups_table;
+	protected $cats_table;
+	/** @var array|null */
+	protected $seasonal;
 	/** @var array|null cat_id => [group_id, ...] */
 	protected $cat_groups;
 	/** @var array|null */
@@ -32,10 +42,11 @@ class access
 	protected $request;
 	protected $passwords;
 
-	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\auth\auth $auth, \phpbb\request\request_interface $request, \phpbb\passwords\manager $passwords, \phpbb\db\driver\driver_interface $db, $cat_groups_table)
+	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\auth\auth $auth, \phpbb\request\request_interface $request, \phpbb\passwords\manager $passwords, \phpbb\db\driver\driver_interface $db, $cat_groups_table, $cats_table = '')
 	{
 		$this->db = $db;
 		$this->cat_groups_table = $cat_groups_table;
+		$this->cats_table = $cats_table;
 		$this->config = $config;
 		$this->user = $user;
 		$this->auth = $auth;
@@ -120,9 +131,17 @@ class access
 		}
 
 		$this->hidden = [];
+
+		// Administrators see every category, also outside its period.
+		if ($this->auth->acl_get('a_'))
+		{
+			return $this->hidden;
+		}
+
+		$this->hidden = $this->out_of_season_cats();
 		$all = $this->all_cat_groups();
 
-		if (!$all || $this->auth->acl_get('a_'))
+		if (!$all)
 		{
 			return $this->hidden;
 		}
@@ -147,6 +166,81 @@ class access
 		}
 
 		return $this->hidden;
+	}
+
+	/* ---------------------------------------------------------------
+	 * Categories with a period (Christmas, Easter, …)
+	 * ------------------------------------------------------------- */
+
+	/**
+	 * Categories that are outside their period right now.
+	 *
+	 * @return int[]
+	 */
+	public function out_of_season_cats()
+	{
+		if ($this->seasonal !== null)
+		{
+			return $this->seasonal;
+		}
+
+		$this->seasonal = [];
+
+		if ($this->cats_table === '')
+		{
+			return $this->seasonal;
+		}
+
+		$sql = 'SELECT cat_id, cat_show_mode, cat_show_from, cat_show_to
+			FROM ' . $this->cats_table . '
+			WHERE cat_show_mode > ' . (int) self::SHOW_ALWAYS;
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			if (!self::in_season($row))
+			{
+				$this->seasonal[] = (int) $row['cat_id'];
+			}
+		}
+		$this->db->sql_freeresult($result);
+
+		return $this->seasonal;
+	}
+
+	/**
+	 * Is a category inside its period right now?
+	 *
+	 * Once: cat_show_from and cat_show_to are timestamps, an empty one means
+	 * open-ended. Every year: both are days as MMDD, and a period may run
+	 * over new year (1 December to 6 January).
+	 */
+	public static function in_season(array $cat, $now = null)
+	{
+		$mode = isset($cat['cat_show_mode']) ? (int) $cat['cat_show_mode'] : self::SHOW_ALWAYS;
+
+		if ($mode === self::SHOW_ALWAYS)
+		{
+			return true;
+		}
+
+		$now = $now ? (int) $now : time();
+		$from = (int) $cat['cat_show_from'];
+		$to = (int) $cat['cat_show_to'];
+
+		if ($mode === self::SHOW_ONCE)
+		{
+			return (!$from || $now >= $from) && (!$to || $now <= $to);
+		}
+
+		// Both days are needed for a yearly period; without them nothing is hidden.
+		if (!$from || !$to)
+		{
+			return true;
+		}
+
+		$today = (int) date('md', $now);
+
+		return ($from <= $to) ? ($today >= $from && $today <= $to) : ($today >= $from || $today <= $to);
 	}
 
 	/**
