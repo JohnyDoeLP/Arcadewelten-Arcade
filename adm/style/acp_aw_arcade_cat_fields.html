@@ -59,13 +59,17 @@
 			<option value="2"{% if S_CAT_SHOW_MODE == 2 %} selected{% endif %}>{{ lang('ACP_AW_ARCADE_CAT_SHOW_YEARLY') }}</option>
 		</select>
 	</dd>
-	<dd>
-		<label for="cat_show_from">{{ lang('ACP_AW_ARCADE_CAT_SHOW_FROM') }}</label>
-		<input type="date" id="cat_show_from" name="cat_show_from" value="{{ CAT_SHOW_FROM }}">
-		<label for="cat_show_to">{{ lang('ACP_AW_ARCADE_CAT_SHOW_TO') }}</label>
-		<input type="date" id="cat_show_to" name="cat_show_to" value="{{ CAT_SHOW_TO }}">
+	<dd style="margin-top: 6px;">
+		<span style="display: inline-block; margin-right: 16px; white-space: nowrap;">
+			<label for="cat_show_from" style="display: inline; vertical-align: middle; margin-right: 4px;">{{ lang('ACP_AW_ARCADE_CAT_SHOW_FROM') }}</label>
+			<input type="date" id="cat_show_from" name="cat_show_from" value="{{ CAT_SHOW_FROM }}" style="vertical-align: middle;">
+		</span>
+		<span style="display: inline-block; white-space: nowrap;">
+			<label for="cat_show_to" style="display: inline; vertical-align: middle; margin-right: 4px;">{{ lang('ACP_AW_ARCADE_CAT_SHOW_TO') }}</label>
+			<input type="date" id="cat_show_to" name="cat_show_to" value="{{ CAT_SHOW_TO }}" style="vertical-align: middle;">
+		</span>
 	</dd>
-	<dd><span>{{ lang('ACP_AW_ARCADE_CAT_SHOW_HINT') }}</span></dd>
+	<dd style="margin-top: 10px;"><span>{{ lang('ACP_AW_ARCADE_CAT_SHOW_HINT') }}</span></dd>
 </dl>
 <dl>
 	<dt><label for="cat_online_hide">{{ lang('ACP_AW_ARCADE_CAT_ONLINE_HIDE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CAT_ONLINE_HIDE_EXPLAIN') }}</span></dt>
