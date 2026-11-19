@@ -750,11 +750,14 @@ class main
 		$data = $this->stats->for_user($user_id);
 		$me = $user_id === (int) $this->user->data['user_id'];
 
-		foreach (array_slice($this->visible_games($data['top_games']), 0, \arcadewelten\arcade\core\stats::TOP_GAMES) as $row)
+		$top_games = $this->visible_games($data['top_games']);
+
+		foreach ($top_games as $i => $row)
 		{
 			$this->template->assign_block_vars('aw_top_games', [
 				'NAME'		=> $row['game_name'],
 				'PLAYS'		=> (int) $row['score_plays'],
+				'S_MORE'	=> $i >= \arcadewelten\arcade\core\stats::TOP_GAMES,
 				'U_PLAY'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $row['game_id']]),
 			]);
 		}
@@ -772,12 +775,14 @@ class main
 		}
 
 		$this->template->assign_vars([
+			'AW_MORE_GAMES'		=> max(0, count($top_games) - \arcadewelten\arcade\core\stats::TOP_GAMES),
+			'AW_RECORDS'		=> $data['records'],
+			'U_AW_ALL_RECORDS'	=> $data['records'] ? $this->helper->route('arcadewelten_arcade_user', ['user_id' => $user_id]) : '',
 			'AW_STATS_USER'		=> get_username_string('full', $user_id, $member['username'], $member['user_colour']),
 			'AW_STATS_AVATAR'	=> phpbb_get_user_avatar($member),
 			'AW_ROUNDS'			=> $data['rounds'],
 			'AW_GAMES_PLAYED'	=> $data['games_played'],
 			'AW_GAMES_TOTAL'	=> $data['games_total'],
-			'AW_RECORDS'		=> $data['records'],
 			'AW_FAVORITES'		=> $data['favorites'],
 			'AW_RATINGS'		=> $data['ratings'],
 			'AW_GOLD'			=> $data['medals'][1],

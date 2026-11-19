@@ -30,10 +30,20 @@
 			<h3>{{ lang('AW_ARCADE_STATS_TOP_GAMES') }}</h3>
 			{% if loops.aw_top_games|length %}
 			<ul class="aw-stats-list">
-				{% for g in loops.aw_top_games %}
+				{% for g in loops.aw_top_games %}{% if not g.S_MORE %}
 				<li><a href="{{ g.U_PLAY }}">{{ g.NAME }}</a> <span class="aw-small">{{ lang('AW_ARCADE_STATS_PLAYS', g.PLAYS) }}</span></li>
-				{% endfor %}
+				{% endif %}{% endfor %}
 			</ul>
+			{% if AW_MORE_GAMES %}
+			<details class="aw-stats-more">
+				<summary>{{ lang('AW_ARCADE_STATS_SHOW_ALL', AW_MORE_GAMES) }}</summary>
+				<ul class="aw-stats-list">
+					{% for g in loops.aw_top_games %}{% if g.S_MORE %}
+					<li><a href="{{ g.U_PLAY }}">{{ g.NAME }}</a> <span class="aw-small">{{ lang('AW_ARCADE_STATS_PLAYS', g.PLAYS) }}</span></li>
+					{% endif %}{% endfor %}
+				</ul>
+			</details>
+			{% endif %}
 			{% else %}
 			<p class="aw-small">{{ lang('AW_ARCADE_STATS_NONE') }}</p>
 			{% endif %}
@@ -46,6 +56,7 @@
 				<li>{% if b.S_GOLD %}<i class="icon fa-trophy aw-gold" aria-hidden="true"></i> {% endif %}{{ lang('AW_ARCADE_STATS_PLACE', b.PLACE) }} <a href="{{ b.U_SCORES }}">{{ b.NAME }}</a> <span class="aw-small">{{ b.SCORE }}{% if b.DATE %} &middot; {{ b.DATE }}{% endif %}</span></li>
 				{% endfor %}
 			</ul>
+			{% if U_AW_ALL_RECORDS %}<p class="aw-stats-more"><a href="{{ U_AW_ALL_RECORDS }}">{{ lang('AW_ARCADE_STATS_ALL_RECORDS', AW_RECORDS) }}</a></p>{% endif %}
 			{% else %}
 			<p class="aw-small">{{ lang('AW_ARCADE_STATS_NONE') }}</p>
 			{% endif %}

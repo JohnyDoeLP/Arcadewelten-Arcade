@@ -21,6 +21,8 @@ class stats
 	const CACHE_KEY = '_aw_arcade_stats_';
 	const CACHE_TIME = 600;
 	const TOP_GAMES = 3;
+	/** Ceiling for the full list behind "show all". */
+	const MAX_GAMES = 500;
 	const BEST_PLACES = 5;
 
 	protected $db;
@@ -160,7 +162,7 @@ class stats
 			INNER JOIN ' . $this->games_table . ' g ON g.game_id = s.game_id AND g.game_active = 1
 			WHERE s.user_id = ' . (int) $user_id . '
 			ORDER BY s.score_plays DESC, g.game_name ASC';
-		$result = $this->db->sql_query_limit($sql, self::TOP_GAMES * 6);
+		$result = $this->db->sql_query_limit($sql, self::MAX_GAMES);
 		$rows = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
 

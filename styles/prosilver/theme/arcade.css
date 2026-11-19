@@ -254,3 +254,7 @@ table.table1.aw-duel-table td:first-child { text-align: left; }
 	.aw-stats-numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.aw-stats-cols { grid-template-columns: 1fr; }
 }
+
+.aw-stats-more { margin-top: 6px; font-size: 0.9em; }
+.aw-stats-more summary { cursor: pointer; }
+.aw-stats-more summary:hover { text-decoration: underline; }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.28.2-beta (2026-11-19)
+
+- Statistics page: “played most” has a “show all” that folds out the remaining games, and “best places” links to the member's full list of records
+
 ## 0.28.1-beta (2026-11-19)
 
 - Statistics page, “best places”: within one place the newest result comes first instead of alphabetical order, so with many first places the fresh records are the ones on show. The date of the result is named as well

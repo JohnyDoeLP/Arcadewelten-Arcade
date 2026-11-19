@@ -174,6 +174,8 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_STATS_BEST'		=> 'Beste Platzierungen',
 	'AW_ARCADE_STATS_PLACE'		=> '%d.',
 	'AW_ARCADE_STATS_NONE'		=> 'Hier gibt es noch nichts zu sehen.',
+	'AW_ARCADE_STATS_SHOW_ALL'	=> [1 => 'Ein weiteres Spiel anzeigen', 2 => 'Alle anzeigen (%d weitere)'],
+	'AW_ARCADE_STATS_ALL_RECORDS'	=> [1 => 'Den einen Rekord ansehen', 2 => 'Alle %d Rekorde ansehen'],
 	'AW_ARCADE_STATS_DUELS'		=> 'Gewonnen %1$d &middot; Verloren %2$d &middot; Offen %3$d',
 	'AW_ARCADE_STATS_TOURNEYS'	=> 'Teilgenommen %1$d &middot; Siege %2$d &middot; Podium %3$d',
 	'AW_ARCADE_LOGIN_FOR_STATS'	=> 'Bitte melde dich an, um die Statistik zu sehen.',
