@@ -14,6 +14,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 - Own `sitemap.xml` for search engines: start page, categories and guest games
 - Notification when somebody beats your record (can be switched off)
 - Categories with a period: visible only at Christmas, Easter or Halloween
+- Statistics page per member: rounds, medals, best places, duels and tournaments
 - **Works with ad blockers and DNS filters** (e.g. Pi-hole or a router blocklist), because there is nothing to block. Even on a network without access to external servers everything works.
 - **No ads, no tracking:** the extension itself includes none of this, and no data goes to third parties while playing. Whether you show ads on your board stays your decision. The matching section for the privacy policy is generated automatically.
 - **No subscription, no limits, open source:** the arcade belongs to you. Even if the project were discontinued one day, it keeps running.

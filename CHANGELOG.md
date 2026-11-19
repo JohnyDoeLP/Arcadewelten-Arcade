@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.28.0-beta (2026-11-19)
+
+- **Statistics page per member:** rounds played, games played, favourites and ratings, the gold, silver and bronze places, the games played most, the best places, and the duel and tournament record. Reachable with the “My statistics” button in the arcade and from the hall of fame; members only, like the highscores. Everything is worked out from what the arcade stores anyway – no play time or anything else is recorded for it. Lists that name games only hold games the reader may see
+
 ## 0.27.1-beta (2026-11-18)
 
 - Category form: the two date fields of a period sit on one line, and the explanation below them has some air

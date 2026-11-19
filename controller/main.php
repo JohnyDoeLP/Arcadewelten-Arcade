@@ -40,10 +40,13 @@ class main
 	/** @var \arcadewelten\arcade\core\sitemap|null */
 	protected $sitemap;
 
+	/** @var \arcadewelten\arcade\core\stats|null */
+	protected $stats;
+
 	/** @var \arcadewelten\arcade\core\jackpot */
 	protected $jackpot;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot, ?\arcadewelten\arcade\core\sitemap $sitemap = null)
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot, ?\arcadewelten\arcade\core\sitemap $sitemap = null, ?\arcadewelten\arcade\core\stats $stats = null)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -67,6 +70,7 @@ class main
 		$this->tourney_jobs = $tourney_jobs;
 		$this->jackpot = $jackpot;
 		$this->sitemap = $sitemap;
+		$this->stats = $stats;
 
 		$this->language->add_lang('common', 'arcadewelten/arcade');
 	}
@@ -284,6 +288,7 @@ class main
 					'USER'		=> get_username_string('full', $hof['user_id'], $hof['username'], $hof['user_colour']),
 					'RECORDS'	=> $hof['records'],
 					'U_RECORDS'	=> $this->helper->route('arcadewelten_arcade_user', ['user_id' => (int) $hof['user_id']]),
+					'U_STATS'	=> $this->is_member() ? $this->helper->route('arcadewelten_arcade_stats', ['user_id' => (int) $hof['user_id']]) : '',
 				]);
 			}
 		}
@@ -312,6 +317,7 @@ class main
 			'AW_CAT_NAME'		=> $cat ? $cat['cat_name'] : '',
 			'AW_SEARCH'			=> $search,
 			'U_AW_TOURNEYS'		=> $this->tourneys->enabled() ? $this->helper->route('arcadewelten_arcade_tourneys') : '',
+			'U_AW_STATS'		=> $this->is_member() ? $this->helper->route('arcadewelten_arcade_stats', ['user_id' => (int) $this->user->data['user_id']]) : '',
 			'AW_DUELS_OPEN'		=> (!$is_guest && $this->duels->enabled()) ? $this->duels->count_incoming($this->user->data['user_id']) : 0,
 			'U_AW_DUELS'		=> (!$is_guest && $this->duels->enabled()) ? $this->helper->route('arcadewelten_arcade_duels') : '',
 			'AW_SORT'			=> $sort,
@@ -721,6 +727,110 @@ class main
 	/**
 	 * List: running, planned and finished tournaments.
 	 */
+	/**
+	 * Statistics of one member.
+	 */
+	public function stats($user_id = 0)
+	{
+		$this->check_use();
+
+		if (!$this->is_member())
+		{
+			login_box('', $this->language->lang('AW_ARCADE_LOGIN_FOR_STATS'));
+		}
+
+		$user_id = (int) $user_id ?: (int) $this->user->data['user_id'];
+		$member = $this->get_member($user_id);
+
+		if (!$member || !$this->stats)
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_MEMBER');
+		}
+
+		$data = $this->stats->for_user($user_id);
+		$me = $user_id === (int) $this->user->data['user_id'];
+
+		foreach (array_slice($this->visible_games($data['top_games']), 0, \arcadewelten\arcade\core\stats::TOP_GAMES) as $row)
+		{
+			$this->template->assign_block_vars('aw_top_games', [
+				'NAME'		=> $row['game_name'],
+				'PLAYS'		=> (int) $row['score_plays'],
+				'U_PLAY'	=> $this->helper->route('arcadewelten_arcade_play', ['game_id' => (int) $row['game_id']]),
+			]);
+		}
+
+		foreach (array_slice($this->visible_games($data['best']), 0, \arcadewelten\arcade\core\stats::BEST_PLACES) as $row)
+		{
+			$this->template->assign_block_vars('aw_best', [
+				'NAME'		=> $row['game_name'],
+				'PLACE'		=> (int) $row['place'],
+				'SCORE'		=> $this->format_score($row['score']),
+				'S_GOLD'	=> (int) $row['place'] === 1,
+				'U_SCORES'	=> $this->helper->route('arcadewelten_arcade_scores', ['game_id' => (int) $row['game_id']]),
+			]);
+		}
+
+		$this->template->assign_vars([
+			'AW_STATS_USER'		=> get_username_string('full', $user_id, $member['username'], $member['user_colour']),
+			'AW_STATS_AVATAR'	=> phpbb_get_user_avatar($member),
+			'AW_ROUNDS'			=> $data['rounds'],
+			'AW_GAMES_PLAYED'	=> $data['games_played'],
+			'AW_GAMES_TOTAL'	=> $data['games_total'],
+			'AW_RECORDS'		=> $data['records'],
+			'AW_FAVORITES'		=> $data['favorites'],
+			'AW_RATINGS'		=> $data['ratings'],
+			'AW_GOLD'			=> $data['medals'][1],
+			'AW_SILVER'			=> $data['medals'][2],
+			'AW_BRONZE'			=> $data['medals'][3],
+			'AW_FIRST_TIME'		=> $data['first_time'] ? $this->user->format_date($data['first_time']) : '',
+			'AW_LAST_TIME'		=> $data['last_time'] ? $this->user->format_date($data['last_time']) : '',
+			'AW_DUELS_WON'		=> $data['duels']['won'],
+			'AW_DUELS_LOST'		=> $data['duels']['lost'],
+			'AW_DUELS_OPEN'		=> $data['duels']['open'],
+			'AW_TOURNEYS'		=> $data['tourneys']['joined'],
+			'AW_TOURNEYS_WON'	=> $data['tourneys']['won'],
+			'AW_TOURNEYS_PODIUM'=> $data['tourneys']['podium'],
+			'S_AW_DUELS'		=> $this->duels->enabled(),
+			'S_AW_TOURNEYS'		=> $this->tourneys->enabled(),
+			'S_AW_OWN_STATS'	=> $me,
+			'U_AW_ARCADE'		=> $this->helper->route('arcadewelten_arcade_index'),
+		]);
+
+		return $this->helper->render('@arcadewelten_arcade/arcade_stats.html', $this->language->lang($me ? 'AW_ARCADE_STATS_MINE' : 'AW_ARCADE_STATS_OF', $member['username']));
+	}
+
+	/**
+	 * Only rows whose game sits in a category the reader may see.
+	 */
+	protected function visible_games(array $rows)
+	{
+		$out = [];
+
+		foreach ($rows as $row)
+		{
+			if ($this->access->can_see_cat((int) $row['cat_id']))
+			{
+				$out[] = $row;
+			}
+		}
+
+		return $out;
+	}
+
+	protected function get_member($user_id)
+	{
+		global $db;
+
+		$sql = 'SELECT user_id, username, user_colour, user_avatar, user_avatar_type, user_avatar_width, user_avatar_height, user_type
+			FROM ' . USERS_TABLE . '
+			WHERE user_id = ' . (int) $user_id;
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		return ($row && (int) $row['user_type'] !== USER_IGNORE) ? $row : null;
+	}
+
 	/**
 	 * sitemap.xml of the arcade: the pages a guest may open.
 	 */

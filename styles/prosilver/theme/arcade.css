@@ -230,3 +230,27 @@ table.table1.aw-duel-table th,
 table.table1.aw-duel-table td { text-align: center; }
 table.table1.aw-duel-table th:first-child,
 table.table1.aw-duel-table td:first-child { text-align: left; }
+
+/* Statistics page */
+.aw-stats-head { display: flex; align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--aw-line); margin-bottom: 12px; }
+.aw-stats-avatar img { max-width: 44px; max-height: 44px; border-radius: 50%; }
+.aw-stats-numbers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.aw-stat { background: var(--aw-tile-bg); border-radius: 4px; padding: 8px 10px; }
+.aw-stat-label { display: block; font-size: 0.85em; }
+.aw-stat-value { display: block; font-size: 1.6em; line-height: 1.2; }
+.aw-stats-medals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; text-align: center; }
+.aw-medal { border-radius: 4px; padding: 8px; background: var(--aw-tile-bg); }
+.aw-medal strong { display: block; font-size: 1.4em; }
+.aw-medal-gold { border-top: 3px solid #d4a017; }
+.aw-medal-silver { border-top: 3px solid #9aa0a6; }
+.aw-medal-bronze { border-top: 3px solid #b06a2c; }
+.aw-stats-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 8px; }
+.aw-stats-cols h3 { margin-bottom: 4px; }
+.aw-stats-list { list-style: none; margin: 0; padding: 0; }
+.aw-stats-list li { padding: 3px 0; border-bottom: 1px solid var(--aw-line); }
+.aw-stats-list li:last-child { border-bottom: 0; }
+.aw-stats-back { margin-top: 12px; }
+@media (max-width: 700px) {
+	.aw-stats-numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.aw-stats-cols { grid-template-columns: 1fr; }
+}

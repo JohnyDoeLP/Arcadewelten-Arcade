@@ -140,6 +140,20 @@ services:
             - '@request'
             - '@cache.driver'
 
+    arcadewelten.arcade.stats:
+        class: arcadewelten\arcade\core\stats
+        arguments:
+            - '@dbal.conn'
+            - '@cache.driver'
+            - '@arcadewelten.arcade.scores'
+            - '@arcadewelten.arcade.tourneys'
+            - '%arcadewelten.arcade.tables.scores%'
+            - '%arcadewelten.arcade.tables.games%'
+            - '%arcadewelten.arcade.tables.duels%'
+            - '%arcadewelten.arcade.tables.ratings%'
+            - '%arcadewelten.arcade.tables.tourney_scores%'
+            - '%arcadewelten.arcade.tables.favorites%'
+
     arcadewelten.arcade.sitemap:
         class: arcadewelten\arcade\core\sitemap
         arguments:
@@ -293,6 +307,7 @@ services:
             - '@arcadewelten.arcade.tourney_jobs'
             - '@arcadewelten.arcade.jackpot'
             - '@arcadewelten.arcade.sitemap'
+            - '@arcadewelten.arcade.stats'
 
     arcadewelten.arcade.listener:
         class: arcadewelten\arcade\event\listener

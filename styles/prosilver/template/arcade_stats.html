@@ -1,0 +1,76 @@
+{% include 'overall_header.html' %}
+{% INCLUDECSS '@arcadewelten_arcade/arcade.css' %}
+
+<h2 class="aw-title"><i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i> {% if S_AW_OWN_STATS %}{{ lang('AW_ARCADE_STATS_MINE') }}{% else %}{{ lang('AW_ARCADE_STATS_OF', AW_STATS_USER) }}{% endif %}</h2>
+
+<div class="panel"><div class="inner">
+	<div class="aw-stats-head">
+		{% if AW_STATS_AVATAR %}<span class="aw-stats-avatar">{{ AW_STATS_AVATAR }}</span>{% endif %}
+		<span>
+			<strong>{{ AW_STATS_USER }}</strong>
+			{% if AW_FIRST_TIME %}<br><span class="aw-small">{{ lang('AW_ARCADE_STATS_FIRST', AW_FIRST_TIME) }} &middot; {{ lang('AW_ARCADE_STATS_LAST', AW_LAST_TIME) }}</span>{% endif %}
+		</span>
+	</div>
+
+	<div class="aw-stats-numbers">
+		<div class="aw-stat"><span class="aw-stat-label">{{ lang('AW_ARCADE_STATS_ROUNDS') }}</span><span class="aw-stat-value">{{ AW_ROUNDS }}</span></div>
+		<div class="aw-stat"><span class="aw-stat-label">{{ lang('AW_ARCADE_STATS_GAMES') }}</span><span class="aw-stat-value">{{ AW_GAMES_PLAYED }}<span class="aw-small"> / {{ AW_GAMES_TOTAL }}</span></span></div>
+		<div class="aw-stat"><span class="aw-stat-label">{{ lang('AW_ARCADE_STATS_FAVORITES') }}</span><span class="aw-stat-value">{{ AW_FAVORITES }}</span></div>
+		<div class="aw-stat"><span class="aw-stat-label">{{ lang('AW_ARCADE_STATS_RATINGS') }}</span><span class="aw-stat-value">{{ AW_RATINGS }}</span></div>
+	</div>
+
+	<div class="aw-stats-medals">
+		<div class="aw-medal aw-medal-gold"><span>{{ lang('AW_ARCADE_GOLD') }}</span><strong>{{ AW_GOLD }}</strong></div>
+		<div class="aw-medal aw-medal-silver"><span>{{ lang('AW_ARCADE_SILVER') }}</span><strong>{{ AW_SILVER }}</strong></div>
+		<div class="aw-medal aw-medal-bronze"><span>{{ lang('AW_ARCADE_BRONZE') }}</span><strong>{{ AW_BRONZE }}</strong></div>
+	</div>
+
+	<div class="aw-stats-cols">
+		<div>
+			<h3>{{ lang('AW_ARCADE_STATS_TOP_GAMES') }}</h3>
+			{% if loops.aw_top_games|length %}
+			<ul class="aw-stats-list">
+				{% for g in loops.aw_top_games %}
+				<li><a href="{{ g.U_PLAY }}">{{ g.NAME }}</a> <span class="aw-small">{{ lang('AW_ARCADE_STATS_PLAYS', g.PLAYS) }}</span></li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			<p class="aw-small">{{ lang('AW_ARCADE_STATS_NONE') }}</p>
+			{% endif %}
+		</div>
+		<div>
+			<h3>{{ lang('AW_ARCADE_STATS_BEST') }}</h3>
+			{% if loops.aw_best|length %}
+			<ul class="aw-stats-list">
+				{% for b in loops.aw_best %}
+				<li>{% if b.S_GOLD %}<i class="icon fa-trophy aw-gold" aria-hidden="true"></i> {% endif %}{{ lang('AW_ARCADE_STATS_PLACE', b.PLACE) }} <a href="{{ b.U_SCORES }}">{{ b.NAME }}</a> <span class="aw-small">{{ b.SCORE }}</span></li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			<p class="aw-small">{{ lang('AW_ARCADE_STATS_NONE') }}</p>
+			{% endif %}
+		</div>
+	</div>
+
+	{% if S_AW_DUELS or S_AW_TOURNEYS %}
+	<div class="aw-stats-cols">
+		{% if S_AW_DUELS %}
+		<div>
+			<h3>{{ lang('AW_ARCADE_DUELS') }}</h3>
+			<p class="aw-small">{{ lang('AW_ARCADE_STATS_DUELS', AW_DUELS_WON, AW_DUELS_LOST, AW_DUELS_OPEN) }}</p>
+		</div>
+		{% endif %}
+		{% if S_AW_TOURNEYS %}
+		<div>
+			<h3>{{ lang('AW_ARCADE_TOURNEYS') }}</h3>
+			<p class="aw-small">{{ lang('AW_ARCADE_STATS_TOURNEYS', AW_TOURNEYS, AW_TOURNEYS_WON, AW_TOURNEYS_PODIUM) }}</p>
+		</div>
+		{% endif %}
+	</div>
+	{% endif %}
+
+	<p class="aw-stats-back"><a class="button" href="{{ U_AW_ARCADE }}">{{ lang('AW_ARCADE_BACK_TO_ARCADE') }}</a></p>
+</div></div>
+
+{% include 'arcade_credit.html' %}
+{% include 'overall_footer.html' %}

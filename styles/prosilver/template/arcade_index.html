@@ -50,7 +50,7 @@
 		{% for h in loops.hall %}
 			<div class="aw-step aw-step-{{ h.PLACE }}">
 				<div class="aw-step-avatar">{% if h.AVATAR %}{{ h.AVATAR }}{% else %}<i class="icon fa-smile-o" aria-hidden="true"></i>{% endif %}</div>
-				<div class="aw-step-user">{{ h.USER }}</div>
+				<div class="aw-step-user">{{ h.USER }}{% if h.U_STATS %} <a class="aw-small" href="{{ h.U_STATS }}" title="{{ lang('AW_ARCADE_STATS_LINK') }}"><i class="icon fa-bar-chart" aria-hidden="true"></i></a>{% endif %}</div>
 				<a class="aw-small" href="{{ h.U_RECORDS }}">{{ lang('AW_ARCADE_RECORDS', h.RECORDS) }}</a>
 				<div class="aw-step-block">
 					<i class="icon fa-trophy aw-cup aw-cup-{{ h.PLACE }}" aria-hidden="true"></i>
@@ -92,8 +92,9 @@
 </div></div>
 {% endif %}
 
-{% if U_AW_DUELS or U_AW_TOURNEYS %}
+{% if U_AW_DUELS or U_AW_TOURNEYS or U_AW_STATS %}
 <p class="aw-duel-link">
+	{% if U_AW_STATS %}<a class="button" href="{{ U_AW_STATS }}"><i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_STATS_MINE') }}</span></a>{% endif %}
 	{% if U_AW_DUELS %}<a class="button" href="{{ U_AW_DUELS }}"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUELS') }}</span>{% if AW_DUELS_OPEN %} <strong class="badge">{{ AW_DUELS_OPEN }}</strong>{% endif %}</a>{% endif %}
 	{% if U_AW_TOURNEYS %}<a class="button" href="{{ U_AW_TOURNEYS }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_TOURNEYS') }}</span></a>{% endif %}
 </p>

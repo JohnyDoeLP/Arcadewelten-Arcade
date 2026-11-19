@@ -22,12 +22,12 @@ Suggestions are welcome – the list grows with the community.
 - 0.25 – sitemap.xml for search engines
 - 0.26 – notification when a record is beaten
 - 0.27 – categories with a period (Christmas, Easter, Halloween)
+- 0.28 – statistics page per member
 
 ## Next
 
-1. **Statistics page** per member: favourite game, play time, best ranks
-2. **Highscore certificates** for season winners (image, generated with GD)
-3. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
+1. **Highscore certificates** for season winners (image, generated with GD)
+2. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
 ## phpBB 4
 

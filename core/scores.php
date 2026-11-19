@@ -685,11 +685,36 @@ class scores
 	 */
 	public function medal_counts()
 	{
-		$medals = $this->cache->get(self::MEDALS_KEY);
+		$medals = [];
 
-		if ($medals !== false)
+		foreach ($this->podium() as $top)
 		{
-			return $medals;
+			foreach ($top as $i => $uid)
+			{
+				if (!isset($medals[$uid]))
+				{
+					$medals[$uid] = [1 => 0, 2 => 0, 3 => 0];
+				}
+
+				$medals[$uid][$i + 1]++;
+			}
+		}
+
+		return $medals;
+	}
+
+	/**
+	 * The first three places of every active game.
+	 *
+	 * @return array game_id => [user_id, user_id, user_id]
+	 */
+	public function podium()
+	{
+		$podium = $this->cache->get(self::MEDALS_KEY);
+
+		if ($podium !== false)
+		{
+			return $podium;
 		}
 
 		$sql = 'SELECT s.game_id, s.user_id, s.score, s.score_time, g.game_scoretype
@@ -703,8 +728,8 @@ class scores
 		}
 		$this->db->sql_freeresult($result);
 
-		$medals = [];
-		foreach ($by_game as $rows)
+		$podium = [];
+		foreach ($by_game as $game_id => $rows)
 		{
 			$low = (int) $rows[0]['game_scoretype'] === games::SCORE_LOW;
 
@@ -720,20 +745,15 @@ class scores
 				return (int) $a['score_time'] <=> (int) $b['score_time'];
 			});
 
-			foreach (array_slice($rows, 0, 3) as $i => $row)
+			foreach (array_slice($rows, 0, 3) as $row)
 			{
-				$uid = (int) $row['user_id'];
-				if (!isset($medals[$uid]))
-				{
-					$medals[$uid] = [1 => 0, 2 => 0, 3 => 0];
-				}
-				$medals[$uid][$i + 1]++;
+				$podium[(int) $game_id][] = (int) $row['user_id'];
 			}
 		}
 
-		$this->cache->put(self::MEDALS_KEY, $medals, 3600);
+		$this->cache->put(self::MEDALS_KEY, $podium, 3600);
 
-		return $medals;
+		return $podium;
 	}
 
 	/**

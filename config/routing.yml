@@ -87,3 +87,9 @@ arcadewelten_arcade_random:
 arcadewelten_arcade_sitemap:
     path: /arcadehall/sitemap.xml
     defaults: { _controller: arcadewelten.arcade.controller.main:sitemap }
+
+arcadewelten_arcade_stats:
+    path: /arcadehall/stats/{user_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:stats, user_id: 0 }
+    requirements:
+        user_id: \d+
