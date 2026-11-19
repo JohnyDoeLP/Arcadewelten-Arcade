@@ -43,7 +43,7 @@
 			{% if loops.aw_best|length %}
 			<ul class="aw-stats-list">
 				{% for b in loops.aw_best %}
-				<li>{% if b.S_GOLD %}<i class="icon fa-trophy aw-gold" aria-hidden="true"></i> {% endif %}{{ lang('AW_ARCADE_STATS_PLACE', b.PLACE) }} <a href="{{ b.U_SCORES }}">{{ b.NAME }}</a> <span class="aw-small">{{ b.SCORE }}</span></li>
+				<li>{% if b.S_GOLD %}<i class="icon fa-trophy aw-gold" aria-hidden="true"></i> {% endif %}{{ lang('AW_ARCADE_STATS_PLACE', b.PLACE) }} <a href="{{ b.U_SCORES }}">{{ b.NAME }}</a> <span class="aw-small">{{ b.SCORE }}{% if b.DATE %} &middot; {{ b.DATE }}{% endif %}</span></li>
 				{% endfor %}
 			</ul>
 			{% else %}

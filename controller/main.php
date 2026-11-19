@@ -766,6 +766,7 @@ class main
 				'PLACE'		=> (int) $row['place'],
 				'SCORE'		=> $this->format_score($row['score']),
 				'S_GOLD'	=> (int) $row['place'] === 1,
+				'DATE'		=> !empty($row['score_time']) ? $this->user->format_date((int) $row['score_time'], 'd. M Y') : '',
 				'U_SCORES'	=> $this->helper->route('arcadewelten_arcade_scores', ['game_id' => (int) $row['game_id']]),
 			]);
 		}

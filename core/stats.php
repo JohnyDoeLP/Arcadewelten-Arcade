@@ -190,7 +190,7 @@ class stats
 			return [];
 		}
 
-		$sql = 'SELECT s.game_id, s.score, g.game_name, g.cat_id
+		$sql = 'SELECT s.game_id, s.score, s.score_time, g.game_name, g.cat_id
 			FROM ' . $this->scores_table . ' s
 			INNER JOIN ' . $this->games_table . ' g ON g.game_id = s.game_id AND g.game_active = 1
 			WHERE s.user_id = ' . (int) $user_id . '
@@ -204,8 +204,12 @@ class stats
 		}
 		$this->db->sql_freeresult($result);
 
+		// Best place first, and within one place the newest result first:
+		// with many first places the fresh ones are the interesting ones.
 		usort($rows, function ($a, $b) {
-			return ($a['place'] <=> $b['place']) ?: strcasecmp($a['game_name'], $b['game_name']);
+			return ($a['place'] <=> $b['place'])
+				?: ((int) $b['score_time'] <=> (int) $a['score_time'])
+				?: strcasecmp($a['game_name'], $b['game_name']);
 		});
 
 		return $rows;

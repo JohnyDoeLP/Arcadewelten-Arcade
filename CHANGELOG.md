@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.28.1-beta (2026-11-19)
+
+- Statistics page, “best places”: within one place the newest result comes first instead of alphabetical order, so with many first places the fresh records are the ones on show. The date of the result is named as well
+
 ## 0.28.0-beta (2026-11-19)
 
 - **Statistics page per member:** rounds played, games played, favourites and ratings, the gold, silver and bronze places, the games played most, the best places, and the duel and tournament record. Reachable with the “My statistics” button in the arcade and from the hall of fame; members only, like the highscores. Everything is worked out from what the arcade stores anyway – no play time or anything else is recorded for it. Lists that name games only hold games the reader may see
