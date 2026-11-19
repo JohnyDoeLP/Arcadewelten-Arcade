@@ -29,6 +29,20 @@ Suggestions are welcome – the list grows with the community.
 1. **Highscore certificates** for season winners (image, generated with GD)
 2. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
+Then comes a round of cleaning up, testing and going through the documentation, and with it **1.0.0**: the end of the beta, and the moment to submit the arcade to the phpBB extension database.
+
+## 1.1 and later
+
+Ideas for after 1.0.0, in no particular order:
+
+- **Arcade in the profile and in posts**: a line under the avatar in topics (“Records: 12”) and a tab in the member's profile, both leading to the statistics page
+- **Game of the week**: a game picked in the ACP that is shown on the arcade start page and in the block on the board index
+- **Badges** beyond the medals, for things like 100 rounds played or a record in every game of a category
+- **Comments on the game page** instead of only the link to the forum topic (the topic stays, so nothing is lost for the forum)
+- **Games for two players** at the same game, which would need games that can do it – a big piece of work, listed here as a wish rather than a plan
+
+What the arcade will not get: a page in front of the game, of the kind other arcades use to show their own advertising.
+
 ## phpBB 4
 
 phpBB 4.0 changes a lot under the hood (no ACP/MCP/UCP modules any more, Doctrine instead of the phpBB DBAL, services only by dependency injection, Symfony 7). The arcade will get its own branch for phpBB 4 once phpBB 4 reaches beta / release candidate and its interfaces are stable. Both versions are then offered side by side – the phpBB 3.3 version keeps getting fixes (and new features where possible) as long as phpBB 3.3 itself is supported.
