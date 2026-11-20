@@ -140,6 +140,14 @@ class main_module
 
 	protected function mode_settings()
 	{
+		$action = $this->request->variable('action', '');
+
+		// Write or remove the .htaccess that keeps install files from being run
+		if ($action === 'protect' || $action === 'unprotect')
+		{
+			$this->protect_games_dir($action === 'protect');
+		}
+
 		if ($this->request->variable('action', '') === 'season')
 		{
 			$this->season_page();
@@ -249,6 +257,9 @@ class main_module
 			'AW_GAMES_PATH'			=> $this->games->games_path(),
 			'AW_GAMES_PATH_OK'		=> is_dir($this->games->games_fs_path()),
 			'AW_GAMES_FS_PATH'		=> $this->expected_games_dir(),
+			'S_AW_HTACCESS'			=> is_file($this->games->games_fs_path() . '.htaccess'),
+			'U_AW_PROTECT'			=> $this->u_action . '&amp;action=protect&amp;hash=' . generate_link_hash('aw_arcade_protect'),
+			'U_AW_UNPROTECT'		=> $this->u_action . '&amp;action=unprotect&amp;hash=' . generate_link_hash('aw_arcade_protect'),
 			'AW_GAMEDATA_OK'		=> is_dir($this->games->games_fs_path() . '../gamedata'),
 			'AW_AMOD_BRIDGE_OK'		=> is_file($this->root_path . 'newscore.php'),
 			'AW_GUEST_PLAY'			=> (bool) $this->config['aw_arcade_guest_play'],
@@ -447,6 +458,12 @@ class main_module
 			trigger_error($message . adm_back_link($this->u_action));
 		}
 
+		// Import all games in chunks, so a big collection cannot run into a time limit
+		if ($action === 'import_all')
+		{
+			$this->import_all();
+		}
+
 		// Import from the games folder
 		if ($this->request->is_set_post('import'))
 		{
@@ -627,17 +644,17 @@ class main_module
 		$base = $this->u_action . ($filter_cat > 0 ? '&amp;fc=' . $filter_cat : '') . ($search !== '' ? '&amp;q=' . urlencode($search) : '');
 		$pagination->generate_template_pagination($base, 'pagination', 'start', $total, $per_page, $start);
 
-		// Not yet imported games
-		$scan = $this->importer->scan();
+		// Not yet imported games: only the install files of the current page are
+		// read, so the page stays fast with thousands of games in the folder.
+		$candidates = $this->importer->candidate_dirs();
+		$found_total = count($candidates);
+		$imp_per_page = 50;
+		$imp_start = min(max(0, $this->request->variable('is', 0)), max(0, $found_total - 1));
+		$scan = $this->importer->scan_dirs(array_slice($candidates, $imp_start, $imp_per_page));
 		$importable = 0;
 
 		foreach ($scan as $g)
 		{
-			if ($g['installed'])
-			{
-				continue;
-			}
-
 			if ($g['supported'])
 			{
 				$importable++;
@@ -653,6 +670,11 @@ class main_module
 				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
 				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir_cached($this->games->games_fs_path() . $g['dir'])) : '',
 			]);
+		}
+
+		if ($found_total > $imp_per_page)
+		{
+			$pagination->generate_template_pagination($base, 'imp_pagination', 'is', $found_total, $imp_per_page, $imp_start);
 		}
 
 		$this->assign_cat_options($cat_filter);
@@ -671,6 +693,11 @@ class main_module
 			'AW_FILTER_CAT'		=> $filter_cat,
 			'AW_SEARCH'			=> $search,
 			'AW_IMPORTABLE'		=> $importable,
+			'AW_FOUND_TOTAL'	=> $found_total,
+			'AW_IMP_FIRST'		=> $imp_start + 1,
+			'AW_IMP_LAST'		=> min($imp_start + $imp_per_page, $found_total),
+			'S_AW_IMP_PAGED'	=> $found_total > $imp_per_page,
+			'U_AW_IMPORT_ALL'	=> $this->u_action . '&amp;action=import_all&amp;hash=' . generate_link_hash('aw_arcade_import_all'),
 			'AW_UNCHECKED'		=> count($this->games->external_games(true)),
 			'U_AW_CHECK_EXTERNAL'		=> $this->u_action . '&amp;action=check_external&amp;hash=' . generate_link_hash('aw_arcade_external'),
 			'U_AW_CHECK_EXTERNAL_ALL'	=> $this->u_action . '&amp;action=check_external&amp;all=1&amp;hash=' . generate_link_hash('aw_arcade_external'),
@@ -1507,6 +1534,89 @@ class main_module
 		}
 
 		return $this->language->lang($key, $g['reason_arg']);
+	}
+
+	/**
+	 * Write or remove the .htaccess in the games folder.
+	 *
+	 * Game install files are data for the arcade, which only ever reads them.
+	 * The web server would still run one if somebody called it directly, and
+	 * this file stops that. Images, SWF and HTML files stay reachable.
+	 */
+	protected function protect_games_dir($write)
+	{
+		if (!check_link_hash($this->request->variable('hash', ''), 'aw_arcade_protect'))
+		{
+			trigger_error($this->language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		$file = $this->games->games_fs_path() . '.htaccess';
+
+		if (!$write)
+		{
+			@unlink($file);
+			trigger_error($this->language->lang('ACP_AW_ARCADE_PROTECT_REMOVED') . adm_back_link($this->u_action));
+		}
+
+		$content = "# Arcadewelten Arcade\n"
+			. "# Install files of games are read by the arcade, they are never pages.\n"
+			. "<FilesMatch \"\\.(php|php3|php4|php5|php7|php8|phtml|inc)$\">\n"
+			. "\t<IfModule mod_authz_core.c>\n"
+			. "\t\tRequire all denied\n"
+			. "\t</IfModule>\n"
+			. "\t<IfModule !mod_authz_core.c>\n"
+			. "\t\tOrder allow,deny\n"
+			. "\t\tDeny from all\n"
+			. "\t</IfModule>\n"
+			. "</FilesMatch>\n";
+
+		if (@file_put_contents($file, $content) === false)
+		{
+			trigger_error($this->language->lang('ACP_AW_ARCADE_PROTECT_FAILED', $file) . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		trigger_error($this->language->lang('ACP_AW_ARCADE_PROTECT_WRITTEN') . adm_back_link($this->u_action));
+	}
+
+	/**
+	 * Import every game in the folder, a chunk at a time.
+	 *
+	 * The page sends itself on again after each chunk, so even thousands of
+	 * games cannot run into the time limit of the server. Games that cannot
+	 * be read are skipped and counted, and no topics are announced here: with
+	 * a big collection that would flood the forum.
+	 */
+	protected function import_all()
+	{
+		if (!check_link_hash($this->request->variable('hash', ''), 'aw_arcade_import_all'))
+		{
+			trigger_error($this->language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		$chunk = 25;
+		$cat_id = $this->request->variable('cat', 0);
+		$done = max(0, $this->request->variable('done', 0));
+		$skipped = max(0, $this->request->variable('skipped', 0));
+
+		$candidates = $this->importer->candidate_dirs();
+		$total = count($candidates) + $done;
+		$slice = array_slice($candidates, $skipped, $chunk);
+
+		if (!$slice)
+		{
+			trigger_error($this->language->lang('ACP_AW_ARCADE_IMPORT_ALL_DONE', $done, $skipped) . adm_back_link($this->u_action));
+		}
+
+		$count = $this->importer->import($slice, $cat_id, true);
+		$done += $count;
+		$skipped += count($slice) - $count;
+
+		$url = $this->u_action . '&amp;action=import_all&amp;hash=' . generate_link_hash('aw_arcade_import_all')
+			. '&amp;cat=' . (int) $cat_id . '&amp;done=' . (int) $done . '&amp;skipped=' . (int) $skipped;
+
+		meta_refresh(1, str_replace('&amp;', '&', $url));
+
+		trigger_error($this->language->lang('ACP_AW_ARCADE_IMPORT_ALL_PROGRESS', $done, max($total, $done)) . '<br><br><a href="' . $url . '">' . $this->language->lang('ACP_AW_ARCADE_IMPORT_ALL_NEXT') . '</a>');
 	}
 
 	/**

@@ -23,11 +23,13 @@ Suggestions are welcome – the list grows with the community.
 - 0.26 – notification when a record is beaten
 - 0.27 – categories with a period (Christmas, Easter, Halloween)
 - 0.28 – statistics page per member
+- 0.29 – import of large game collections, protection for install files
 
 ## Next
 
-1. **Highscore certificates** for season winners (image, generated with GD)
-2. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
+1. **Upload a game as a ZIP** in the ACP, for boards without FTP access (one game at a time – a big collection still goes over FTP, because of the upload limits of the server)
+2. **Highscore certificates** for season winners (image, generated with GD)
+3. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
 Then comes a round of cleaning up, testing and going through the documentation, and with it **1.0.0**: the end of the beta, and the moment to submit the arcade to the phpBB extension database.
 

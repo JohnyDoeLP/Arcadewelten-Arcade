@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.29.0-beta (2026-11-20)
+
+- **Large game collections:** the list of games found in the games folder is now shown 50 at a time, and only the install files of the current page are read. A folder with thousands of games no longer slows the page down (tested with 120 new games: half a second)
+- **“Import all games found”** for big collections: the games are imported in chunks of 25 while the page sends itself on, with a progress line, so no time limit of the server is reached. Games that cannot be read are skipped and counted at the end. No topics are announced for these, which would flood the forum (tested: 120 games in 7 seconds)
+- **Protect install files:** a button in the settings writes an `.htaccess` into the games folder so the install files of games cannot be called from the address bar – they are data for the arcade, which only ever reads them. Images, SWF and HTML files stay reachable, and the protection can be removed again with one click (Apache only)
+
 ## 0.28.3-beta (2026-11-20)
 
 - Settings: the two optional lines (`arcade/gamedata/` folder and `newscore.php`) no longer say “not found” in red, but “not there – only needed for the games named above”, so a fresh board does not look broken

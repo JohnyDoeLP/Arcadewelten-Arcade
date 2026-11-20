@@ -40,6 +40,76 @@ class importer
 	 *
 	 * @return array[]
 	 */
+	/**
+	 * Folder names in the games folder that look like a game and are not
+	 * installed yet, sorted by name.
+	 *
+	 * Nothing is read here beyond the folder listing, so this also works
+	 * with thousands of games.
+	 *
+	 * @return string[]
+	 */
+	public function candidate_dirs()
+	{
+		$base = $this->games->games_fs_path();
+
+		if (!is_dir($base))
+		{
+			return [];
+		}
+
+		$installed = array_flip($this->games->installed_dirs());
+		$dirs = [];
+
+		foreach (new \DirectoryIterator($base) as $entry)
+		{
+			if ($entry->isDot() || !$entry->isDir())
+			{
+				continue;
+			}
+
+			$dir = $entry->getFilename();
+
+			if (isset($installed[$dir]) || !preg_match('/^[A-Za-z0-9_\-]+$/', $dir) || !is_file($base . $dir . '/' . $dir . '.php'))
+			{
+				continue;
+			}
+
+			$dirs[] = $dir;
+		}
+
+		natcasesort($dirs);
+
+		return array_values($dirs);
+	}
+
+	/**
+	 * Read the install files of the named folders only.
+	 *
+	 * @return array dir => game data
+	 */
+	public function scan_dirs(array $dirs)
+	{
+		$base = $this->games->games_fs_path();
+		$found = [];
+
+		foreach ($dirs as $dir)
+		{
+			if (!preg_match('/^[A-Za-z0-9_\-]+$/', (string) $dir) || !is_file($base . $dir . '/' . $dir . '.php'))
+			{
+				continue;
+			}
+
+			$game = $this->external ? $this->external->remember('parse', $base . $dir, function () use ($dir) {
+				return $this->parse($dir);
+			}) : $this->parse($dir);
+			$game['installed'] = false;
+			$found[$dir] = $game;
+		}
+
+		return $found;
+	}
+
 	public function scan()
 	{
 		$base = $this->games->games_fs_path();
@@ -335,12 +405,13 @@ class importer
 	public function import(array $dirs, $cat_id = 0, $active = true)
 	{
 		$this->last_imported = [];
-		$scan = $this->scan();
+		$scan = $this->scan_dirs($dirs);
+		$installed = array_flip($this->games->installed_dirs());
 		$count = 0;
 
 		foreach ($dirs as $dir)
 		{
-			if (!isset($scan[$dir]) || $scan[$dir]['installed'] || !$scan[$dir]['supported'])
+			if (!isset($scan[$dir]) || !$scan[$dir]['supported'] || isset($installed[$dir]))
 			{
 				continue;
 			}
