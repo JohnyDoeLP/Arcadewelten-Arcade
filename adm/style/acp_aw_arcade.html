@@ -530,6 +530,21 @@
 	{{ S_FORM_TOKEN }}
 </form>
 
+{% if S_AW_GAMES_DIR and S_AW_ZIP %}
+<form id="aw_zip_form" method="post" action="{{ U_ACTION }}" enctype="multipart/form-data">
+	<fieldset>
+		<legend>{{ lang('ACP_AW_ARCADE_ZIP_UPLOAD') }}</legend>
+		<p>{{ lang('ACP_AW_ARCADE_ZIP_UPLOAD_EXPLAIN', AW_MAX_UPLOAD) }}</p>
+		<dl>
+			<dt><label for="aw_zip">{{ lang('ACP_AW_ARCADE_ZIP_FILE') }}{{ lang('COLON') }}</label></dt>
+			<dd><input type="file" id="aw_zip" name="aw_zip" accept=".zip"></dd>
+		</dl>
+		<p class="submit-buttons"><input class="button1" type="submit" name="upload_zip" value="{{ lang('ACP_AW_ARCADE_ZIP_BUTTON') }}"></p>
+	</fieldset>
+	{{ S_FORM_TOKEN }}
+</form>
+{% endif %}
+
 <form id="aw_import" method="post" action="{{ U_ACTION }}">
 	<fieldset>
 		<legend>{{ lang('ACP_AW_ARCADE_IMPORT') }}</legend>

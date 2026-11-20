@@ -164,6 +164,11 @@ services:
             - '%arcadewelten.arcade.tables.cats%'
             - '%arcadewelten.arcade.tables.cat_groups%'
 
+    arcadewelten.arcade.unpacker:
+        class: arcadewelten\arcade\core\unpacker
+        arguments:
+            - '@arcadewelten.arcade.games'
+
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer
         arguments:

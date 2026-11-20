@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.30.0-beta (2026-11-20)
+
+- **Upload a game as a ZIP:** for boards without FTP access there is now an upload field in the ACP above the list of games found. The archive holds the game folder with its install file, the arcade unpacks it into the games folder, and the game then appears in the list and is imported as usual. The ACP names the largest file size the server allows; for a big collection FTP stays the way
+- The archive is treated as something from the outside: paths that point out of the game folder are refused, and of all the files only the install file may be a PHP program. Anything else of that kind – further PHP files, `.htaccess`, shell scripts – is left out and named in the report, so a prepared archive cannot plant a program on the server
+
 ## 0.29.0-beta (2026-11-20)
 
 - **Large game collections:** the list of games found in the games folder is now shown 50 at a time, and only the install files of the current page are read. A folder with thousands of games no longer slows the page down (tested with 120 new games: half a second)

@@ -58,6 +58,8 @@ class main_module
 	protected $jackpot;
 	/** @var \arcadewelten\arcade\core\sitemap */
 	protected $sitemap;
+	/** @var \arcadewelten\arcade\core\unpacker */
+	protected $unpacker;
 	/** @var \phpbb\user */
 	protected $user;
 	/** @var string */
@@ -74,6 +76,7 @@ class main_module
 		$this->games = $phpbb_container->get('arcadewelten.arcade.games');
 		$this->scores = $phpbb_container->get('arcadewelten.arcade.scores');
 		$this->sitemap = $phpbb_container->get('arcadewelten.arcade.sitemap');
+		$this->unpacker = $phpbb_container->get('arcadewelten.arcade.unpacker');
 		$this->importer = $phpbb_container->get('arcadewelten.arcade.importer');
 		$this->access = $phpbb_container->get('arcadewelten.arcade.access');
 		$this->points = $phpbb_container->get('arcadewelten.arcade.points');
@@ -464,6 +467,12 @@ class main_module
 			$this->import_all();
 		}
 
+		// Upload one game as a zip archive
+		if ($this->request->is_set_post('upload_zip'))
+		{
+			$this->upload_zip();
+		}
+
 		// Import from the games folder
 		if ($this->request->is_set_post('import'))
 		{
@@ -697,6 +706,8 @@ class main_module
 			'AW_IMP_FIRST'		=> $imp_start + 1,
 			'AW_IMP_LAST'		=> min($imp_start + $imp_per_page, $found_total),
 			'S_AW_IMP_PAGED'	=> $found_total > $imp_per_page,
+			'S_AW_ZIP'			=> $this->unpacker->available(),
+			'AW_MAX_UPLOAD'		=> $this->max_upload(),
 			'U_AW_IMPORT_ALL'	=> $this->u_action . '&amp;action=import_all&amp;hash=' . generate_link_hash('aw_arcade_import_all'),
 			'AW_UNCHECKED'		=> count($this->games->external_games(true)),
 			'U_AW_CHECK_EXTERNAL'		=> $this->u_action . '&amp;action=check_external&amp;hash=' . generate_link_hash('aw_arcade_external'),
@@ -1534,6 +1545,70 @@ class main_module
 		}
 
 		return $this->language->lang($key, $g['reason_arg']);
+	}
+
+	/**
+	 * Take one game as a zip archive and unpack it into the games folder.
+	 */
+	protected function upload_zip()
+	{
+		$this->check_form();
+
+		if (!$this->unpacker->available())
+		{
+			trigger_error($this->language->lang('ACP_AW_ARCADE_NO_ZIP') . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		$file = $this->request->file('aw_zip');
+
+		$error = isset($file['error']) ? (int) $file['error'] : UPLOAD_ERR_NO_FILE;
+
+		if (empty($file['name']) || $error !== UPLOAD_ERR_OK || empty($file['tmp_name']) || !is_uploaded_file($file['tmp_name']))
+		{
+			$key = in_array($error, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true) ? 'ACP_AW_ARCADE_ZIP_TOO_LARGE' : 'ACP_AW_ARCADE_ZIP_NO_FILE';
+			trigger_error($this->language->lang($key, $this->max_upload()) . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		if (strtolower((string) pathinfo($file['name'], PATHINFO_EXTENSION)) !== 'zip')
+		{
+			trigger_error($this->language->lang('ACP_AW_ARCADE_ZIP_ONLY') . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		try
+		{
+			$dir = $this->unpacker->unpack($file['tmp_name'], $file['name']);
+		}
+		catch (\RuntimeException $e)
+		{
+			trigger_error($this->language->lang($e->getMessage()) . adm_back_link($this->u_action), E_USER_WARNING);
+		}
+
+		$message = $this->language->lang('ACP_AW_ARCADE_ZIP_DONE', $dir);
+
+		if ($this->unpacker->skipped)
+		{
+			$message .= '<br><br>' . $this->language->lang('ACP_AW_ARCADE_ZIP_SKIPPED', implode(', ', array_map('utf8_htmlspecialchars', array_slice($this->unpacker->skipped, 0, 20))));
+		}
+
+		trigger_error($message . adm_back_link($this->u_action));
+	}
+
+	/**
+	 * What the server allows per upload, as a readable size.
+	 */
+	protected function max_upload()
+	{
+		$to_bytes = function ($value) {
+			$value = trim((string) $value);
+			$units = ['k' => 1024, 'm' => 1048576, 'g' => 1073741824];
+			$unit = strtolower(substr($value, -1));
+
+			return (int) ((float) $value * (isset($units[$unit]) ? $units[$unit] : 1));
+		};
+
+		$limits = array_filter([$to_bytes(ini_get('upload_max_filesize')), $to_bytes(ini_get('post_max_size'))]);
+
+		return get_formatted_filesize($limits ? min($limits) : 0);
 	}
 
 	/**
