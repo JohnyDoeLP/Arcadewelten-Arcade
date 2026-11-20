@@ -28,8 +28,9 @@ Suggestions are welcome – the list grows with the community.
 
 ## Next
 
-1. **Highscore certificates** for season winners (image, generated with GD)
-2. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
+1. **Own ACP page “Add games”**: the upload field and the list of games found move out of the games page onto a page of their own, between “Games” and “Categories” in the menu. The games page then holds only the installed games, loads faster, because the install files of the games found are no longer read on every visit, and the upload is where it can be seen. A line on the games page (“new games found in the games folder → add”) leads there for those who upload over FTP
+2. **Highscore certificates** for season winners (image, generated with GD)
+3. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
 Then comes a round of cleaning up, testing and going through the documentation, and with it **1.0.0**: the end of the beta, and the moment to submit the arcade to the phpBB extension database.
 
