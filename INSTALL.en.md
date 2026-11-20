@@ -122,6 +122,11 @@ By default the arcade automatically appends a matching section to the board’s 
 
 Note: JV's own HTML5 games (`*_jvh5`) and games using the JV interface only work with the JV server and cannot be imported.
 
+## Help
+
+Something not working? Ask in the support forum under **Hilfe & Fehler** (Help & errors): https://arcadewelten.eu/phpBB2/viewforum.php?f=61
+The developer answers there himself, and you don't need an account. Releases and game packages are under **Ankündigungen & Downloads**: https://arcadewelten.eu/phpBB2/viewforum.php?f=60
+
 ## Uninstalling
 
 ACP → Manage extensions → disable → **Delete data**. Then delete `ext/arcadewelten/` and, if present, `newscore.php` and `arcade.php` in the root. Your games in the `arcade/` folder are kept.

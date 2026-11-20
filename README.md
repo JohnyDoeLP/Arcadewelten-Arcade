@@ -109,6 +109,14 @@ The arcade automatically appends an “Arcade” section to the board’s privac
 - Scores of browser games can never be fully protected against manipulation. The arcade checks play sessions, the IBPro v3 checksum, a minimum play time and an optional maximum score per game.
 - Games that send their score from inside an ActionScript function do not save scores under Ruffle without a patch. Patch them with `contrib/tools/ruffle_function_geturl_patch.py` (Python 3, keep a backup of the original). The diagnostics switch in the ACP shows `super=…` / `arguments=` for affected games.
 
+## Support
+
+Questions about the installation, problems with games, bug reports: the support forum is at
+[arcadewelten.eu](https://arcadewelten.eu/phpBB2/viewforum.php?f=59) — **Help & errors** is the place for questions,
+**Announcements & downloads** holds the releases, the game packages and the guides. Guests may post as well.
+
+Reporting it on [GitHub](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/issues) works too, whichever you prefer.
+
 ## Licence
 
 GPL-2.0-only, see `license.txt`.

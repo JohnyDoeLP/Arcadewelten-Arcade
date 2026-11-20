@@ -122,6 +122,11 @@ Ab Werk hängt die Spielhalle an die Datenschutzerklärung des Forums (`ucp.php?
 
 Hinweis: JV-eigene HTML5-Spiele (`*_jvh5`) und Spiele mit JV-Schnittstelle funktionieren nur mit dem JV-Server und lassen sich nicht übernehmen.
 
+## Hilfe
+
+Etwas klappt nicht? Frag im Support-Forum unter **Hilfe & Fehler**: https://arcadewelten.eu/phpBB2/viewforum.php?f=61
+Dort hilft dir der Entwickler selbst; eine Anmeldung ist nicht nötig. Releases und Spiele-Pakete findest du unter **Ankündigungen & Downloads**: https://arcadewelten.eu/phpBB2/viewforum.php?f=60
+
 ## Deinstallieren
 
 ACP → Erweiterungen verwalten → deaktivieren → **Daten löschen**. Danach `ext/arcadewelten/` und ggf. `newscore.php` und `arcade.php` im Root löschen. Deine Spiele im Ordner `arcade/` bleiben erhalten.

@@ -113,6 +113,14 @@ Die Spielhalle hängt an die Datenschutzerklärung des Forums (`ucp.php?mode=pri
 
 Die 22 Bilder in `images/cats/` wurden für Arcadewelten mit KI-Unterstützung (ChatGPT) erstellt und stehen unter **CC0** – sie dürfen ohne Einschränkung genutzt, verändert und weitergegeben werden, auch unabhängig von dieser Erweiterung. Sie enthalten keine fremden Figuren oder Marken.
 
+## Hilfe und Support
+
+Fragen zur Installation, Probleme mit Spielen, Fehlermeldungen: Das Support-Forum liegt auf
+[arcadewelten.eu](https://arcadewelten.eu/phpBB2/viewforum.php?f=59) — **Hilfe & Fehler** ist die Anlaufstelle für Fragen,
+unter **Ankündigungen & Downloads** stehen die Releases, die Spiele-Pakete und die Leitfäden. Gäste dürfen dort ebenfalls schreiben.
+
+Wer lieber auf [GitHub](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/issues) meldet, kann das genauso tun.
+
 ## Lizenz
 
 GPL-2.0-only, siehe `license.txt`.
