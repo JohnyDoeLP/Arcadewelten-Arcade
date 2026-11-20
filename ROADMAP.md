@@ -61,7 +61,6 @@ phpBB 4.0 changes a lot under the hood (no ACP/MCP/UCP modules any more, Doctrin
 - Shoutbox support: new records and duel results in mChat or AJAX Chat, only offered in the ACP when one of them is installed – built once somebody actually uses it
 - Group duels (group against group, average of the members) – only once the normal duels are well used; fairness with very different group sizes needs a good answer first
 - Game downloads, switchable by the board admin
-- ZIP upload of games in the ACP (only allowed file types, no PHP files in the web folder)
 - Discord webhook for new records – optional and off by default, because it sends data to an external service
 - Own HTML5 games and a free starter pack (separate repository)
 
