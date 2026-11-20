@@ -56,16 +56,16 @@
 			<dt><label for="aw_games_path">{{ lang('ACP_AW_ARCADE_GAMES_PATH') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GAMES_PATH_EXPLAIN') }}</span></dt>
 			<dd>
 				<input class="text medium" type="text" id="aw_games_path" name="aw_games_path" value="{{ AW_GAMES_PATH }}">
-				{% if AW_GAMES_PATH_OK %}<strong style="color:green">✔</strong>{% else %}<strong class="error">{{ lang('ACP_AW_ARCADE_PATH_MISSING') }}</strong>{% endif %}
+				{% if AW_GAMES_PATH_OK %}<strong style="color:green">✔</strong>{% else %}<strong class="error">{{ lang('ACP_AW_ARCADE_PATH_MISSING') }}</strong><br><span>{{ lang('ACP_AW_ARCADE_PATH_MISSING_HELP', AW_GAMES_FS_PATH) }}</span>{% endif %}
 			</dd>
 		</dl>
 		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_GAMEDATA') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GAMEDATA_EXPLAIN') }}</span></dt>
-			<dd>{% if AW_GAMEDATA_OK %}<strong style="color:green">✔</strong>{% else %}<strong class="error">{{ lang('ACP_AW_ARCADE_PATH_MISSING') }}</strong>{% endif %}</dd>
+			<dd>{% if AW_GAMEDATA_OK %}<strong style="color:green">✔</strong>{% else %}<span>{{ lang('ACP_AW_ARCADE_PATH_OPTIONAL') }}</span>{% endif %}</dd>
 		</dl>
 		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_AMOD_BRIDGE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_AMOD_BRIDGE_EXPLAIN') }}</span></dt>
-			<dd>{% if AW_AMOD_BRIDGE_OK %}<strong style="color:green">✔</strong>{% else %}<strong class="error">{{ lang('ACP_AW_ARCADE_PATH_MISSING') }}</strong>{% endif %}</dd>
+			<dd>{% if AW_AMOD_BRIDGE_OK %}<strong style="color:green">✔</strong>{% else %}<span>{{ lang('ACP_AW_ARCADE_PATH_OPTIONAL') }}</span>{% endif %}</dd>
 		</dl>
 		<dl>
 			<dt><label for="aw_guest_play">{{ lang('ACP_AW_ARCADE_GUEST_PLAY') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GUEST_PLAY_EXPLAIN') }}</span></dt>

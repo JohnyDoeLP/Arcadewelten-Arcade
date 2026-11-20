@@ -248,6 +248,7 @@ class main_module
 		$this->template->assign_vars([
 			'AW_GAMES_PATH'			=> $this->games->games_path(),
 			'AW_GAMES_PATH_OK'		=> is_dir($this->games->games_fs_path()),
+			'AW_GAMES_FS_PATH'		=> $this->expected_games_dir(),
 			'AW_GAMEDATA_OK'		=> is_dir($this->games->games_fs_path() . '../gamedata'),
 			'AW_AMOD_BRIDGE_OK'		=> is_file($this->root_path . 'newscore.php'),
 			'AW_GUEST_PLAY'			=> (bool) $this->config['aw_arcade_guest_play'],
@@ -1506,6 +1507,18 @@ class main_module
 		}
 
 		return $this->language->lang($key, $g['reason_arg']);
+	}
+
+	/**
+	 * Where the games folder is expected, written out, so an admin can
+	 * compare it with what the FTP program shows.
+	 */
+	protected function expected_games_dir()
+	{
+		$path = $this->games->games_fs_path();
+		$real = realpath($this->root_path);
+
+		return ($real !== false) ? str_replace('\\', '/', $real) . '/' . $this->games->games_path() : $path;
 	}
 
 	/**

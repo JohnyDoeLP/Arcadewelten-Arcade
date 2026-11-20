@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.28.3-beta (2026-11-20)
+
+- Settings: the two optional lines (`arcade/gamedata/` folder and `newscore.php`) no longer say “not found” in red, but “not there – only needed for the games named above”, so a fresh board does not look broken
+- Settings: when the games folder is missing, the full path the arcade expects is now named, along with the usual reasons (wrong place, upper case, permissions)
+
 ## 0.28.2-beta (2026-11-19)
 
 - Statistics page: “played most” has a “show all” that folds out the remaining games, and “best places” links to the member's full list of records
