@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.31.0-beta (2026-11-21)
+
+- **Own page “Add games” in the ACP**, between “Games” and “Categories”. The upload field and the list of games found in the games folder moved there. The games page now holds only the installed games and loads faster, because the install files of the games found are no longer read every time you open it
+- The games page shows a line when new games are lying in the games folder, with a link to the new page – for everybody who uploads over FTP and would otherwise not notice
+- In the list of games found, games that load something from another server are now at the top of the page instead of in alphabetical order, so they are seen before the whole page is imported
+
 ## 0.30.0-beta (2026-11-20)
 
 - **Upload a game as a ZIP:** for boards without FTP access there is now an upload field in the ACP above the list of games found. The archive holds the game folder with its install file, the arcade unpacks it into the games folder, and the game then appears in the list and is imported as usual. The ACP names the largest file size the server allows; for a big collection FTP stays the way

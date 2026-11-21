@@ -60,7 +60,7 @@ your-board/
 ## 5. Import games
 
 1. ACP → Extensions → Arcade → **Categories**: create categories (e.g. Action, Puzzle, Classics).
-2. ACP → Extensions → Arcade → **Games**: at the bottom you find “Import games from the games folder”.
+2. ACP → Extensions → Arcade → **Add games**: there you find “Import games from the games folder”.
 3. Tick the games, choose a category, click **Import selected games**.
 4. Games marked red cannot be imported (e.g. game file missing or JV specific interface).
 

@@ -20,6 +20,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE'				=> 'Spielhalle',
 	'ACP_AW_ARCADE_SETTINGS'	=> 'Einstellungen',
 	'ACP_AW_ARCADE_GAMES'		=> 'Spiele',
+	'ACP_AW_ARCADE_ADD'		=> 'Spiele hinzufügen',
 	'ACP_AW_ARCADE_CATS'		=> 'Kategorien',
 	'ACP_AW_ARCADE_REVIEW'		=> 'Prüfliste',
 	'LOG_AW_ARCADE_SEASON_CLOSED'	=> '<strong>Spielhalle: Saison abgeschlossen</strong><br>» %1$s Punkte an %2$s Mitglieder, Bestenlisten geleert: %3$s, Spielezähler zurückgesetzt: %4$s',

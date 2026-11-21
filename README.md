@@ -71,7 +71,7 @@ Short version (details with folder overview in `INSTALL.en.md`):
 2. Put your games into `arcade/games/<name>/` in the board root (per game: `<name>.php`, `<name>.swf`, image).
    IBPro v3 games also need their data in `arcade/gamedata/<name>/`.
 3. ACP → Customise → Manage extensions → enable “Arcadewelten Arcade”.
-4. ACP → Extensions → Arcade → Games → “Import games from the games folder”.
+4. ACP → Extensions → Arcade → Add games → “Import games from the games folder”.
 5. Only for Activity Mod games: copy `contrib/root/newscore.php` into the board root.
 
 The arcade is reached at `app.php/arcadehall` (or `/arcadehall` with URL rewriting) and via the “Arcade” link in the navigation bar.

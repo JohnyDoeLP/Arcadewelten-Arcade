@@ -71,7 +71,7 @@ Kurzfassung (ausführlich mit Ordner-Übersicht in `INSTALL.de.md`):
 2. Spiele nach `arcade/games/<name>/` im Forum-Root legen (je Spiel: `<name>.php`, `<name>.swf`, Bild).
    IBPro-v3-Spiele brauchen zusätzlich ihre Daten unter `arcade/gamedata/<name>/`.
 3. ACP → Anpassen → Erweiterungen verwalten → „Arcadewelten Arcade“ aktivieren.
-4. ACP → Erweiterungen → Spielhalle → Spiele → „Spiele aus dem Spiele-Ordner übernehmen“.
+4. ACP → Erweiterungen → Spielhalle → Spiele hinzufügen → „Spiele aus dem Spiele-Ordner übernehmen“.
 5. Nur für Activity-Mod-Spiele: `contrib/root/newscore.php` in den Forum-Root kopieren.
 
 Die Spielhalle erreichst du unter `app.php/arcadehall` (mit URL-Rewriting unter `/arcadehall`) und über den Link „Spielhalle“ im Menü.

@@ -20,6 +20,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE'				=> 'Arcade',
 	'ACP_AW_ARCADE_SETTINGS'	=> 'Settings',
 	'ACP_AW_ARCADE_GAMES'		=> 'Games',
+	'ACP_AW_ARCADE_ADD'		=> 'Add games',
 	'ACP_AW_ARCADE_CATS'		=> 'Categories',
 	'ACP_AW_ARCADE_REVIEW'		=> 'Review list',
 	'LOG_AW_ARCADE_SEASON_CLOSED'	=> '<strong>Arcade: season closed</strong><br>» %1$s points paid to %2$s members, highscores emptied: %3$s, play counters reset: %4$s',

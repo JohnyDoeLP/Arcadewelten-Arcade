@@ -60,7 +60,7 @@ dein-forum/
 ## 5. Spiele importieren
 
 1. ACP → Erweiterungen → Spielhalle → **Kategorien**: Kategorien anlegen (z. B. Action, Puzzle, Klassiker).
-2. ACP → Erweiterungen → Spielhalle → **Spiele**: Unten steht die Liste „Spiele aus dem Spiele-Ordner übernehmen“.
+2. ACP → Erweiterungen → Spielhalle → **Spiele hinzufügen**: Dort steht die Liste „Spiele aus dem Spiele-Ordner übernehmen“.
 3. Gewünschte Spiele anhaken, Kategorie wählen, **Ausgewählte Spiele übernehmen**.
 4. Rot markierte Spiele lassen sich nicht übernehmen (z. B. Spieldatei fehlt oder JV-eigene Schnittstelle).
 

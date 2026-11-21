@@ -445,6 +445,10 @@
 {% if AW_UNCHECKED %}
 <div class="errorbox"><p>{{ lang('ACP_AW_ARCADE_EXTERNAL_UNCHECKED', AW_UNCHECKED) }} <a href="{{ U_AW_CHECK_EXTERNAL }}">{{ lang('ACP_AW_ARCADE_EXTERNAL_CHECK_NOW') }}</a></p></div>
 {% endif %}
+
+{% if AW_FOUND_TOTAL %}
+<div class="successbox"><p>{{ lang('ACP_AW_ARCADE_FOUND_HINT', AW_FOUND_TOTAL) }} <a href="{{ U_AW_ADD }}">{{ lang('ACP_AW_ARCADE_FOUND_HINT_LINK') }}</a></p></div>
+{% endif %}
 <form id="aw_games" method="post" action="{{ U_ACTION }}">
 	<fieldset>
 		<legend>{{ lang('ACP_AW_ARCADE_INSTALLED', AW_TOTAL_GAMES) }}</legend>
@@ -530,6 +534,11 @@
 	{{ S_FORM_TOKEN }}
 </form>
 
+{% endif %}
+{% endif %}
+
+{# ================= Add games ================= #}
+{% if AW_MODE == 'add' %}
 {% if S_AW_GAMES_DIR and S_AW_ZIP %}
 <form id="aw_zip_form" method="post" action="{{ U_ACTION }}" enctype="multipart/form-data">
 	<fieldset>
@@ -594,7 +603,6 @@
 	</fieldset>
 	{{ S_FORM_TOKEN }}
 </form>
-{% endif %}
 {% endif %}
 
 {# ================= Categories ================= #}

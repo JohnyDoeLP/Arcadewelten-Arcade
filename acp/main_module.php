@@ -107,6 +107,10 @@ class main_module
 				$this->mode_games();
 			break;
 
+			case 'add':
+				$this->mode_add();
+			break;
+
 			case 'cats':
 				$this->mode_cats();
 			break;
@@ -422,6 +426,120 @@ class main_module
 	 * Games
 	 * ------------------------------------------------------------- */
 
+	/* ---------------------------------------------------------------
+	 * Add games
+	 * ------------------------------------------------------------- */
+
+	protected function mode_add()
+	{
+		$action = $this->request->variable('action', '');
+
+		// Import all games in chunks, so a big collection cannot run into a time limit
+		if ($action === 'import_all')
+		{
+			$this->import_all();
+		}
+
+		// Upload one game as a zip archive
+		if ($this->request->is_set_post('upload_zip'))
+		{
+			$this->upload_zip();
+		}
+
+		// Import from the games folder
+		if ($this->request->is_set_post('import'))
+		{
+			$this->check_form();
+
+			$dirs = $this->request->variable('import_dirs', ['']);
+			$cat_id = $this->request->variable('import_cat', 0);
+			$new_cat = $this->request->variable('import_new_cat', '', true);
+
+			if ($new_cat !== '')
+			{
+				$cat_id = $this->games->cat_id_by_name($new_cat);
+			}
+
+			$count = $this->importer->import(array_filter($dirs), $cat_id, true);
+			$topics = $this->forum->announce_games($this->importer->last_imported);
+
+			trigger_error($this->language->lang('ACP_AW_ARCADE_IMPORTED', $count) . ($topics ? ' ' . $this->language->lang('ACP_AW_ARCADE_POSTED', $topics) : '') . adm_back_link($this->u_action));
+		}
+
+		// Only the install files of the current page are read, so the page stays
+		// fast with thousands of games in the folder.
+		$candidates = $this->importer->candidate_dirs();
+		$found_total = count($candidates);
+		$imp_per_page = 50;
+		$imp_start = min(max(0, $this->request->variable('is', 0)), max(0, $found_total - 1));
+		$scan = $this->importer->scan_dirs(array_slice($candidates, $imp_start, $imp_per_page));
+		$importable = 0;
+		$rows = [];
+
+		foreach ($scan as $g)
+		{
+			if ($g['supported'])
+			{
+				$importable++;
+			}
+
+			$rows[] = [
+				'DIR'			=> $g['dir'],
+				'NAME'			=> $g['name'],
+				'SAVE_TYPE'		=> $this->language->lang('ACP_AW_ARCADE_SAVE_' . (int) $g['save_type']),
+				'SIZE'			=> $g['width'] . ' × ' . $g['height'],
+				'S_SUPPORTED'	=> $g['supported'],
+				'REASON'		=> $this->import_reason($g),
+				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
+				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir_cached($this->games->games_fs_path() . $g['dir'])) : '',
+			];
+		}
+
+		// Games that load from another server go to the top of the page, so they
+		// are seen before anybody imports the whole page.
+		usort($rows, function ($a, $b)
+		{
+			$flag = ($b['EXTERNAL'] !== '' ? 1 : 0) <=> ($a['EXTERNAL'] !== '' ? 1 : 0);
+
+			return $flag ?: strnatcasecmp($a['NAME'], $b['NAME']);
+		});
+
+		foreach ($rows as $row)
+		{
+			$this->template->assign_block_vars('import', $row);
+		}
+
+		if ($found_total > $imp_per_page)
+		{
+			global $phpbb_container;
+			$pagination = $phpbb_container->get('pagination');
+			$pagination->generate_template_pagination($this->u_action, 'imp_pagination', 'is', $found_total, $imp_per_page, $imp_start);
+		}
+
+		$this->assign_cat_options(0);
+
+		$this->template->assign_vars([
+			'AW_IMPORTABLE'		=> $importable,
+			'AW_FOUND_TOTAL'	=> $found_total,
+			'AW_IMP_FIRST'		=> $imp_start + 1,
+			'AW_IMP_LAST'		=> min($imp_start + $imp_per_page, $found_total),
+			'S_AW_IMP_PAGED'	=> $found_total > $imp_per_page,
+			'S_AW_ZIP'			=> $this->unpacker->available(),
+			'AW_MAX_UPLOAD'		=> $this->max_upload(),
+			'U_AW_IMPORT_ALL'	=> $this->u_action . '&amp;action=import_all&amp;hash=' . generate_link_hash('aw_arcade_import_all'),
+			'AW_GAMES_PATH'		=> $this->games->games_path(),
+			'S_AW_GAMES_DIR'	=> is_dir($this->games->games_fs_path()),
+		]);
+	}
+
+	/**
+	 * Link to the "add games" page, from wherever we are in the arcade modules.
+	 */
+	protected function add_url()
+	{
+		return str_replace('mode=games', 'mode=add', $this->u_action);
+	}
+
 	protected function mode_games()
 	{
 		$action = $this->request->variable('action', '');
@@ -461,37 +579,6 @@ class main_module
 			trigger_error($message . adm_back_link($this->u_action));
 		}
 
-		// Import all games in chunks, so a big collection cannot run into a time limit
-		if ($action === 'import_all')
-		{
-			$this->import_all();
-		}
-
-		// Upload one game as a zip archive
-		if ($this->request->is_set_post('upload_zip'))
-		{
-			$this->upload_zip();
-		}
-
-		// Import from the games folder
-		if ($this->request->is_set_post('import'))
-		{
-			$this->check_form();
-
-			$dirs = $this->request->variable('import_dirs', ['']);
-			$cat_id = $this->request->variable('import_cat', 0);
-			$new_cat = $this->request->variable('import_new_cat', '', true);
-
-			if ($new_cat !== '')
-			{
-				$cat_id = $this->games->cat_id_by_name($new_cat);
-			}
-
-			$count = $this->importer->import(array_filter($dirs), $cat_id, true);
-			$topics = $this->forum->announce_games($this->importer->last_imported);
-
-			trigger_error($this->language->lang('ACP_AW_ARCADE_IMPORTED', $count) . ($topics ? ' ' . $this->language->lang('ACP_AW_ARCADE_POSTED', $topics) : '') . adm_back_link($this->u_action));
-		}
 
 		// Bulk actions on installed games
 		if ($this->request->is_set_post('bulk') || $this->request->is_set_post('bulk_values'))
@@ -653,39 +740,6 @@ class main_module
 		$base = $this->u_action . ($filter_cat > 0 ? '&amp;fc=' . $filter_cat : '') . ($search !== '' ? '&amp;q=' . urlencode($search) : '');
 		$pagination->generate_template_pagination($base, 'pagination', 'start', $total, $per_page, $start);
 
-		// Not yet imported games: only the install files of the current page are
-		// read, so the page stays fast with thousands of games in the folder.
-		$candidates = $this->importer->candidate_dirs();
-		$found_total = count($candidates);
-		$imp_per_page = 50;
-		$imp_start = min(max(0, $this->request->variable('is', 0)), max(0, $found_total - 1));
-		$scan = $this->importer->scan_dirs(array_slice($candidates, $imp_start, $imp_per_page));
-		$importable = 0;
-
-		foreach ($scan as $g)
-		{
-			if ($g['supported'])
-			{
-				$importable++;
-			}
-
-			$this->template->assign_block_vars('import', [
-				'DIR'			=> $g['dir'],
-				'NAME'			=> $g['name'],
-				'SAVE_TYPE'		=> $this->language->lang('ACP_AW_ARCADE_SAVE_' . (int) $g['save_type']),
-				'SIZE'			=> $g['width'] . ' × ' . $g['height'],
-				'S_SUPPORTED'	=> $g['supported'],
-				'REASON'		=> $this->import_reason($g),
-				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
-				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir_cached($this->games->games_fs_path() . $g['dir'])) : '',
-			]);
-		}
-
-		if ($found_total > $imp_per_page)
-		{
-			$pagination->generate_template_pagination($base, 'imp_pagination', 'is', $found_total, $imp_per_page, $imp_start);
-		}
-
 		$this->assign_cat_options($cat_filter);
 
 		foreach (\arcadewelten\arcade\core\points::KEYS as $key)
@@ -701,14 +755,8 @@ class main_module
 			'AW_TOTAL_GAMES'	=> $total,
 			'AW_FILTER_CAT'		=> $filter_cat,
 			'AW_SEARCH'			=> $search,
-			'AW_IMPORTABLE'		=> $importable,
-			'AW_FOUND_TOTAL'	=> $found_total,
-			'AW_IMP_FIRST'		=> $imp_start + 1,
-			'AW_IMP_LAST'		=> min($imp_start + $imp_per_page, $found_total),
-			'S_AW_IMP_PAGED'	=> $found_total > $imp_per_page,
-			'S_AW_ZIP'			=> $this->unpacker->available(),
-			'AW_MAX_UPLOAD'		=> $this->max_upload(),
-			'U_AW_IMPORT_ALL'	=> $this->u_action . '&amp;action=import_all&amp;hash=' . generate_link_hash('aw_arcade_import_all'),
+			'AW_FOUND_TOTAL'	=> count($this->importer->candidate_dirs()),
+			'U_AW_ADD'			=> $this->add_url(),
 			'AW_UNCHECKED'		=> count($this->games->external_games(true)),
 			'U_AW_CHECK_EXTERNAL'		=> $this->u_action . '&amp;action=check_external&amp;hash=' . generate_link_hash('aw_arcade_external'),
 			'U_AW_CHECK_EXTERNAL_ALL'	=> $this->u_action . '&amp;action=check_external&amp;all=1&amp;hash=' . generate_link_hash('aw_arcade_external'),
