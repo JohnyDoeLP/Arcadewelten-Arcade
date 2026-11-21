@@ -108,7 +108,8 @@ By default the arcade automatically appends a matching section to the board’s 
 ## Updating to a new version
 
 1. ACP → Manage extensions → **Disable** “Arcadewelten Arcade” (not “Delete data”!).
-2. Replace the folder `ext/arcadewelten/` via FTP with the new one.
+2. **Delete** the folder `ext/arcadewelten/` over FTP, then upload the new one – do not just copy over it.
+   Copying over leaves behind files that the new version no longer has, above all in the template, and those can cause errors. Save your own changes to language files or templates first.
 3. **Enable** the extension again – new database fields are created automatically.
 4. ACP → General → **Purge the cache**.
 

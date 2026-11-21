@@ -108,7 +108,8 @@ Ab Werk hängt die Spielhalle an die Datenschutzerklärung des Forums (`ucp.php?
 ## Update auf eine neue Version
 
 1. ACP → Erweiterungen verwalten → „Arcadewelten Arcade“ **deaktivieren** (nicht „Daten löschen“!).
-2. Den Ordner `ext/arcadewelten/` per FTP durch den neuen ersetzen.
+2. Den Ordner `ext/arcadewelten/` per FTP **löschen** und danach den neuen hochladen – nicht einfach drüberkopieren.
+   Beim Überschreiben bleiben Dateien liegen, die es in der neuen Version nicht mehr gibt (vor allem im Template), und die können Fehler verursachen. Eigene Änderungen an Sprachdateien oder Templates vorher sichern.
 3. Erweiterung wieder **aktivieren** – neue Datenbank-Felder werden automatisch angelegt.
 4. ACP → Allgemein → **Cache leeren**.
 
