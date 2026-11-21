@@ -1628,7 +1628,10 @@ class main_module
 		}
 		catch (\RuntimeException $e)
 		{
-			trigger_error($this->language->lang($e->getMessage()) . adm_back_link($this->u_action), E_USER_WARNING);
+			$args = array_map('utf8_htmlspecialchars', $this->unpacker->error_args);
+			$text = $this->language->lang($e->getMessage(), ...$args);
+
+			trigger_error($text . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
 		$message = $this->language->lang('ACP_AW_ARCADE_ZIP_DONE', $dir);

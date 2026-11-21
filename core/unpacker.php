@@ -30,6 +30,9 @@ class unpacker
 	/** @var string[] names of files that were left out */
 	public $skipped = [];
 
+	/** @var array arguments for the language key of the last error */
+	public $error_args = [];
+
 	public function __construct(games $games)
 	{
 		$this->games = $games;
@@ -61,6 +64,9 @@ class unpacker
 	 */
 	public function unpack($tmp_file, $file_name)
 	{
+		$this->skipped = [];
+		$this->error_args = [];
+
 		if (!$this->available())
 		{
 			throw new \RuntimeException('ACP_AW_ARCADE_NO_ZIP');
@@ -81,14 +87,18 @@ class unpacker
 			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_EMPTY');
 		}
 
-		$prefix = $this->common_folder($entries);
-		$dir = self::clean_dir($prefix !== '' ? $prefix : $file_name);
-
-		if ($dir === '')
+		try
+		{
+			$game = $this->find_game($zip, $entries, $file_name);
+		}
+		catch (\RuntimeException $e)
 		{
 			$zip->close();
-			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_NO_NAME');
+			throw $e;
 		}
+
+		$prefix = $game['root'];
+		$dir = $game['dir'];
 
 		// An absolute path, so the folder checks below cannot trip over a
 		// relative games path like ./../arcade/games/.
@@ -108,13 +118,27 @@ class unpacker
 			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_EXISTS');
 		}
 
-		$this->skipped = [];
 		$install = $dir . '.php';
 		$written = 0;
 
 		foreach ($entries as $entry)
 		{
+			// Everything beside the game folder stays out: a read-me, a change
+			// log, the folders a packing program adds of its own.
+			if ($prefix !== '' && strpos($entry['name'], $prefix . '/') !== 0)
+			{
+				$this->skipped[] = $entry['name'];
+				continue;
+			}
+
 			$rel = $prefix !== '' ? substr($entry['name'], strlen($prefix) + 1) : $entry['name'];
+
+			// The install file is written under the name of the folder, whatever
+			// it is called in the archive.
+			if ($entry['name'] === $game['install'])
+			{
+				$rel = $install;
+			}
 
 			if ($rel === '' || !$this->allowed($rel, $install))
 			{
@@ -163,6 +187,88 @@ class unpacker
 	}
 
 	/**
+	 * Which folder of the archive holds the game, and which file installs it.
+	 *
+	 * An archive rarely looks the way one would like. It may hold the game
+	 * folder alone, or a whole arcade/games/ tree, or a read-me beside the
+	 * folder. So the install file is searched for instead of assumed: first by
+	 * its name (a PHP file named after the folder it sits in), then by what is
+	 * written in it.
+	 *
+	 * @return array root (folder inside the archive), dir (folder to create), install (entry name)
+	 */
+	protected function find_game(\ZipArchive $zip, array $entries, $file_name)
+	{
+		$by_name = [];
+		$by_content = [];
+
+		foreach ($entries as $entry)
+		{
+			if (strtolower((string) pathinfo($entry['name'], PATHINFO_EXTENSION)) !== 'php')
+			{
+				continue;
+			}
+
+			$root = (string) dirname($entry['name']);
+			$root = ($root === '.' || $root === '/') ? '' : $root;
+			$base = basename($entry['name'], '.php');
+
+			if ($root !== '' && $base === basename($root))
+			{
+				$by_name[$root] = $entry['name'];
+				continue;
+			}
+
+			// Not named after its folder: read it, a game install file says so
+			// itself. Only small files, nothing is executed.
+			if ($entry['size'] > 262144)
+			{
+				continue;
+			}
+
+			$data = $zip->getFromName($entry['name']);
+
+			if ($data !== false && strpos($data, '$game_data') !== false)
+			{
+				$by_content[$root] = $entry['name'];
+			}
+		}
+
+		$found = $by_name ?: $by_content;
+
+		if (count($found) > 1)
+		{
+			$names = array_map(function ($root)
+			{
+				return basename($root);
+			}, array_keys($found));
+			sort($names);
+			$this->error_args = [implode(', ', array_slice($names, 0, 8)) . (count($names) > 8 ? ' …' : '')];
+
+			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_MANY_GAMES');
+		}
+
+		if (!$found)
+		{
+			$names = array_column($entries, 'name');
+			$this->error_args = [implode(', ', array_slice($names, 0, 6)) . (count($names) > 6 ? ' …' : '')];
+
+			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_NO_INSTALL');
+		}
+
+		$root = (string) array_key_first($found);
+		$dir = self::clean_dir($root !== '' ? basename($root) : basename($found[$root], '.php'));
+		$dir = $dir !== '' ? $dir : self::clean_dir($file_name);
+
+		if ($dir === '')
+		{
+			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_NO_NAME');
+		}
+
+		return ['root' => $root, 'dir' => $dir, 'install' => $found[$root]];
+	}
+
+	/**
 	 * The files of the archive, with the ceilings checked on the way.
 	 */
 	protected function entries(\ZipArchive $zip)
@@ -203,32 +309,6 @@ class unpacker
 		}
 
 		return $entries;
-	}
-
-	/**
-	 * The folder every file sits in, if there is one ('' otherwise).
-	 */
-	protected function common_folder(array $entries)
-	{
-		$first = $entries[0]['name'];
-		$slash = strpos($first, '/');
-
-		if ($slash === false)
-		{
-			return '';
-		}
-
-		$prefix = substr($first, 0, $slash);
-
-		foreach ($entries as $entry)
-		{
-			if (strpos($entry['name'], $prefix . '/') !== 0)
-			{
-				return '';
-			}
-		}
-
-		return $prefix;
 	}
 
 	/**

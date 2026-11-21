@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.31.1-beta (2026-11-21)
+
+- **The ZIP upload now finds the game itself.** Before, the archive had to hold exactly one folder with an install file named after it; a read-me beside the folder, a whole `arcade/games/` tree or an install file under another name all ended in “no install file found”. The upload now looks for the install file — first by its name, then by what is written in it — and takes its folder as the game. Files beside it, a `__MACOSX` folder among them, are left out and named in the report
+- When the archive holds several games, the message says so and names them, instead of refusing without a reason
+- Refused an archive, the message now lists what is in it, so the reason can be seen at a glance
+- The text of the check for other servers says that it covers the installed games; games found in the folder are checked when they are listed
+
 ## 0.31.0-beta (2026-11-21)
 
 - **Own page “Add games” in the ACP**, between “Games” and “Categories”. The upload field and the list of games found in the games folder moved there. The games page now holds only the installed games and loads faster, because the install files of the games found are no longer read every time you open it
