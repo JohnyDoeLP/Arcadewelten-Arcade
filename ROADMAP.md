@@ -35,6 +35,10 @@ Suggestions are welcome – the list grows with the community.
 
 Then comes a round of cleaning up, testing and going through the documentation, and with it **1.0.0**: the end of the beta, and the moment to submit the arcade to the phpBB extension database.
 
+On the list for that round:
+
+- Build the queries that join several tables with `$db->sql_build_query()` instead of writing the JOIN into the SQL string. phpBB's developer documentation asks for it where more than one table is joined, so that the statement works on every database phpBB supports. About twenty queries across nine files; nothing is broken today, but a reviewer of the extension database will look for it
+
 ## 1.1 and later
 
 Ideas for after 1.0.0, in no particular order:
