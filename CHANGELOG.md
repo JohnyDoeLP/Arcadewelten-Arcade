@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.32.0-beta (2026-11-22)
+
+- **Games that send their score only in `enscore` now count.** Some IBPro v3 games put the number there and leave `gscore` empty; the arcade read `gscore`, so such a game scored zero and was thrown out by the integrity check on top of it. The number is now read back out of `enscore` – decoded with the key of the play session where the game asked for one, taken as it stands where it did not. The plausibility check and the review list still have the last word
+- **Install files written by SMF Arcade are read.** Those hold `$config = array('gname' => …, 'savetype' => …)` instead of our `$game_data`, so until now nothing in them was understood and the game ended up in the list under its folder name and in the wrong size. Name, description, size, score interface and game type are now taken from them. Nothing changes for phpBB install files: the other format is only looked at when a file holds none of our own fields
+- **Ruffle 0.8.0**, the first stable release since 0.7.1. Maintenance rather than a new feature: its release notes name a stricter enforcement of `allowNetworking`, which is the path old games use to report their scores, so the player is given that setting on the load call as well. Checked against Flash games of both kinds, ActionScript 2 and 3 – they run as they did before
+
 ## 0.31.1-beta (2026-11-21)
 
 - **The ZIP upload now finds the game itself.** Before, the archive had to hold exactly one folder with an install file named after it; a read-me beside the folder, a whole `arcade/games/` tree or an install file under another name all ended in “no install file found”. The upload now looks for the install file — first by its name, then by what is written in it — and takes its folder as the game. Files beside it, a `__MACOSX` folder among them, are left out and named in the report

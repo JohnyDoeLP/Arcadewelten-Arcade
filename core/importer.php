@@ -155,6 +155,101 @@ class importer
 	}
 
 	/**
+	 * Read an install file written by SMF Arcade.
+	 *
+	 * Such a file holds $config = array('gname' => …, 'savetype' => …, …)
+	 * instead of our $game_data. The fields mean the same things, so they are
+	 * translated into ours and the rest of the import carries on as usual.
+	 * Games of that arcade travel in collections and end up on phpBB boards
+	 * too, where only the file, not the game, is of another house.
+	 *
+	 * @return array the same shape the parser above produces, empty when the
+	 *               file is not one of these
+	 */
+	protected function parse_smf($source, $dir)
+	{
+		if (strpos($source, '$config') === false || !preg_match_all('/\'([a-z0-9_]+)\'\s*=>\s*\'((?:\\\\.|[^\'])*)\'/s', $source, $m, PREG_SET_ORDER))
+		{
+			return [];
+		}
+
+		$smf = [];
+
+		foreach ($m as $set)
+		{
+			$smf[$set[1]] = preg_replace('/\\\\(.)/s', '$1', $set[2]);
+		}
+
+		// Not an SMF install file, only something that looks like an array
+		if (!isset($smf['gname']) && !isset($smf['gtitle']))
+		{
+			return [];
+		}
+
+		$raw = [];
+		$text = function ($value)
+		{
+			// These files carry doubly escaped entities: min&amp;eacute;l
+			return html_entity_decode(html_entity_decode((string) $value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+		};
+
+		if (isset($smf['gtitle']) && $smf['gtitle'] !== '')
+		{
+			$raw['game_name'] = $text($smf['gtitle']);
+		}
+
+		foreach (['gwords', 'object'] as $key)
+		{
+			if (!empty($smf[$key]))
+			{
+				$raw['game_desc'] = $text($smf[$key]);
+				break;
+			}
+		}
+
+		if (!empty($smf['gname']))
+		{
+			$raw['game_scorevar'] = $smf['gname'];
+		}
+
+		foreach (['gwidth' => 'game_width', 'gheight' => 'game_height'] as $from => $to)
+		{
+			if (isset($smf[$from]) && (int) $smf[$from] > 0)
+			{
+				$raw[$to] = (int) $smf[$from];
+			}
+		}
+
+		$raw['game_type'] = !empty($smf['html5']) ? 'GAME_TYPE_HTML5' : 'GAME_TYPE_FLASH';
+
+		if (!empty($smf['html5']) && !empty($smf['gname']))
+		{
+			$raw['game_swf'] = $smf['gname'] . '.html';
+		}
+
+		// How the game reports its score. Anything else is left to the check of
+		// the game file itself, which is the more reliable source anyway.
+		$save = strtolower((string) (isset($smf['savetype']) ? $smf['savetype'] : ''));
+		$types = [
+			'ibp32'		=> 'IBPROV3_GAME',
+			'ibpv3'		=> 'IBPROV3_GAME',
+			'ibp'		=> 'IBPRO_GAME',
+			'ibpro'		=> 'IBPRO_GAME',
+			'amod'		=> 'AMOD_GAME',
+			'activity'	=> 'AMOD_GAME',
+			'none'		=> 'NOSCORE_GAME',
+			'noscore'	=> 'NOSCORE_GAME',
+		];
+
+		if (isset($types[$save]))
+		{
+			$raw['game_save_type'] = $types[$save];
+		}
+
+		return $raw;
+	}
+
+	/**
 	 * Parse one install file.
 	 */
 	public function parse($dir)
@@ -183,6 +278,12 @@ class importer
 
 				$raw[$set[1]] = $value;
 			}
+		}
+
+		// Nothing of ours in the file: it may be written by another arcade.
+		if (!$raw)
+		{
+			$raw = $this->parse_smf($source, $dir);
 		}
 
 		$type_const = isset($raw['game_type']) ? $raw['game_type'] : 'GAME_TYPE_FLASH';
