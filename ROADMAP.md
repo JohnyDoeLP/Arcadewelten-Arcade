@@ -39,6 +39,7 @@ Then comes a round of cleaning up, testing and going through the documentation, 
 
 On the list for that round:
 
+- Give the files a game loads itself a version marker too. The main file already carries one, so an updated game arrives at once, but what it pulls in – scripts, styles, images – can still come out of the browser's own store. Noticeable for anyone who uploads a new version of a game of their own
 - Build the queries that join several tables with `$db->sql_build_query()` instead of writing the JOIN into the SQL string. phpBB's developer documentation asks for it where more than one table is joined, so that the statement works on every database phpBB supports. About twenty queries across nine files; nothing is broken today, but a reviewer of the extension database will look for it
 
 ## 1.1 and later
