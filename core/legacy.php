@@ -243,13 +243,21 @@ class legacy
 	protected function v3_save()
 	{
 		$game = $this->games->get_game_by_scorevar($this->request->variable('gname', ''));
-		$score = $this->request->variable('gscore', 0.0);
+		$raw = $this->value('gscore');
+		$score = (float) str_replace(',', '.', $raw);
 		$enscore = $this->request->variable('enscore', 0);
+		$has_enscore = $this->value('enscore') !== '';
 		$play = ($game && $this->is_member()) ? $this->scores->get_play($this->user->data['user_id'], $game['game_id']) : false;
 
-		// Integrity check used by v3 games: enscore = gscore * randchar ^ randchar2
-		if ($play && $play['randchar1'])
+		// Some games send the score only in enscore and leave gscore empty. Then
+		// the number is read back out of enscore instead of taken as zero.
+		if ($raw === '' && $has_enscore)
 		{
+			$score = $this->from_enscore($enscore, $play);
+		}
+		else if ($play && $play['randchar1'])
+		{
+			// Integrity check used by v3 games: enscore = gscore * randchar ^ randchar2
 			$expected = ((int) $score * (int) $play['randchar1']) ^ (int) $play['randchar2'];
 
 			if ($expected !== (int) $enscore)
@@ -259,6 +267,33 @@ class legacy
 		}
 
 		return $this->finish($game, $score, $play);
+	}
+
+	/**
+	 * The score hidden in enscore.
+	 *
+	 * With a key of its own the game encoded it as score * randchar1 ^ randchar2,
+	 * so it is read back the same way; that the result comes out whole is the
+	 * integrity check here. Without a key the game sends the plain number.
+	 */
+	protected function from_enscore($enscore, $play)
+	{
+		if (!$play || empty($play['randchar1']))
+		{
+			return (float) $enscore;
+		}
+
+		$product = (int) $enscore ^ (int) $play['randchar2'];
+		$key = (int) $play['randchar1'];
+
+		if ($key > 0 && $product >= 0 && $product % $key === 0)
+		{
+			return (float) ($product / $key);
+		}
+
+		// Does not divide: the game encoded it another way, so the plain number
+		// is the better guess. The plausibility check still has the last word.
+		return (float) $enscore;
 	}
 
 	/* IBPro v32 ----------------------------------------------------- */
