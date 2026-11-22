@@ -283,7 +283,7 @@
 		stage.appendChild(player);
 		// Old arcade games resolve their score URLs relative to the board root.
 		var api = typeof player.ruffle === 'function' ? player.ruffle() : player;
-		api.load({ url: cfg.gameUrl, base: cfg.boardUrl, allowScriptAccess: true });
+		api.load({ url: cfg.gameUrl, base: cfg.boardUrl, allowScriptAccess: true, allowNetworking: 'all' });
 	};
 	s.onerror = function () {
 		stage.innerHTML = '<p class="error">{{ lang('AW_ARCADE_RUFFLE_MISSING')|e('js') }}</p>';
