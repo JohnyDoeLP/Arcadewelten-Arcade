@@ -65,7 +65,7 @@ jobs:
             echo ""
             echo "**Requirements:** phpBB 3.3, PHP 8.2 or newer."
             echo ""
-            echo "**Installation:** download \`arcadewelten_arcade_${VERSION}.zip\` below, upload the folder \`arcadewelten\` into \`ext/\` and enable the extension in the ACP. When updating: disable the extension (do not delete its data), replace the folder, enable it again and purge the cache. Step-by-step guide: INSTALL.en.md / INSTALL.de.md."
+            echo "**Installation:** download \`arcadewelten_arcade_${VERSION}.zip\` below, upload the folder \`arcadewelten\` into \`ext/\` and enable the extension in the ACP. When updating: disable the extension (do not delete its data), **delete** the old folder \`ext/arcadewelten/\` and upload the new one – do not copy over it, or files the new version no longer has stay behind – then enable it again and purge the cache. Step-by-step guide: INSTALL.en.md / INSTALL.de.md."
             echo ""
             echo "Please use \`arcadewelten_arcade_${VERSION}.zip\` – not \"Source code\", which lacks the required folder structure."
             echo ""
