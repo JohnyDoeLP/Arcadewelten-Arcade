@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.32.1-beta (2026-11-22)
+
+- **Fix: after the Ruffle update games stopped loading** with “Ruffle could not load the Flash file”, in truth because the browser went on using the loader it had kept from before. That one looks for files of the old Ruffle, which the update removed. The loader is now called with the date of the file behind it, so a new version arrives at once instead of after a day. Anyone caught by this can also reload the page once with Ctrl+F5
+
 ## 0.32.0-beta (2026-11-22)
 
 - **Games that send their score only in `enscore` now count.** Some IBPro v3 games put the number there and leave `gscore` empty; the arcade read `gscore`, so such a game scored zero and was thrown out by the integrity check on top of it. The number is now read back out of `enscore` – decoded with the key of the play session where the game asked for one, taken as it stands where it did not. The plausibility check and the review list still have the last word

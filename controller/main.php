@@ -448,6 +448,10 @@ class main
 			'AW_GAME_ID'		=> (int) $game['game_id'],
 			'AW_BOARD_URL'		=> $board_url,
 			'AW_RUFFLE_URL'		=> $board_url . 'ext/arcadewelten/arcade/styles/all/theme/ruffle/',
+			// The browser keeps ruffle.js for a day, so after an update of the
+			// emulator it would go on loading the old one, which looks for files
+			// that are no longer there. The date of the file settles that.
+			'AW_RUFFLE_V'		=> (int) @filemtime($this->root_path . 'ext/arcadewelten/arcade/styles/all/theme/ruffle/ruffle.js'),
 			'AW_PLAY_ID'		=> $play_id,
 			'S_AW_FLASH'		=> $type === games::TYPE_FLASH,
 			'S_AW_HTML5'		=> $type === games::TYPE_HTML5,

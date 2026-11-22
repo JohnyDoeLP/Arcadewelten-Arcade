@@ -276,7 +276,7 @@
 	};
 
 	var s = document.createElement('script');
-	s.src = cfg.ruffleUrl + 'ruffle.js';
+	s.src = cfg.ruffleUrl + 'ruffle.js' + ({{ AW_RUFFLE_V }} ? '?v={{ AW_RUFFLE_V }}' : '');
 	s.onload = function () {
 		var player = window.RufflePlayer.newest().createPlayer();
 		player.id = 'aw-ruffle';
