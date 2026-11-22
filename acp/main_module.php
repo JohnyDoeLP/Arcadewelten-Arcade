@@ -1624,7 +1624,7 @@ class main_module
 
 		try
 		{
-			$dir = $this->unpacker->unpack($file['tmp_name'], $file['name']);
+			$dir = $this->unpacker->unpack($file['tmp_name'], $file['name'], (bool) $this->request->variable('aw_replace', 0));
 		}
 		catch (\RuntimeException $e)
 		{
@@ -1634,7 +1634,7 @@ class main_module
 			trigger_error($text . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
-		$message = $this->language->lang('ACP_AW_ARCADE_ZIP_DONE', $dir);
+		$message = $this->language->lang($this->unpacker->replaced ? 'ACP_AW_ARCADE_ZIP_REPLACED' : 'ACP_AW_ARCADE_ZIP_DONE', $dir);
 
 		if ($this->unpacker->skipped)
 		{

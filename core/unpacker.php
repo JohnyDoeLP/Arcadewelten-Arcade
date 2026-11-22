@@ -33,6 +33,9 @@ class unpacker
 	/** @var array arguments for the language key of the last error */
 	public $error_args = [];
 
+	/** @var bool whether the last archive replaced a game that was already there */
+	public $replaced = false;
+
 	public function __construct(games $games)
 	{
 		$this->games = $games;
@@ -59,13 +62,15 @@ class unpacker
 	 *
 	 * @param string $tmp_file  the uploaded file
 	 * @param string $file_name its name, used when the archive has no folder of its own
+	 * @param bool   $replace   replace the files of a game that is already there
 	 * @return string the folder that was created
 	 * @throws \RuntimeException with a language key as the message
 	 */
-	public function unpack($tmp_file, $file_name)
+	public function unpack($tmp_file, $file_name, $replace = false)
 	{
 		$this->skipped = [];
 		$this->error_args = [];
+		$this->replaced = false;
 
 		if (!$this->available())
 		{
@@ -110,12 +115,26 @@ class unpacker
 			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_WRITE');
 		}
 
-		$target = rtrim(str_replace('\\', '/', $base), '/') . '/' . $dir;
+		$games_dir = rtrim(str_replace('\\', '/', $base), '/');
+		$final = $games_dir . '/' . $dir;
+		$exists = is_dir($final);
 
-		if (is_dir($target))
+		if ($exists && !$replace)
 		{
 			$zip->close();
+			$this->error_args = [$dir];
+
 			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_EXISTS');
+		}
+
+		// An update is unpacked beside the game and only put in its place once
+		// it is whole, so a broken archive cannot leave the game in pieces. The
+		// leading dot keeps a leftover out of the list of games found.
+		$target = $exists ? $games_dir . '/.aw-new-' . $dir : $final;
+
+		if ($exists)
+		{
+			$this->remove($target);
 		}
 
 		$install = $dir . '.php';
@@ -182,6 +201,15 @@ class unpacker
 			$this->remove($target);
 			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_NO_INSTALL');
 		}
+
+		if ($exists && !$this->swap($target, $final))
+		{
+			$this->remove($target);
+
+			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_WRITE');
+		}
+
+		$this->replaced = $exists;
 
 		return $dir;
 	}
@@ -341,6 +369,31 @@ class unpacker
 		$target = rtrim(str_replace('\\', '/', $target), '/') . '/';
 
 		return strpos($path, $target) === 0 && strpos($path, '/../') === false;
+	}
+
+	/**
+	 * Put the new game in the place of the old one. The old folder is moved
+	 * aside first, so a failure here leaves the game as it was.
+	 */
+	protected function swap($new, $final)
+	{
+		$old = $final . '.aw-old-' . time();
+
+		if (!@rename($final, $old))
+		{
+			return false;
+		}
+
+		if (!@rename($new, $final))
+		{
+			@rename($old, $final);
+
+			return false;
+		}
+
+		$this->remove($old);
+
+		return true;
 	}
 
 	/**

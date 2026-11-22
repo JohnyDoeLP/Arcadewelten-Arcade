@@ -548,6 +548,10 @@
 			<dt><label for="aw_zip">{{ lang('ACP_AW_ARCADE_ZIP_FILE') }}{{ lang('COLON') }}</label></dt>
 			<dd><input type="file" id="aw_zip" name="aw_zip" accept=".zip"></dd>
 		</dl>
+		<dl>
+			<dt><label for="aw_replace">{{ lang('ACP_AW_ARCADE_ZIP_REPLACE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_ZIP_REPLACE_EXPLAIN') }}</span></dt>
+			<dd><label><input type="checkbox" id="aw_replace" name="aw_replace" value="1"> {{ lang('ACP_AW_ARCADE_ZIP_REPLACE_LABEL') }}</label></dd>
+		</dl>
 		<p class="submit-buttons"><input class="button1" type="submit" name="upload_zip" value="{{ lang('ACP_AW_ARCADE_ZIP_BUTTON') }}"></p>
 	</fieldset>
 	{{ S_FORM_TOKEN }}

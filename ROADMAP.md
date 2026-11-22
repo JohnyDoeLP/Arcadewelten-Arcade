@@ -26,13 +26,14 @@ Suggestions are welcome – the list grows with the community.
 - 0.29 – import of large game collections, protection for install files
 - 0.30 – upload a game as a ZIP in the ACP
 - 0.31 – own ACP page for adding games
+- 0.32 – games from other arcades: enscore scores, SMF install files
+- 0.33 – update a game over the zip upload
 
 ## Next
 
 1. **Highscore certificates** for season winners (image, generated with GD)
-2. **Update a game over the zip upload**: uploading a game that is already there replaces its files instead of being refused. The new version is unpacked beside the game and only put in its place once it is whole, so a broken archive leaves the game as it was. Highscores, settings and the category hang on the database entry and are not touched. A tick on the upload form says that an update is meant, because a question afterwards would mean uploading the file a second time
-3. **Help page for the arcade** at `app.php/help/arcade`, in phpBB's own help system, with an entry in the arcade menu and a switch in the ACP. Around 35 to 40 questions in the language file, German and English, so every board can reword them: getting started, playing and scores (why a result is not counted), duels, tournaments, categories (permissions, password, season), favourites, ratings and medals, points and jackpot, old Flash games and playing on a phone, and what is stored about a member
-4. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
+2. **Help page for the arcade** at `app.php/help/arcade`, in phpBB's own help system, with an entry in the arcade menu and a switch in the ACP. Around 35 to 40 questions in the language file, German and English, so every board can reword them: getting started, playing and scores (why a result is not counted), duels, tournaments, categories (permissions, password, season), favourites, ratings and medals, points and jackpot, old Flash games and playing on a phone, and what is stored about a member
+3. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
 
 Then comes a round of cleaning up, testing and going through the documentation, and with it **1.0.0**: the end of the beta, and the moment to submit the arcade to the phpBB extension database.
 

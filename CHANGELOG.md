@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.33.0-beta (2026-11-22)
+
+- **Update a game over the zip upload.** Uploading a game that is already there was refused; with the new tick “Replace the game that is there” its files are exchanged instead. The new version is unpacked beside the game and only put in its place once it is whole, so a damaged archive leaves the game as it was. Highscores, ratings, category and prizes hang on the entry in the database and are kept
+- The message for an archive whose game is already installed now names the game and says what to do, instead of only refusing
+
 ## 0.32.1-beta (2026-11-22)
 
 - **Fix: after the Ruffle update games stopped loading** with “Ruffle could not load the Flash file”, in truth because the browser went on using the loader it had kept from before. That one looks for files of the old Ruffle, which the update removed. The loader is now called with the date of the file behind it, so a new version arrives at once instead of after a day. Anyone caught by this can also reload the page once with Ctrl+F5

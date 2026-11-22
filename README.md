@@ -40,7 +40,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 - Flash games via [Ruffle](https://ruffle.rs) (self-hosted, no CDN)
 - Fits light and dark styles (based on prosilver): borders and tiles take on the colours of the style; style authors can adjust the colours with CSS variables (`--aw-…` in `arcade.css`)
 - Import of existing games from a games folder (install files are parsed, never executed); the score interface is detected from the game file itself. Install files written by SMF Arcade are understood as well
-- Upload a game as a ZIP in the ACP, for boards without FTP access; only safe file types are unpacked
+- Upload a game as a ZIP in the ACP, for boards without FTP access; only safe file types are unpacked. A game that is already installed can be updated the same way, without losing its highscores
 - Optional: [Ultimate Points](https://github.com/dmzx/Ultimate-Points-Extension) integration – cost per game, reward per round, season prizes for places 1–3, monthly season close with preview
 - Plausibility check against manipulated scores: minimum play time and maximum score; suspicious results go to a review list in the ACP
 - ACP: settings, games, categories, review list, season close, play counter reset, diagnostics log

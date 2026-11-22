@@ -40,7 +40,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 - Flash-Spiele über [Ruffle](https://ruffle.rs) (selbst gehostet, kein CDN)
 - Passt sich hellen und dunklen Styles an (auf prosilver basierend): Rahmen und Kacheln übernehmen die Farben des Styles; Style-Autoren können die Farben über CSS-Variablen (`--aw-…` in `arcade.css`) anpassen
 - Import vorhandener Spiele aus einem Spiele-Ordner (Installationsdateien werden gelesen, nie ausgeführt); die Punkte-Schnittstelle wird aus der Spieldatei selbst erkannt. Auch Installationsdateien von SMF Arcade werden verstanden
-- Spiel als ZIP im ACP hochladen, für Foren ohne FTP-Zugang; entpackt werden nur unbedenkliche Dateitypen
+- Spiel als ZIP im ACP hochladen, für Foren ohne FTP-Zugang; entpackt werden nur unbedenkliche Dateitypen. Ein bereits installiertes Spiel lässt sich damit auch aktualisieren, ohne seine Bestenliste zu verlieren
 - Optional: Anbindung an [Ultimate Points](https://github.com/dmzx/Ultimate-Points-Extension) – Kosten pro Spiel, Belohnung pro Runde, Saisonprämien für Platz 1–3, monatlicher Saisonabschluss mit Vorschau
 - Plausibilitätsprüfung gegen manipulierte Punkte: Mindestspielzeit und Höchstpunktzahl; verdächtige Ergebnisse landen in einer Prüfliste im ACP
 - ACP: Einstellungen, Spiele, Kategorien, Prüfliste, Saisonabschluss, Spielezähler zurücksetzen, Diagnose-Protokoll
