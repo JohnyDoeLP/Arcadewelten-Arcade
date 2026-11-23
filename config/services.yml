@@ -13,6 +13,7 @@ parameters:
     arcadewelten.arcade.tables.tourneys: '%core.table_prefix%aw_arcade_tourneys'
     arcadewelten.arcade.tables.tourney_games: '%core.table_prefix%aw_arcade_tourney_games'
     arcadewelten.arcade.tables.tourney_scores: '%core.table_prefix%aw_arcade_tourney_scores'
+    arcadewelten.arcade.tables.certs: '%core.table_prefix%aw_arcade_certs'
 
 services:
     arcadewelten.arcade.games:
@@ -95,6 +96,7 @@ services:
             - '@log'
             - '@user'
             - '@arcadewelten.arcade.games'
+            - '@arcadewelten.arcade.certs'
 
     arcadewelten.arcade.cron.task.tourneys:
         class: arcadewelten\arcade\cron\task\tourneys
@@ -262,6 +264,22 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
 
+    arcadewelten.arcade.certs:
+        class: arcadewelten\arcade\core\certs
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '%arcadewelten.arcade.tables.certs%'
+
+    arcadewelten.arcade.certificate:
+        class: arcadewelten\arcade\core\certificate
+        arguments:
+            - '@config'
+            - '@language'
+            - '@user'
+            - '@arcadewelten.arcade.points'
+            - '%core.root_path%'
+
     arcadewelten.arcade.season:
         class: arcadewelten\arcade\core\season
         arguments:
@@ -273,6 +291,7 @@ services:
             - '@user'
             - '@language'
             - '@arcadewelten.arcade.forum'
+            - '@arcadewelten.arcade.certs'
 
     arcadewelten.arcade.legacy:
         class: arcadewelten\arcade\core\legacy
@@ -313,6 +332,8 @@ services:
             - '@arcadewelten.arcade.jackpot'
             - '@arcadewelten.arcade.sitemap'
             - '@arcadewelten.arcade.stats'
+            - '@arcadewelten.arcade.certs'
+            - '@arcadewelten.arcade.certificate'
 
     arcadewelten.arcade.listener:
         class: arcadewelten\arcade\event\listener
@@ -333,6 +354,7 @@ services:
             - '@config'
             - '@arcadewelten.arcade.tourneys'
             - '@arcadewelten.arcade.games'
+            - '@arcadewelten.arcade.certs'
         tags:
             - { name: event.listener }
 

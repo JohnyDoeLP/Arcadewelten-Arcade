@@ -80,6 +80,24 @@
 	</div>
 	{% endif %}
 
+	{% if S_AW_CERTS %}
+	<h3>{{ lang('AW_ARCADE_CERTS') }}</h3>
+	{% if loops.aw_certs|length %}
+	<ul class="aw-certs">
+		{% for c in loops.aw_certs %}
+		<li>
+			<a href="{{ c.U_SHOW }}" title="{{ lang('AW_ARCADE_CERT_SHOW') }}"><img src="{{ c.U_PREVIEW }}" alt="{{ c.LINE }}" loading="lazy"></a>
+			<span class="aw-cert-line">{{ c.LINE }}</span>
+			<span class="aw-small">{{ c.PLACE }}</span>
+			<a class="aw-cert-dl" href="{{ c.U_DOWNLOAD }}">{{ lang('AW_ARCADE_CERT_DOWNLOAD') }}</a>
+		</li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<p class="aw-small">{{ lang('AW_ARCADE_CERTS_NONE') }}</p>
+	{% endif %}
+	{% endif %}
+
 	<p class="aw-stats-back"><a class="button" href="{{ U_AW_ARCADE }}">{{ lang('AW_ARCADE_BACK_TO_ARCADE') }}</a></p>
 </div></div>
 

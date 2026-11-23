@@ -140,6 +140,35 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_CERTS') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CERTS_EXPLAIN') }}{% if not S_AW_CERTS_GD %}<br><strong>{{ lang('ACP_AW_ARCADE_CERTS_NO_GD') }}</strong>{% endif %}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_certs" value="1"{% if AW_CERTS %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_certs" value="0"{% if not AW_CERTS %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="aw_certs_theme">{{ lang('ACP_AW_ARCADE_CERTS_THEME') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CERTS_THEME_EXPLAIN') }}</span></dt>
+			<dd><select id="aw_certs_theme" name="aw_certs_theme">
+				<option value="classic"{% if AW_CERTS_THEME == 'classic' %} selected{% endif %}>{{ lang('ACP_AW_ARCADE_CERTS_THEME_CLASSIC') }}</option>
+				<option value="light"{% if AW_CERTS_THEME == 'light' %} selected{% endif %}>{{ lang('ACP_AW_ARCADE_CERTS_THEME_LIGHT') }}</option>
+				<option value="dark"{% if AW_CERTS_THEME == 'dark' %} selected{% endif %}>{{ lang('ACP_AW_ARCADE_CERTS_THEME_DARK') }}</option>
+			</select></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_CERTS_POST') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CERTS_POST_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_certs_post" value="1"{% if AW_CERTS_POST %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_certs_post" value="0"{% if not AW_CERTS_POST %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_CERTS_PAGE') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_CERTS_PAGE_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="aw_certs_page" value="1"{% if AW_CERTS_PAGE %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="aw_certs_page" value="0"{% if not AW_CERTS_PAGE %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_REPORTS_SETTING') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_REPORTS_SETTING_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="aw_reports" value="1"{% if AW_REPORTS %} checked{% endif %}> {{ lang('YES') }}</label>

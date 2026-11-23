@@ -271,7 +271,7 @@ class forum
 	 * @param int $season_start
 	 * @return int topic id or 0
 	 */
-	public function announce_season(array $record_counts, array $users, array $prizes, $season_start)
+	public function announce_season(array $record_counts, array $users, array $prizes, $season_start, array $certs = [])
 	{
 		if (!$this->posts_season() || !$this->forum_exists((int) $this->config['aw_arcade_news_forum']))
 		{
@@ -314,6 +314,8 @@ class forum
 			$lines[] = '';
 			$lines[] = $this->lang('AW_ARCADE_POST_SEASON_PRIZES', $this->points->format(array_sum($prizes)), $this->points->name(), count($prizes));
 		}
+
+		$lines = array_merge($lines, $this->cert_lines($certs));
 
 		$lines[] = '';
 		$lines[] = $this->lang('AW_ARCADE_POST_SEASON_NEXT') . ' [url=' . $this->url('arcadehall') . ']' . $this->lang('AW_ARCADE_POST_TO_ARCADE') . '[/url]';
@@ -397,7 +399,7 @@ class forum
 	 * @param array $paid user_id => paid amount
 	 * @return int topic id or 0
 	 */
-	public function announce_tourney_result(array $tourney, array $overall, array $paid)
+	public function announce_tourney_result(array $tourney, array $overall, array $paid, array $certs = [])
 	{
 		if (!$this->posts_tourneys() || !$this->forum_exists((int) $this->config['aw_arcade_news_forum']))
 		{
@@ -424,6 +426,8 @@ class forum
 		{
 			$lines[] = $this->lang('AW_ARCADE_POST_TOURNEY_EMPTY');
 		}
+
+		$lines = array_merge($lines, $this->cert_lines($certs));
 
 		$lines[] = '';
 		$lines[] = '[url=' . $this->url('arcadehall/tourney/' . (int) $tourney['tourney_id']) . ']' . $this->lang('AW_ARCADE_POST_TOURNEY_FULL') . '[/url]';
@@ -624,6 +628,32 @@ class forum
 	protected function lang(...$args)
 	{
 		return $this->post_language()->lang(...$args);
+	}
+
+	/**
+	 * The certificates of the first three, as images under the ranking.
+	 *
+	 * The picture is drawn when it is asked for, so the post only holds the
+	 * address - nothing is attached and nothing is stored twice.
+	 *
+	 * @param array $certs place => certificate id
+	 */
+	protected function cert_lines(array $certs)
+	{
+		if (!$certs || empty($this->config['aw_arcade_certs']) || empty($this->config['aw_arcade_certs_post']))
+		{
+			return [];
+		}
+
+		$lines = ['', '[b]' . $this->lang('AW_ARCADE_POST_CERTS') . '[/b]'];
+
+		foreach ($certs as $cert_id)
+		{
+			$url = $this->url('arcadehall/certificate/' . (int) $cert_id);
+			$lines[] = '[url=' . $url . '][img]' . $url . '/preview[/img][/url]';
+		}
+
+		return $lines;
 	}
 
 	/**

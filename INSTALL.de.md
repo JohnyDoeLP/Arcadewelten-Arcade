@@ -57,6 +57,14 @@ dein-forum/
 - IBPro-v3-Spiele brauchen zusätzlich ihren Ordner unter `arcade/gamedata/`.
 - Empfohlene Rechte: Ordner **755**, Dateien **644** (777 ist nicht nötig).
 
+### Eigene Schrift für die Urkunden (nur bei Bedarf)
+
+Die Urkunden werden mit den Schriften gezeichnet, die die Erweiterung mitbringt. Darin stecken Latein mit allen Akzenten, Griechisch, Kyrillisch und Vietnamesisch – für europäische Foren fehlt nichts.
+
+Schreiben deine Mitglieder in einer Schrift, die dort nicht enthalten ist (Chinesisch, Japanisch, Koreanisch, Thai), lege eine eigene Schriftdatei unter `arcade/fonts/` ab, benannt wie die Datei, die sie ersetzen soll: `serif.ttf`, `serif-bold.ttf`, `serif-italic.ttf`, `sans.ttf`, `sans-bold.ttf`, `sans-light.ttf`. Eine einzelne Datei genügt, der Rest bleibt wie er ist. Der Ordner liegt außerhalb der Erweiterung und überlebt jedes Update.
+
+Arabisch und Hebräisch gehen auch mit eigener Schrift nicht: GD verbindet arabische Buchstaben nicht und dreht die Leserichtung nicht um.
+
 ## 5. Spiele importieren
 
 1. ACP → Erweiterungen → Spielhalle → **Kategorien**: Kategorien anlegen (z. B. Action, Puzzle, Klassiker).

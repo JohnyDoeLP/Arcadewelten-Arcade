@@ -32,6 +32,7 @@ Schritt-für-Schritt-Anleitung: siehe `INSTALL.de.md`.
 - Schutz vor Schummeln: Mindestspielzeit, Höchstpunktzahl und Ausreißer-Erkennung mit Prüfliste im ACP
 - Warnung vor Spielen, die Inhalte fremder Server laden (lokale Prüfung), mit optionalem Hinweis an die Spieler vor dem Start
 - Turniere: mehrere Spiele über einen Zeitraum, Gesamtwertung nach Turnierpunkten, Countdown, optionale Prämien (Ultimate Points) und Beiträge des ArcadeBots zu Start und Ende
+- Urkunden für die ersten drei Plätze am Ende einer Saison und eines Turniers: als Bild unter dem Ergebnis im Forum und auf der Statistikseite zum Herunterladen, in drei wählbaren Gestaltungen
 - Duelle: Mitglieder fordern sich mit ihrem Rekord heraus, mit phpBB-Benachrichtigungen; „Neu“-Schild für frisch installierte Spiele
 - Spiele bewerten: 1–5 Sterne pro Mitglied und Spiel (nur nach dem Spielen, änderbar), Durchschnitt in der Spieleliste; Spieleliste sortierbar nach Name, Bewertung, Beliebtheit und Neuheit
 - Bestenliste pro Spiel mit Pokalen für Platz 1–3, Ruhmeshalle (Siegertreppchen mit Avataren)

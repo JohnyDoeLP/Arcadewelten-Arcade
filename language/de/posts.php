@@ -72,4 +72,5 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_POST_TOURNEY_CHANGE_NO_PRIZES'	=> 'Es gibt keine Prämien mehr.',
 	'AW_ARCADE_POST_TOURNEY_CLOSED'			=> 'Das Turnier ist beendet – vielen Dank fürs Mitspielen!',
 	'AW_ARCADE_POST_TOURNEY_CLOSED_LINK'	=> 'Zum Turnierergebnis',
+	'AW_ARCADE_POST_CERTS'					=> 'Urkunden für die ersten drei Plätze',
 ]);

@@ -32,6 +32,7 @@ Step-by-step installation: see `INSTALL.en.md`. Deutsche Anleitung: `README.de.m
 - Cheat protection: minimum play time, maximum score and outlier detection with a review list in the ACP
 - Warning for games that load content from other servers (local check), with an optional note to players before they start
 - Tournaments: several games over a period, overall ranking by tournament points, countdown, optional prizes (Ultimate Points) and ArcadeBot topics at start and end
+- Certificates for the first three places at the end of a season and of a tournament: as an image under the result in the forum and on the statistics page to download, in three looks to choose from
 - Duels: members challenge each other with their record, with phpBB notifications; “New” badge for recently installed games
 - Game ratings: 1–5 stars per member and game (only after playing, changeable), average shown in the game list; game list sortable by name, rating, popularity and newest
 - Highscores per game with trophies for places 1–3, hall of fame (podium with avatars)

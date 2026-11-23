@@ -46,7 +46,13 @@ class main
 	/** @var \arcadewelten\arcade\core\jackpot */
 	protected $jackpot;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot, ?\arcadewelten\arcade\core\sitemap $sitemap = null, ?\arcadewelten\arcade\core\stats $stats = null)
+	/** @var \arcadewelten\arcade\core\certs|null */
+	protected $certs;
+
+	/** @var \arcadewelten\arcade\core\certificate|null */
+	protected $certificate;
+
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot, ?\arcadewelten\arcade\core\sitemap $sitemap = null, ?\arcadewelten\arcade\core\stats $stats = null, ?\arcadewelten\arcade\core\certs $certs = null, ?\arcadewelten\arcade\core\certificate $certificate = null)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -71,6 +77,8 @@ class main
 		$this->jackpot = $jackpot;
 		$this->sitemap = $sitemap;
 		$this->stats = $stats;
+		$this->certs = $certs;
+		$this->certificate = $certificate;
 
 		$this->language->add_lang('common', 'arcadewelten/arcade');
 	}
@@ -803,8 +811,11 @@ class main
 			'S_AW_DUELS'		=> $this->duels->enabled(),
 			'S_AW_TOURNEYS'		=> $this->tourneys->enabled(),
 			'S_AW_OWN_STATS'	=> $me,
+			'S_AW_CERTS'		=> $this->certs && $this->certs->on_page() && $this->certificate && $this->certificate->available(),
 			'U_AW_ARCADE'		=> $this->helper->route('arcadewelten_arcade_index'),
 		]);
+
+		$this->assign_certs($user_id);
 
 		return $this->helper->render('@arcadewelten_arcade/arcade_stats.html', $this->language->lang($me ? 'AW_ARCADE_STATS_MINE' : 'AW_ARCADE_STATS_OF', $member['username']));
 	}
@@ -856,6 +867,115 @@ class main
 		return new \Symfony\Component\HttpFoundation\Response($xml, 200, [
 			'Content-Type'	=> 'application/xml; charset=UTF-8',
 		]);
+	}
+
+	/* ---------------------------------------------------------------
+	 * Certificates
+	 * ------------------------------------------------------------- */
+
+	/**
+	 * The certificates of one member, for the statistics page.
+	 */
+	protected function assign_certs($user_id)
+	{
+		if (!$this->certs || !$this->certs->on_page() || !$this->certificate || !$this->certificate->available())
+		{
+			return;
+		}
+
+		foreach ($this->certs->for_user($user_id) as $cert)
+		{
+			$id = (int) $cert['cert_id'];
+			$season = (string) $cert['cert_type'] === 'season';
+
+			$this->template->assign_block_vars('aw_certs', [
+				'LINE'			=> $season
+					? $this->language->lang('AW_ARCADE_CERT_LINE_SEASON', $this->user->format_date((int) $cert['cert_end'], 'd.m.Y'))
+					: $this->language->lang('AW_ARCADE_CERT_LINE_TOURNEY', $cert['cert_title']),
+				'PLACE'			=> $this->language->lang('AW_ARCADE_CERT_PLACE_' . max(1, min(3, (int) $cert['cert_place']))),
+				'U_SHOW'		=> $this->helper->route('arcadewelten_arcade_certificate', ['cert_id' => $id]),
+				'U_PREVIEW'		=> $this->helper->route('arcadewelten_arcade_certificate_size', ['cert_id' => $id, 'size' => 'preview']),
+				'U_DOWNLOAD'	=> $this->helper->route('arcadewelten_arcade_certificate_size', ['cert_id' => $id, 'size' => 'download']),
+			]);
+		}
+	}
+
+	/**
+	 * The certificate as a PNG.
+	 *
+	 * No arcade permission is asked for here. The picture holds a member
+	 * name, a count and a date, all of which stand in the topic it hangs
+	 * under anyway, and asking would leave a broken image in that topic for
+	 * everybody the arcade is closed to.
+	 *
+	 * @param int    $cert_id
+	 * @param string $size full, preview or download
+	 */
+	public function certificate($cert_id, $size = 'full')
+	{
+		if (!$this->certs || !$this->certificate || !$this->certs->enabled())
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_CERT');
+		}
+
+		$cert = $this->certs->get((int) $cert_id);
+
+		if (!$cert)
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_CERT');
+		}
+
+		if (!$this->certificate->available())
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_CERT_NO_GD');
+		}
+
+		$theme = (string) $this->config['aw_arcade_certs_theme'];
+		$width = $size === 'preview' ? 380 : 0;
+		$png = $this->cached_certificate($cert, $theme, $size, $width);
+
+		$headers = [
+			'Content-Type'	=> 'image/png',
+			'Cache-Control'	=> 'public, max-age=86400',
+		];
+
+		if ($size === 'download')
+		{
+			$name = preg_replace('/[^A-Za-z0-9_\-]/', '', str_replace(' ', '_', (string) $cert['cert_name']));
+			$headers['Content-Disposition'] = 'attachment; filename="urkunde-' . ($name !== '' ? $name . '-' : '') . (int) $cert['cert_id'] . '.png"';
+		}
+
+		return new \Symfony\Component\HttpFoundation\Response($png, 200, $headers);
+	}
+
+	/**
+	 * Drawing a certificate costs a tenth of a second, and the same picture
+	 * is asked for again by everyone who opens the topic, so it is kept.
+	 * A lost cache file only means it is drawn once more.
+	 */
+	protected function cached_certificate(array $cert, $theme, $size, $width)
+	{
+		$dir = $this->root_path . 'cache/aw_arcade_certs';
+		$file = $dir . '/' . (int) $cert['cert_id'] . '-' . preg_replace('/[^a-z]/', '', $theme) . '-' . ($size === 'preview' ? 'p' : 'f') . '.png';
+
+		if (is_file($file))
+		{
+			$png = @file_get_contents($file);
+
+			if ($png !== false && $png !== '')
+			{
+				return $png;
+			}
+		}
+
+		$png = $this->certificate->render($cert, $theme, $width);
+
+		if (is_dir($dir) || @mkdir($dir, 0777, true))
+		{
+			@file_put_contents($file, $png, LOCK_EX);
+		}
+
+		return $png;
 	}
 
 	public function tourneys()

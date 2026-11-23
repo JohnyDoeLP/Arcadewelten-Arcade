@@ -57,6 +57,14 @@ your-board/
 - IBPro v3 games also need their folder in `arcade/gamedata/`.
 - Recommended permissions: folders **755**, files **644** (777 is not needed).
 
+### Your own font for the certificates (only if needed)
+
+Certificates are drawn with the fonts the extension brings along. They carry Latin with all its accents, Greek, Cyrillic and Vietnamese – nothing is missing for a European board.
+
+If your members write in a script those do not carry (Chinese, Japanese, Korean, Thai), put your own font file in `arcade/fonts/`, named after the file it replaces: `serif.ttf`, `serif-bold.ttf`, `serif-italic.ttf`, `sans.ttf`, `sans-bold.ttf`, `sans-light.ttf`. One file is enough, the rest stay as they are. The folder sits outside the extension and survives every update.
+
+Arabic and Hebrew do not work even with your own font: GD does not join Arabic letters and does not turn the line around.
+
 ## 5. Import games
 
 1. ACP → Extensions → Arcade → **Categories**: create categories (e.g. Action, Puzzle, Classics).

@@ -60,6 +60,10 @@ class main_module
 	protected $sitemap;
 	/** @var \arcadewelten\arcade\core\unpacker */
 	protected $unpacker;
+	/** @var \arcadewelten\arcade\core\certificate */
+	protected $certificate;
+	/** @var \arcadewelten\arcade\core\certs */
+	protected $certs;
 	/** @var \phpbb\user */
 	protected $user;
 	/** @var string */
@@ -77,6 +81,8 @@ class main_module
 		$this->scores = $phpbb_container->get('arcadewelten.arcade.scores');
 		$this->sitemap = $phpbb_container->get('arcadewelten.arcade.sitemap');
 		$this->unpacker = $phpbb_container->get('arcadewelten.arcade.unpacker');
+		$this->certificate = $phpbb_container->get('arcadewelten.arcade.certificate');
+		$this->certs = $phpbb_container->get('arcadewelten.arcade.certs');
 		$this->importer = $phpbb_container->get('arcadewelten.arcade.importer');
 		$this->access = $phpbb_container->get('arcadewelten.arcade.access');
 		$this->points = $phpbb_container->get('arcadewelten.arcade.points');
@@ -224,6 +230,19 @@ class main_module
 			$this->config->set('aw_arcade_post_season', $this->request->variable('aw_post_season', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_tourneys', $this->request->variable('aw_post_tourneys', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_batch', max(0, min(100, $this->request->variable('aw_post_batch', 5))));
+			$this->config->set('aw_arcade_certs', $this->request->variable('aw_certs', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_certs_post', $this->request->variable('aw_certs_post', 0) ? 1 : 0);
+			$this->config->set('aw_arcade_certs_page', $this->request->variable('aw_certs_page', 0) ? 1 : 0);
+
+			$theme = $this->request->variable('aw_certs_theme', '');
+			$theme = in_array($theme, \arcadewelten\arcade\core\certificate::themes(), true) ? $theme : 'classic';
+
+			if ($theme !== (string) $this->config['aw_arcade_certs_theme'])
+			{
+				$this->clear_cert_cache();
+			}
+
+			$this->config->set('aw_arcade_certs_theme', $theme);
 
 			$bot_name = trim($this->request->variable('aw_bot', '', true));
 			$bot_id = 0;
@@ -297,6 +316,11 @@ class main_module
 			'AW_FAVORITES'			=> (bool) $this->config['aw_arcade_favorites'],
 			'AW_REPORTS'			=> (bool) $this->config['aw_arcade_reports'],
 			'AW_MEDALS'				=> (bool) $this->config['aw_arcade_medals'],
+			'AW_CERTS'				=> (bool) $this->config['aw_arcade_certs'],
+			'AW_CERTS_POST'			=> (bool) $this->config['aw_arcade_certs_post'],
+			'AW_CERTS_PAGE'			=> (bool) $this->config['aw_arcade_certs_page'],
+			'AW_CERTS_THEME'		=> (string) $this->config['aw_arcade_certs_theme'],
+			'S_AW_CERTS_GD'			=> $this->certificate ? $this->certificate->available() : false,
 			'AW_POST_SEASON'		=> (bool) $this->config['aw_arcade_post_season'],
 			'AW_POST_BATCH'			=> (int) $this->config['aw_arcade_post_batch'],
 			'U_AW_FIND_BOT'			=> append_sid($this->phpbb_root_path_web() . 'memberlist.php', 'mode=searchuser&amp;form=aw_settings&amp;field=aw_bot&amp;select_single=true'),
@@ -1353,6 +1377,7 @@ class main_module
 			if ($tourney && confirm_box(true))
 			{
 				$this->tourneys->delete($tourney_id);
+				$this->certs->delete_tourney($tourney_id);
 				$this->log_admin('LOG_AW_ARCADE_TOURNEY_DELETED', [$tourney['tourney_name']]);
 				trigger_error($this->language->lang('ACP_AW_ARCADE_TOURNEY_DELETED') . adm_back_link($this->u_action));
 			}
@@ -1565,6 +1590,25 @@ class main_module
 		global $phpbb_container;
 
 		$phpbb_container->get('log')->add('admin', $this->user->data['user_id'], $this->user->ip, $key, false, $args);
+	}
+
+	/**
+	 * Certificates already drawn are kept as files. After a change of look
+	 * they show the old one, so they go.
+	 */
+	protected function clear_cert_cache()
+	{
+		$dir = $this->root_path . 'cache/aw_arcade_certs';
+
+		if (!is_dir($dir))
+		{
+			return;
+		}
+
+		foreach ((array) glob($dir . '/*.png') as $file)
+		{
+			@unlink($file);
+		}
 	}
 
 	protected function assign_cat_options($selected)

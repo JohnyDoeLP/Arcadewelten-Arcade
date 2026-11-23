@@ -93,3 +93,16 @@ arcadewelten_arcade_stats:
     defaults: { _controller: arcadewelten.arcade.controller.main:stats, user_id: 0 }
     requirements:
         user_id: \d+
+
+arcadewelten_arcade_certificate:
+    path: /arcadehall/certificate/{cert_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:certificate, size: 'full' }
+    requirements:
+        cert_id: \d+
+
+arcadewelten_arcade_certificate_size:
+    path: /arcadehall/certificate/{cert_id}/{size}
+    defaults: { _controller: arcadewelten.arcade.controller.main:certificate }
+    requirements:
+        cert_id: \d+
+        size: preview|download

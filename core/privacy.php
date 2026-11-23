@@ -102,6 +102,11 @@ class privacy
 			$paragraphs[] = [$this->forum->enabled() && !empty($this->config['aw_arcade_post_tourneys']) ? 'AW_ARCADE_PRIVACY_TOURNEYS_POST' : 'AW_ARCADE_PRIVACY_TOURNEYS'];
 		}
 
+		if (!empty($this->config['aw_arcade_certs']))
+		{
+			$paragraphs[] = ['AW_ARCADE_PRIVACY_CERTS'];
+		}
+
 		if ($this->ratings->enabled())
 		{
 			$paragraphs[] = ['AW_ARCADE_PRIVACY_RATINGS'];

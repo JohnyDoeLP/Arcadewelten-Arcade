@@ -24,8 +24,12 @@ class season
 	/** @var forum */
 	protected $forum;
 
-	public function __construct(games $games, scores $scores, points $points, \phpbb\config\config $config, \phpbb\log\log_interface $log, \phpbb\user $user, \phpbb\language\language $language, forum $forum)
+	/** @var certs */
+	protected $certs;
+
+	public function __construct(games $games, scores $scores, points $points, \phpbb\config\config $config, \phpbb\log\log_interface $log, \phpbb\user $user, \phpbb\language\language $language, forum $forum, certs $certs)
 	{
+		$this->certs = $certs;
 		$this->forum = $forum;
 		$this->language = $language;
 		$this->games = $games;
@@ -104,16 +108,40 @@ class season
 			}
 		}
 
-		// Top 10 into the news forum, before the highscores are reset.
-		if ($this->forum->posts_season())
+		// Certificates and the top 10 into the news forum, both before the
+		// highscores are reset - afterwards there is nothing left to count.
+		$start = (int) $this->config['aw_arcade_season_start'];
+		$end = time();
+		$counts = $this->scores->record_counts();
+		$users = [];
+
+		foreach ($this->scores->all_champions() as $row)
 		{
-			$users = [];
-			foreach ($this->scores->all_champions() as $row)
+			$users[(int) $row['user_id']] = $row;
+		}
+
+		$certs = [];
+
+		if ($this->certs->enabled())
+		{
+			$places = [];
+
+			foreach (array_slice($counts, 0, 3, true) as $user_id => $count)
 			{
-				$users[(int) $row['user_id']] = $row;
+				$places[] = [
+					'user_id'	=> (int) $user_id,
+					'username'	=> isset($users[$user_id]) ? $users[$user_id]['username'] : '',
+					'value'		=> (int) $count,
+					'prize'		=> isset($plan['users'][$user_id]) && $this->points->active() ? $plan['users'][$user_id] : 0,
+				];
 			}
 
-			$this->forum->announce_season($this->scores->record_counts(), $users, $this->points->active() ? $plan['users'] : [], (int) $this->config['aw_arcade_season_start']);
+			$certs = $this->certs->issue_places('season', 0, $places, '', $start, $end);
+		}
+
+		if ($this->forum->posts_season())
+		{
+			$this->forum->announce_season($counts, $users, $this->points->active() ? $plan['users'] : [], $start, $certs);
 		}
 
 		if ($reset)

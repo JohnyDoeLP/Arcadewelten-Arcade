@@ -23,8 +23,12 @@ class tourney_jobs
 	protected $user;
 	protected $games;
 
-	public function __construct(tourneys $tourneys, points $points, forum $forum, access $access, \phpbb\log\log_interface $log, \phpbb\user $user, games $games)
+	/** @var certs */
+	protected $certs;
+
+	public function __construct(tourneys $tourneys, points $points, forum $forum, access $access, \phpbb\log\log_interface $log, \phpbb\user $user, games $games, certs $certs)
 	{
+		$this->certs = $certs;
 		$this->tourneys = $tourneys;
 		$this->points = $points;
 		$this->forum = $forum;
@@ -87,7 +91,26 @@ class tourney_jobs
 			}
 		}
 
-		$result_topic = $this->forum->announce_tourney_result($tourney, $standings['overall'], $paid);
+		$certs = [];
+
+		if ($this->certs->enabled())
+		{
+			$places = [];
+
+			foreach (array_slice($standings['overall'], 0, 3) as $row)
+			{
+				$places[] = [
+					'user_id'	=> (int) $row['user_id'],
+					'username'	=> (string) $row['username'],
+					'value'		=> (int) $row['points'],
+					'prize'		=> isset($paid[(int) $row['user_id']]) ? $paid[(int) $row['user_id']] : 0,
+				];
+			}
+
+			$certs = $this->certs->issue_places('tourney', (int) $tourney['tourney_id'], $places, (string) $tourney['tourney_name'], (int) $tourney['tourney_start'], (int) $tourney['tourney_end']);
+		}
+
+		$result_topic = $this->forum->announce_tourney_result($tourney, $standings['overall'], $paid, $certs);
 		$this->forum->reply_tourney_closed($tourney, $result_topic);
 
 		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_AW_ARCADE_TOURNEY_FINISHED', false, [
