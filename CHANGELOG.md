@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.34.1-beta (2026-11-23)
+
+- **Fix: the page links under “Add games” were empty.** With more than 50 games in the folder the list says it shows 1 to 50 of all of them, but the links to the other pages were not drawn, so only the first page could be reached. The links are there now, above and below the list
+
 ## 0.34.0-beta (2026-11-23)
 
 - **The arcade says when a game is missing the file it needs to report a score.** A game with the IBPro v3/v32 interface reads `arcade/gamedata/<name>/<name>.txt` when it starts; that file holds the name of the variable its score sits in. Without it the game sends an empty score, a zero lands in the highscores and nothing says why. Both lists in the ACP – the installed games and the games found in the folder – now name the missing file, so it is seen before anybody wonders why a game counts nothing

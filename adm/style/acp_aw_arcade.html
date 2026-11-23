@@ -566,7 +566,7 @@
 		{% elseif loops.import|length %}
 		<p>{{ lang('ACP_AW_ARCADE_IMPORT_EXPLAIN', AW_FOUND_TOTAL) }}{% if S_AW_IMP_PAGED %} {{ lang('ACP_AW_ARCADE_IMPORT_SHOWING', AW_IMP_FIRST, AW_IMP_LAST, AW_FOUND_TOTAL) }}{% endif %}</p>
 		{% if S_AW_IMP_PAGED %}
-		<div class="pagination">{% include 'pagination.html' with {'pagination': imp_pagination} %}</div>
+		<div class="pagination">{% include 'pagination.html' %}</div>
 		{% endif %}
 		<table class="table1 zebra-table">
 			<thead>
@@ -597,6 +597,9 @@
 				{{ lang('ACP_AW_ARCADE_OR_NEW_CAT') }} <input class="text" type="text" name="import_new_cat" maxlength="255">
 			</dd>
 		</dl>
+		{% if S_AW_IMP_PAGED %}
+		<div class="pagination">{% include 'pagination.html' %}</div>
+		{% endif %}
 		<p class="submit-buttons"><input class="button1" type="submit" name="import" value="{{ lang('ACP_AW_ARCADE_IMPORT_BUTTON') }}"></p>
 		{% if S_AW_IMP_PAGED %}
 		<p><a href="{{ U_AW_IMPORT_ALL }}" onclick="return confirm('{{ lang('ACP_AW_ARCADE_IMPORT_ALL_CONFIRM')|e('js') }}');">{{ lang('ACP_AW_ARCADE_IMPORT_ALL', AW_FOUND_TOTAL) }}</a><br><span class="small">{{ lang('ACP_AW_ARCADE_IMPORT_ALL_EXPLAIN') }}</span></p>

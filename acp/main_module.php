@@ -514,7 +514,9 @@ class main_module
 		{
 			global $phpbb_container;
 			$pagination = $phpbb_container->get('pagination');
-			$pagination->generate_template_pagination($this->u_action, 'imp_pagination', 'is', $found_total, $imp_per_page, $imp_start);
+			// The block has to be called "pagination": the template phpBB ships
+			// reads that name, and a different one renders an empty list.
+			$pagination->generate_template_pagination($this->u_action, 'pagination', 'is', $found_total, $imp_per_page, $imp_start);
 		}
 
 		$this->assign_cat_options(0);
