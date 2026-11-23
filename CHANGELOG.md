@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.35.0-beta (2026-11-23)
 
 - **Certificates for the winners.** At the end of a season and at the end of a tournament the first three places get a certificate as an image: place, member name, records or tournament points, the period and the prize. It is written at the moment it is earned, so a later season or a recount does not quietly change a certificate somebody already has. Three looks to choose from in the ACP – classic on parchment, light in the board colours, dark with gold – and two switches: under the result in the forum, and on the member's own statistics page to look at and download. The arcade brings the fonts it needs; a board writing in a script they do not carry puts its own font in `arcade/fonts/`
 - **Fix: the page links under "Add games" were empty.** With more than 50 games in the folder the list says it shows 1 to 50 of all of them, but the links to the other pages were not drawn, so only the first page could be reached. The links are there now, above and below the list
