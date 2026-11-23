@@ -89,6 +89,30 @@ class games
 	/**
 	 * Absolute filesystem path of the games folder.
 	 */
+	/**
+	 * Is the file missing that an IBPro v3/v32 game reads its score variable from?
+	 *
+	 * Such a game loads arcade/gamedata/<name>/<name>.txt when it starts; that
+	 * file names the variable inside the movie its score sits in. Without it the
+	 * game sends an empty score, which arrives here as zero, and nothing on the
+	 * page says why. One look at the file system answers it.
+	 *
+	 * @param string $scorevar the game's score variable, which is its folder there
+	 * @param int    $save_type
+	 * @return bool
+	 */
+	public function gamedata_missing($scorevar, $save_type)
+	{
+		if ((int) $save_type !== self::SAVE_IBPROV3 || $scorevar === '')
+		{
+			return false;
+		}
+
+		$name = basename((string) $scorevar);
+
+		return !is_file($this->root_path . 'arcade/gamedata/' . $name . '/' . $name . '.txt');
+	}
+
 	public function games_fs_path()
 	{
 		return $this->root_path . $this->games_path();

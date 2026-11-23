@@ -492,6 +492,7 @@ class main_module
 				'REASON'		=> $this->import_reason($g),
 				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
 				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir_cached($this->games->games_fs_path() . $g['dir'])) : '',
+				'S_NO_GAMEDATA'	=> $g['supported'] && $this->games->gamedata_missing($g['scorevar'], $g['save_type']),
 			];
 		}
 
@@ -730,6 +731,7 @@ class main_module
 				'S_TOUCH'		=> (bool) $row['game_touch'],
 				'S_NEW'			=> $this->games->is_new($row),
 				'EXTERNAL'		=> isset($row['game_external']) ? implode(', ', \arcadewelten\arcade\core\external::split($row['game_external'])) : '',
+				'S_NO_GAMEDATA'	=> $this->games->gamedata_missing($row['game_scorevar'], $row['game_save_type']),
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;g=' . (int) $row['game_id'],
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;g=' . (int) $row['game_id'],
 			]);

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.34.0-beta (2026-11-23)
+
+- **The arcade says when a game is missing the file it needs to report a score.** A game with the IBPro v3/v32 interface reads `arcade/gamedata/<name>/<name>.txt` when it starts; that file holds the name of the variable its score sits in. Without it the game sends an empty score, a zero lands in the highscores and nothing says why. Both lists in the ACP – the installed games and the games found in the folder – now name the missing file, so it is seen before anybody wonders why a game counts nothing
+
 ## 0.33.1-beta (2026-11-23)
 
 - The diagnosis now writes its line after the work, not before, and says what the arcade made of a score sent in `enscore`: which key the play session held and which number came out of it. That turns a report into something one can act on
