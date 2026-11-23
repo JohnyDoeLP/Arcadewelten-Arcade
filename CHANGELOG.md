@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.34.1-beta (2026-11-23)
+## Unreleased
 
 - **Fix: the page links under “Add games” were empty.** With more than 50 games in the folder the list says it shows 1 to 50 of all of them, but the links to the other pages were not drawn, so only the first page could be reached. The links are there now, above and below the list
 
