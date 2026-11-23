@@ -367,6 +367,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_PLAY_TIME'			=> 'Play time',
 	'ACP_AW_ARCADE_FLAG_REASON'			=> 'Reason',
 	'ACP_AW_ARCADE_FLAG_TOO_FAST'		=> 'faster than the minimum play time',
+	'ACP_AW_ARCADE_FLAG_ENSCORE_UNCLEAR'	=> 'encoded score does not fit the key of the play session',
 	'ACP_AW_ARCADE_FLAG_TOO_HIGH'		=> 'above the maximum score',
 	'ACP_AW_ARCADE_FLAG_OUTLIER_RECORD'	=> 'far above the previous record',
 	'ACP_AW_ARCADE_FLAG_OUTLIER_OWN'	=> 'far above the own best',

@@ -367,6 +367,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_PLAY_TIME'			=> 'Spielzeit',
 	'ACP_AW_ARCADE_FLAG_REASON'			=> 'Grund',
 	'ACP_AW_ARCADE_FLAG_TOO_FAST'		=> 'schneller als die Mindestspielzeit',
+	'ACP_AW_ARCADE_FLAG_ENSCORE_UNCLEAR'	=> 'verschlüsselte Punktzahl passt nicht zum Schlüssel der Spielsitzung',
 	'ACP_AW_ARCADE_FLAG_TOO_HIGH'		=> 'über der Höchstpunktzahl',
 	'ACP_AW_ARCADE_FLAG_OUTLIER_RECORD'	=> 'weit über dem bisherigen Rekord',
 	'ACP_AW_ARCADE_FLAG_OUTLIER_OWN'	=> 'weit über der eigenen Bestleistung',

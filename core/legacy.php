@@ -69,11 +69,26 @@ class legacy
 		$this->user->session_begin();
 		$this->auth->acl($this->user->data);
 
-		if (!empty($this->config['aw_arcade_debug']))
+		// The line is written after the work, so it can also say what came of
+		// it; finally, so a failing handler still leaves a trace.
+		try
 		{
-			$this->debug_log($activity_mod);
+			return $this->dispatch($activity_mod);
 		}
+		finally
+		{
+			if (!empty($this->config['aw_arcade_debug']))
+			{
+				$this->debug_log($activity_mod);
+			}
+		}
+	}
 
+	/**
+	 * Hand the request to the part that knows the interface it speaks.
+	 */
+	protected function dispatch($activity_mod)
+	{
 		if ($activity_mod)
 		{
 			return $this->ibpro_newscore();
@@ -126,6 +141,11 @@ class legacy
 			$fields[] = 'GET ' . $k . '=' . (is_array($v) ? '[array]' : utf8_substr((string) $v, 0, 60));
 		}
 
+		if ($this->debug_note !== '')
+		{
+			$fields[] = $this->debug_note;
+		}
+
 		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_AW_ARCADE_DEBUG', false, [
 			($activity_mod ? 'newscore.php' : 'index.php') . ' ' . $this->request->server('REQUEST_METHOD', ''),
 			$this->user->data['username'],
@@ -159,7 +179,7 @@ class legacy
 	/**
 	 * Store the score of a running play session and send the player to the highscores.
 	 */
-	protected function finish($game, $score, $play = false)
+	protected function finish($game, $score, $play = false, $force_reason = '')
 	{
 		if (!$game)
 		{
@@ -177,7 +197,7 @@ class legacy
 		{
 			$params['nosession'] = 1;
 		}
-		else if (($full = $this->games->get_game($game['game_id'])) && ($reason = $this->scores->check_plausible($full, $play, $score)) !== '')
+		else if (($full = $this->games->get_game($game['game_id'])) && ($reason = ($force_reason ?: $this->scores->check_plausible($full, $play, $score))) !== '')
 		{
 			// Implausible: keep it for the admins to review, not in the highscores.
 			$this->scores->flag($full, $this->user->data['user_id'], $score, $play, $reason);
@@ -227,6 +247,12 @@ class legacy
 
 	/* IBPro v3 ------------------------------------------------------ */
 
+	/** @var string what the save path worked out, for the diagnosis line */
+	protected $debug_note = '';
+
+	/** @var bool the key of the session does not fit the number the game sent */
+	protected $enscore_unclear = false;
+
 	protected function v3_verify()
 	{
 		$r1 = random_int(1, 300);
@@ -254,6 +280,7 @@ class legacy
 		if ($raw === '' && $has_enscore)
 		{
 			$score = $this->from_enscore($enscore, $play);
+			$this->debug_note = 'enscore: key ' . ($play && $play['randchar1'] ? ((int) $play['randchar1'] . '/' . (int) $play['randchar2']) : 'none') . ' -> score ' . $score . ($this->enscore_unclear ? ' (does not fit the key, held for review)' : '');
 		}
 		else if ($play && $play['randchar1'])
 		{
@@ -266,7 +293,7 @@ class legacy
 			}
 		}
 
-		return $this->finish($game, $score, $play);
+		return $this->finish($game, $score, $play, $this->enscore_unclear ? 'enscore_unclear' : '');
 	}
 
 	/**
@@ -291,8 +318,11 @@ class legacy
 			return (float) ($product / $key);
 		}
 
-		// Does not divide: the game encoded it another way, so the plain number
-		// is the better guess. The plausibility check still has the last word.
+		// The game asked for a key but the number does not come apart with it,
+		// so it encoded the score some other way. Rather than put a guess in
+		// the highscores, the number is passed on for the admins to look at.
+		$this->enscore_unclear = true;
+
 		return (float) $enscore;
 	}
 

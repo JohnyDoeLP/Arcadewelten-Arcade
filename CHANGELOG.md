@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.33.1-beta (2026-11-23)
+
+- The diagnosis now writes its line after the work, not before, and says what the arcade made of a score sent in `enscore`: which key the play session held and which number came out of it. That turns a report into something one can act on
+- A score from `enscore` that does not come apart with the key of its session is no longer put into the highscores as it stands. It goes to the review list with a reason of its own, so a number nobody can verify is seen by a human first
+
 ## 0.33.0-beta (2026-11-22)
 
 - **Update a game over the zip upload.** Uploading a game that is already there was refused; with the new tick “Replace the game that is there” its files are exchanged instead. The new version is unpacked beside the game and only put in its place once it is whole, so a damaged archive leaves the game as it was. Highscores, ratings, category and prizes hang on the entry in the database and are kept
