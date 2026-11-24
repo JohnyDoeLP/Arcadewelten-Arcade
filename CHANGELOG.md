@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.35.1-beta (2026-11-24)
+
+- **A gamedata folder packed with the game now lands where the game looks for it.** A game packed as one archive – game folder and its `gamedata` folder together – had that folder written through into `arcade/games/<game>/gamedata/`. An IBPro v3 game reads `arcade/gamedata/<name>/<name>.txt` to learn which variable holds the score, so out of reach it submitted nothing, and it could not load its own end screen either, which left a black picture. The same file is what tells the arcade the game is an IBPro v3 one, so the game was also taken for one without scores. The files are now put in `arcade/gamedata/`, and the message after the upload says how many were moved
+
 ## 0.35.0-beta (2026-11-23)
 
 - **Certificates for the winners.** At the end of a season and at the end of a tournament the first three places get a certificate as an image: place, member name, records or tournament points, the period and the prize. It is written at the moment it is earned, so a later season or a recount does not quietly change a certificate somebody already has. Three looks to choose from in the ACP – classic on parchment, light in the board colours, dark with gold – and two switches: under the result in the forum, and on the member's own statistics page to look at and download. The arcade brings the fonts it needs; a board writing in a script they do not carry puts its own font in `arcade/fonts/`
