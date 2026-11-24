@@ -170,6 +170,7 @@ services:
         class: arcadewelten\arcade\core\unpacker
         arguments:
             - '@arcadewelten.arcade.games'
+            - '%core.root_path%'
 
     arcadewelten.arcade.importer:
         class: arcadewelten\arcade\core\importer

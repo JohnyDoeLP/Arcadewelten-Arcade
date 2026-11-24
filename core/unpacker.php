@@ -36,9 +36,13 @@ class unpacker
 	/** @var bool whether the last archive replaced a game that was already there */
 	public $replaced = false;
 
-	public function __construct(games $games)
+	/** @var string */
+	protected $root_path;
+
+	public function __construct(games $games, $root_path)
 	{
 		$this->games = $games;
+		$this->root_path = $root_path;
 	}
 
 	public function available()
@@ -139,6 +143,7 @@ class unpacker
 
 		$install = $dir . '.php';
 		$written = 0;
+		$gamedata = [];
 
 		foreach ($entries as $entry)
 		{
@@ -162,6 +167,16 @@ class unpacker
 			if ($rel === '' || !$this->allowed($rel, $install))
 			{
 				$this->skipped[] = $entry['name'];
+				continue;
+			}
+
+			// A game that keeps its gamedata folder inside its own folder is
+			// packed that way for good reason - everything together - but the
+			// game looks for those files under arcade/gamedata/. Kept aside
+			// here and written once the game itself stands.
+			if (stripos($rel, 'gamedata/') === 0)
+			{
+				$gamedata[substr($rel, 9)] = $entry['name'];
 				continue;
 			}
 
@@ -210,8 +225,85 @@ class unpacker
 		}
 
 		$this->replaced = $exists;
+		$this->gamedata = $this->write_gamedata($tmp_file, $gamedata);
 
 		return $dir;
+	}
+
+	/**
+	 * Writes the gamedata files that came along inside the game folder to
+	 * arcade/gamedata/, where an IBPro v3 game looks for them.
+	 *
+	 * Written after the game itself is in place: if the game does not make
+	 * it, these files are not left behind either. An existing file is
+	 * replaced - it belongs to the game that has just been written.
+	 *
+	 * @param array $files target path below arcade/gamedata/ => entry in the archive
+	 * @return int how many were written
+	 */
+	protected function write_gamedata($tmp_file, array $files)
+	{
+		if (!$files)
+		{
+			return 0;
+		}
+
+		$base = $this->root_path . importer::GAMEDATA_PATH;
+
+		if (!is_dir($base) && !@mkdir($base, 0755, true))
+		{
+			return 0;
+		}
+
+		$root = realpath($base);
+
+		if ($root === false)
+		{
+			return 0;
+		}
+
+		$root = rtrim(str_replace('\\', '/', $root), '/');
+		$zip = new \ZipArchive();
+
+		if ($zip->open($tmp_file) !== true)
+		{
+			return 0;
+		}
+
+		$written = 0;
+
+		foreach ($files as $rel => $entry)
+		{
+			$path = $root . '/' . $rel;
+
+			if ($rel === '' || !$this->inside($path, $root))
+			{
+				$this->skipped[] = $entry;
+				continue;
+			}
+
+			$folder = dirname($path);
+
+			if (!is_dir($folder) && !@mkdir($folder, 0755, true))
+			{
+				$this->skipped[] = $entry;
+				continue;
+			}
+
+			$data = $zip->getFromName($entry);
+
+			if ($data === false || @file_put_contents($path, $data) === false)
+			{
+				$this->skipped[] = $entry;
+				continue;
+			}
+
+			$written++;
+		}
+
+		$zip->close();
+
+		return $written;
 	}
 
 	/**

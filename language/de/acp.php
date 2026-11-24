@@ -437,4 +437,5 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CERTS_PAGE'				=> 'Urkunden auf der Statistikseite zeigen',
 	'ACP_AW_ARCADE_CERTS_POST_EXPLAIN'		=> 'Hängt die drei Urkunden unter die Saison- und Turnierergebnisse im Forum.',
 	'ACP_AW_ARCADE_CERTS_PAGE_EXPLAIN'		=> 'Zeigt jedem Mitglied seine Urkunden zum Ansehen und Herunterladen.',
+	'ACP_AW_ARCADE_ZIP_GAMEDATA'			=> 'Im Archiv lag ein <samp>gamedata</samp>-Ordner im Spielordner. Seine %d Dateien wurden nach <samp>arcade/gamedata/</samp> gelegt – dort sucht ein IBPro-v3-Spiel sie.',
 ]);

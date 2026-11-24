@@ -1684,6 +1684,11 @@ class main_module
 
 		$message = $this->language->lang($this->unpacker->replaced ? 'ACP_AW_ARCADE_ZIP_REPLACED' : 'ACP_AW_ARCADE_ZIP_DONE', $dir);
 
+		if ($this->unpacker->gamedata)
+		{
+			$message .= '<br><br>' . $this->language->lang('ACP_AW_ARCADE_ZIP_GAMEDATA', $this->unpacker->gamedata);
+		}
+
 		if ($this->unpacker->skipped)
 		{
 			$message .= '<br><br>' . $this->language->lang('ACP_AW_ARCADE_ZIP_SKIPPED', implode(', ', array_map('utf8_htmlspecialchars', array_slice($this->unpacker->skipped, 0, 20))));
