@@ -101,6 +101,25 @@ class games
 	 * @param int    $save_type
 	 * @return bool
 	 */
+	/**
+	 * Folder that holds the gamedata of a game, empty if it has none.
+	 * The files a v3 game loads at run time live here, not in the game
+	 * folder, so a check that only looks at the game folder misses them.
+	 */
+	public function gamedata_fs_path($scorevar)
+	{
+		$name = basename((string) $scorevar);
+
+		if ($name === '')
+		{
+			return '';
+		}
+
+		$path = $this->root_path . 'arcade/gamedata/' . $name;
+
+		return is_dir($path) ? $path : '';
+	}
+
 	public function gamedata_missing($scorevar, $save_type)
 	{
 		if ((int) $save_type !== self::SAVE_IBPROV3 || $scorevar === '')

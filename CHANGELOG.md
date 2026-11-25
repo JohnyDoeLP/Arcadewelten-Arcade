@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **The check for foreign content now looks in the gamedata folder as well.** A game loads part of itself from `arcade/gamedata/` at run time, and a score API sitting there can pull in an advertising network of its own. Only the game folder was searched, so those addresses went unseen: a game of ours was found to name two servers, and two more only came to light once the second folder was searched too
+
 ## 0.35.1-beta (2026-11-24)
 
 - **A gamedata folder packed with the game now lands where the game looks for it.** A game packed as one archive – game folder and its `gamedata` folder together – had that folder written through into `arcade/games/<game>/gamedata/`. An IBPro v3 game reads `arcade/gamedata/<name>/<name>.txt` to learn which variable holds the score, so out of reach it submitted nothing, and it could not load its own end screen either, which left a black picture. The same file is what tells the arcade the game is an IBPro v3 one, so the game was also taken for one without scores. The files are now put in `arcade/gamedata/`, and the message after the upload says how many were moved

@@ -107,6 +107,25 @@ class external
 	 * @param string $path absolute path of the game folder (with or without trailing slash)
 	 * @return string[] sorted host names
 	 */
+	/**
+	 * A game is its own folder plus the gamedata folder it loads from at
+	 * run time. Both are searched: an advertising network pulled in by a
+	 * score API in gamedata counts as much as one in the game itself.
+	 */
+	public function scan_game($game_path, $gamedata_path = '')
+	{
+		$hosts = $this->scan_dir_cached($game_path);
+
+		if ($gamedata_path !== '' && is_dir($gamedata_path))
+		{
+			$hosts = array_merge($hosts, $this->scan_dir_cached($gamedata_path));
+			$hosts = array_values(array_unique($hosts));
+			sort($hosts);
+		}
+
+		return $hosts;
+	}
+
 	public function scan_dir($path)
 	{
 		$path = rtrim($path, '/\\');

@@ -515,7 +515,7 @@ class main_module
 				'S_SUPPORTED'	=> $g['supported'],
 				'REASON'		=> $this->import_reason($g),
 				'NOTE'			=> $g['note'] === 'DETECTED' ? $this->language->lang('ACP_AW_ARCADE_NOTE_DETECTED', $g['reason_arg']) : '',
-				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_dir_cached($this->games->games_fs_path() . $g['dir'])) : '',
+				'EXTERNAL'		=> $g['supported'] ? implode(', ', $this->external->scan_game($this->games->games_fs_path() . $g['dir'], $this->games->gamedata_fs_path($g['scorevar']))) : '',
 				'S_NO_GAMEDATA'	=> $g['supported'] && $this->games->gamedata_missing($g['scorevar'], $g['save_type']),
 			];
 		}
@@ -587,7 +587,7 @@ class main_module
 
 			foreach ($rows as $row)
 			{
-				$hosts = $this->external->scan_dir($this->games->games_fs_path() . $row['game_dir']);
+				$hosts = $this->external->scan_game($this->games->games_fs_path() . $row['game_dir'], $this->games->gamedata_fs_path($row['game_scorevar']));
 				$this->games->set_external($row['game_id'], $hosts);
 				$checked++;
 
@@ -851,7 +851,7 @@ class main_module
 			}
 
 			// Files may have changed by FTP since the import: check again.
-			$this->games->set_external($game_id, $this->external->scan_dir($this->games->games_fs_path() . $game['game_dir']));
+			$this->games->set_external($game_id, $this->external->scan_game($this->games->games_fs_path() . $game['game_dir'], $this->games->gamedata_fs_path($game['game_scorevar'])));
 
 			if ($this->request->variable('reset_ratings', 0))
 			{

@@ -535,7 +535,7 @@ class importer
 					'game_width'		=> $g['width'],
 					'game_height'		=> $g['height'],
 					'game_active'		=> $active ? 1 : 0,
-					'game_external'			=> $this->external ? implode(',', $this->external->scan_dir($this->games->games_fs_path() . $g['dir'])) : '',
+					'game_external'			=> $this->external ? implode(',', $this->external->scan_game($this->games->games_fs_path() . $g['dir'], $this->games->gamedata_fs_path($g['scorevar']))) : '',
 					'game_external_checked'	=> $this->external ? 1 : 0,
 					'game_plays'		=> 0,
 				]);
