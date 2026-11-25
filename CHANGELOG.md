@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.35.2-beta (2026-11-25)
 
 - **Fix: a game that counts in fractions had its score turned away.** An IBPro v3 game sends its score twice, plainly and encoded, and the two are compared. The game works the encoded one out by multiplying first and dropping the fraction afterwards, which is what Flash does to the operands of an XOR; the arcade dropped it beforehand and arrived at another number. Any score with a decimal point was taken for forged and quietly went nowhere. Both readings are now accepted
 - **The check for foreign content now looks in the gamedata folder as well.** A game loads part of itself from `arcade/gamedata/` at run time, and a score API sitting there can pull in an advertising network of its own. Only the game folder was searched, so those addresses went unseen: a game of ours was found to name two servers, and two more only came to light once the second folder was searched too
