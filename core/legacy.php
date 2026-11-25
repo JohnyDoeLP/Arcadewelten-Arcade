@@ -284,16 +284,45 @@ class legacy
 		}
 		else if ($play && $play['randchar1'])
 		{
-			// Integrity check used by v3 games: enscore = gscore * randchar ^ randchar2
-			$expected = ((int) $score * (int) $play['randchar1']) ^ (int) $play['randchar2'];
-
-			if ($expected !== (int) $enscore)
+			// Integrity check used by v3 games: enscore = gscore * randchar ^ randchar2.
+			//
+			// A game that counts in fractions multiplies first and drops the
+			// fraction afterwards, because that is what the XOR in Flash does
+			// to its operands. Dropping it beforehand gives another number and
+			// the score was turned away as forged. Both readings are accepted:
+			// the value is a simple obfuscation, not a signature, and a game
+			// that keeps whole numbers gives the same result either way.
+			if (!$this->enscore_fits($score, $enscore, $play))
 			{
 				$play = false;
 			}
 		}
 
 		return $this->finish($game, $score, $play, $this->enscore_unclear ? 'enscore_unclear' : '');
+	}
+
+	/**
+	 * Does enscore match the score the game sent alongside it?
+	 *
+	 * A game that counts in fractions multiplies first and drops the fraction
+	 * afterwards, because that is what the XOR in Flash does to its operands.
+	 * Dropping it beforehand gives another number, and the score was turned
+	 * away as forged. Both readings are accepted: the value is a simple
+	 * obfuscation, not a signature, and a game that keeps to whole numbers
+	 * gives the same result either way.
+	 */
+	protected function enscore_fits($score, $enscore, array $play)
+	{
+		$r1 = (int) $play['randchar1'];
+		$r2 = (int) $play['randchar2'];
+		$enscore = (int) $enscore;
+
+		if ((((int) ($score * $r1)) ^ $r2) === $enscore)
+		{
+			return true;
+		}
+
+		return ((((int) $score) * $r1) ^ $r2) === $enscore;
 	}
 
 	/**
