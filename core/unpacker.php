@@ -374,7 +374,14 @@ class unpacker
 
 		if (!$found)
 		{
+			// PHP files first: this message is about a missing installation
+			// file, and showing six entries in the order the archive happens
+			// to store them can hide the very file the admin is looking for.
 			$names = array_column($entries, 'name');
+			$php = array_values(array_filter($names, function ($n) {
+				return strtolower((string) pathinfo($n, PATHINFO_EXTENSION)) === 'php';
+			}));
+			$names = array_merge($php, array_values(array_diff($names, $php)));
 			$this->error_args = [implode(', ', array_slice($names, 0, 6)) . (count($names) > 6 ? ' …' : '')];
 
 			throw new \RuntimeException('ACP_AW_ARCADE_ZIP_NO_INSTALL');
