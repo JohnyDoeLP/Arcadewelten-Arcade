@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Deleting a game with its folder now takes its gamedata along.** A game can keep files under `arcade/gamedata/` as well – the little text file a v3 game reads, or, for a game packed the way other arcades pack HTML5, the whole game. Those stayed behind. They go with it now, unless another game uses the same folder
+
 ## 0.36.0-beta (2026-11-26)
 
 - **HTML5 games packed the way other arcades pack them now run.** Such a game keeps itself, index.html and all, under `arcade/gamedata/<name>/`, and its game folder holds only the installation file and the pictures. The arcade expected the index.html in the game folder and turned the game away as a foreign package, although the interface it reports its score through is one the arcade already answers. These games are now loaded from the folder they live in and their scores are taken. The message for a game that really has no index.html says so instead, and names both places that were searched

@@ -381,21 +381,71 @@ class games
 			return ['status' => 'invalid', 'left' => []];
 		}
 
-		$sql = 'SELECT COUNT(game_id) AS other
-			FROM ' . $this->games_table . "
-			WHERE game_dir = '" . $this->db->sql_escape($dir) . "'
-				AND game_id <> " . (int) $game['game_id'];
-		$result = $this->db->sql_query($sql);
-		$other = (int) $this->db->sql_fetchfield('other');
-		$this->db->sql_freeresult($result);
-
-		if ($other > 0)
+		if ($this->dir_in_use('game_dir', $dir, (int) $game['game_id']))
 		{
 			return ['status' => 'shared', 'left' => []];
 		}
 
-		$base = realpath($this->games_fs_path());
-		$path = $this->games_fs_path() . $dir;
+		$result = $this->remove_tree($this->games_fs_path(), $dir);
+
+		// A game may keep files under arcade/gamedata/ as well: the little
+		// text file a v3 game reads, or, for a game packed the way other
+		// arcades pack HTML5, the whole game. Those go with it.
+		$data = $this->remove_gamedata_dir($game);
+
+		if ($data['left'])
+		{
+			$result['left'] = array_merge($result['left'], $data['left']);
+			$result['status'] = 'partial';
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Is another game using this folder or score variable?
+	 */
+	protected function dir_in_use($column, $value, $game_id)
+	{
+		$sql = 'SELECT COUNT(game_id) AS other
+			FROM ' . $this->games_table . '
+			WHERE ' . $column . " = '" . $this->db->sql_escape($value) . "'
+				AND game_id <> " . (int) $game_id;
+		$result = $this->db->sql_query($sql);
+		$other = (int) $this->db->sql_fetchfield('other');
+		$this->db->sql_freeresult($result);
+
+		return $other > 0;
+	}
+
+	/**
+	 * The game's folder under arcade/gamedata/, if it has one to itself.
+	 */
+	protected function remove_gamedata_dir(array $game)
+	{
+		$name = basename((string) $game['game_scorevar']);
+
+		if ($name === '' || !preg_match('/^[A-Za-z0-9_\-]+$/', $name))
+		{
+			return ['status' => 'missing', 'left' => []];
+		}
+
+		if ($this->dir_in_use('game_scorevar', $name, (int) $game['game_id']))
+		{
+			return ['status' => 'shared', 'left' => []];
+		}
+
+		return $this->remove_tree($this->root_path . 'arcade/gamedata/', $name);
+	}
+
+	/**
+	 * Deletes one folder below $base_path with everything in it. Only a
+	 * folder that really sits directly in there, and is not a link.
+	 */
+	protected function remove_tree($base_path, $dir)
+	{
+		$base = realpath($base_path);
+		$path = $base_path . $dir;
 
 		if ($base === false || is_link($path))
 		{
