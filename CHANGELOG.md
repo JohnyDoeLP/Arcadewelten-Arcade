@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **The upload now recognises an installation file written by SMF Arcade.** It was searched for by the name of our own field, so an archive that held one of theirs was turned away with "no installation file in the archive", although the importer has been able to read those files since 0.32. An HTML5 game of that arcade (`savetype` html5 or html52) reports its score to the old IBPro address, which this arcade answers, and is set up that way
 - **Deleting a game with its folder now takes its gamedata along.** A game can keep files under `arcade/gamedata/` as well – the little text file a v3 game reads, or, for a game packed the way other arcades pack HTML5, the whole game. Those stayed behind. They go with it now, unless another game uses the same folder
 
 ## 0.36.0-beta (2026-11-26)

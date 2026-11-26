@@ -348,7 +348,11 @@ class unpacker
 
 			$data = $zip->getFromName($entry['name']);
 
-			if ($data !== false && strpos($data, '$game_data') !== false)
+			// Ours hold $game_data; a file written by SMF Arcade holds
+			// $config with the same things under other names, and the
+			// importer translates it.
+			if ($data !== false && (strpos($data, '$game_data') !== false
+				|| (strpos($data, '$config') !== false && strpos($data, "'gname'") !== false)))
 			{
 				$by_content[$root] = $entry['name'];
 			}

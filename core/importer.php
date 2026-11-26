@@ -239,6 +239,10 @@ class importer
 			'activity'	=> 'AMOD_GAME',
 			'none'		=> 'NOSCORE_GAME',
 			'noscore'	=> 'NOSCORE_GAME',
+			// An HTML5 game of that arcade reports its score to the old
+			// IBPro address, which this one answers.
+			'html5'		=> 'IBPRO_GAME',
+			'html52'	=> 'IBPRO_GAME',
 		];
 
 		if (isset($types[$save]))
