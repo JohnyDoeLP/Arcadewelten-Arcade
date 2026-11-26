@@ -30,13 +30,13 @@ Suggestions are welcome – the list grows with the community.
 - 0.33 – update a game over the zip upload
 - 0.34 – name the missing gamedata file of a v3/v32 game
 - 0.35 – certificates for the winners of a season and of a tournament
+- 0.36 – HTML5 games packed the way other arcades pack them
 
 ## Next
 
 1. **Help page for the arcade** at `app.php/help/arcade`, in phpBB's own help system, with an entry in the arcade menu and a switch in the ACP. Around 35 to 40 questions in the language file, German and English, so every board can reword them: getting started, playing and scores (why a result is not counted), duels, tournaments, categories (permissions, password, season), favourites, ratings and medals, points and jackpot, old Flash games and playing on a phone, and what is stored about a member
 2. **Strict mode for games**: an optional Content Security Policy on the play page lets the browser load game files only from the own server, so ads or trackers that a game would load later are blocked as well (games that really need an external file then need that file copied into the game folder)
-3. **HTML5 games packed the way other arcades pack them**: the game itself under `gamedata/<name>/` with its own `index.html`, and only the installation file and the images in the game folder. The importer turns those away today as a foreign package, although the score interface they use – `act=Arcade&do=newscore` with gname and gscore – is one the arcade already serves, and the name they send is the folder name. Needed: accept an `index.html` in the gamedata folder, load the play page from there, and set the score interface to IBPro instead of our own. The message that turns them away should also say what is missing rather than that the game does not work (brought in by a board running the arcade, with a working example)
-4. **Download a game**, as a ZIP of the game folder and its gamedata, the way the upload takes it. Off unless the board switches it on, and tied to a permission so it can be opened up to chosen groups only – most of these games are somebody else's work, and offering them for download is a different matter from having them playable (asked for by a board running the arcade)
+3. **Download a game**, as a ZIP of the game folder and its gamedata, the way the upload takes it. Off unless the board switches it on, and tied to a permission so it can be opened up to chosen groups only – most of these games are somebody else's work, and offering them for download is a different matter from having them playable (asked for by a board running the arcade)
 
 Then comes a round of cleaning up, testing and going through the documentation, and with it **1.0.0**: the end of the beta, and the moment to submit the arcade to the phpBB extension database.
 
