@@ -106,6 +106,31 @@ class games
 	 * The files a v3 game loads at run time live here, not in the game
 	 * folder, so a check that only looks at the game folder misses them.
 	 */
+	/**
+	 * Folder a game is served from, as a web path below the board, with a
+	 * trailing slash. Usually its own folder; a game packed the way other
+	 * arcades pack an HTML5 game carries the folder in game_base.
+	 */
+	public function game_web_base(array $game)
+	{
+		$base = isset($game['game_base']) ? trim((string) $game['game_base'], '/') : '';
+
+		if ($base !== '' && strpos($base, '..') === false)
+		{
+			return $base . '/';
+		}
+
+		return $this->games_path() . $game['game_dir'] . '/';
+	}
+
+	/**
+	 * The same folder on disk.
+	 */
+	public function game_fs_base(array $game)
+	{
+		return $this->root_path . $this->game_web_base($game);
+	}
+
 	public function gamedata_fs_path($scorevar)
 	{
 		$name = basename((string) $scorevar);

@@ -450,7 +450,7 @@ class main
 			'AW_GAME_DESC'		=> $game['game_desc'],
 			'AW_GAME_WIDTH'		=> (int) $game['game_width'],
 			'AW_GAME_HEIGHT'	=> (int) $game['game_height'],
-			'AW_GAME_URL'		=> $board_url . $this->games->games_path() . rawurlencode($game['game_dir']) . '/' . rawurlencode($game['game_file']) . $this->cache_buster($game),
+			'AW_GAME_URL'		=> $board_url . $this->games->game_web_base($game) . rawurlencode($game['game_file']) . $this->cache_buster($game),
 			// Ask before a game that names other servers is loaded (switchable in the ACP).
 			'AW_EXT_HOSTS'		=> $paid ? '' : $this->external_hosts($game),
 			'AW_GAME_ID'		=> (int) $game['game_id'],
@@ -1803,7 +1803,7 @@ class main
 	 */
 	protected function cache_buster(array $game)
 	{
-		$file = $this->games->games_fs_path() . $game['game_dir'] . '/' . $game['game_file'];
+		$file = $this->games->game_fs_base($game) . $game['game_file'];
 		$mtime = @filemtime($file);
 
 		return $mtime ? '?v=' . $mtime : '';

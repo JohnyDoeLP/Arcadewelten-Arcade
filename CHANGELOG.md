@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **HTML5 games packed the way other arcades pack them now run.** Such a game keeps itself, index.html and all, under `arcade/gamedata/<name>/`, and its game folder holds only the installation file and the pictures. The arcade expected the index.html in the game folder and turned the game away as a foreign package, although the interface it reports its score through is one the arcade already answers. These games are now loaded from the folder they live in and their scores are taken. The message for a game that really has no index.html says so instead, and names both places that were searched
+
 ## 0.35.2-beta (2026-11-25)
 
 - **Fix: a game that counts in fractions had its score turned away.** An IBPro v3 game sends its score twice, plainly and encoded, and the two are compared. The game works the encoded one out by multiplying first and dropping the fraction afterwards, which is what Flash does to the operands of an XOR; the arcade dropped it beforehand and arrived at another number. Any score with a decimal point was taken for forged and quietly went nowhere. Both readings are now accepted

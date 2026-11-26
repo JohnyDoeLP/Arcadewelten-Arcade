@@ -355,17 +355,28 @@ class importer
 
 		if ($game['type'] === games::TYPE_HTML5)
 		{
-			// HTML5 games need an index.html in their folder and our own score API.
+			// Ours keep their index.html in the game folder and report scores
+			// through our own interface.
 			$game['file'] = 'index.html';
 
-			if (!is_file($base . 'index.html'))
+			if (is_file($base . 'index.html'))
 			{
-				$game['supported'] = false;
-				$game['reason'] = 'HTML5_FOREIGN';
+				$game['save_type'] = games::SAVE_HTML5;
+			}
+			else if (is_file($this->root_path . self::GAMEDATA_PATH . $game['dir'] . '/index.html'))
+			{
+				// Other arcades turn it around: the game itself sits under
+				// arcade/gamedata/<name>/ and the game folder holds only the
+				// installation file and the pictures. Those games report their
+				// score the old IBPro way, with the folder name as the game
+				// name - which is what our own endpoint already answers.
+				$game['base'] = rtrim(self::GAMEDATA_PATH, '/') . '/' . $game['dir'];
+				$game['save_type'] = games::SAVE_IBPRO;
 			}
 			else
 			{
-				$game['save_type'] = games::SAVE_HTML5;
+				$game['supported'] = false;
+				$game['reason'] = 'HTML5_NO_INDEX';
 			}
 
 			// The declared Flash interface does not matter for HTML5 games.
@@ -528,6 +539,7 @@ class importer
 					'game_dir'			=> $g['dir'],
 					'game_scorevar'		=> $g['scorevar'],
 					'game_file'			=> $g['file'],
+					'game_base'			=> isset($g['base']) ? $g['base'] : '',
 					'game_image'		=> $g['image'],
 					'game_type'			=> $g['type'],
 					'game_save_type'	=> $g['save_type'],
