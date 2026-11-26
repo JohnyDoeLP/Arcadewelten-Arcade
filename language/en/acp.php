@@ -437,5 +437,5 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CERTS_PAGE'				=> 'Show certificates on the statistics page',
 	'ACP_AW_ARCADE_CERTS_POST_EXPLAIN'		=> 'Puts the three certificates under the season and tournament results in the forum.',
 	'ACP_AW_ARCADE_CERTS_PAGE_EXPLAIN'		=> 'Shows every member their certificates to look at and to download.',
-	'ACP_AW_ARCADE_ZIP_GAMEDATA'			=> 'The archive had a <samp>gamedata</samp> folder inside the game folder. Its %d files were put in <samp>arcade/gamedata/</samp>, where an IBPro v3 game looks for them.',
+	'ACP_AW_ARCADE_ZIP_GAMEDATA'			=> 'The archive had a <samp>gamedata</samp> folder inside the game folder. Its %d files were put in <samp>arcade/gamedata/</samp>, which is where they belong and where the game looks for them.',
 ]);
