@@ -63,6 +63,7 @@ phpBB 4.0 changes a lot under the hood (no ACP/MCP/UCP modules any more, Doctrin
 
 ## Later / optional
 
+- To think about: a way to the download that does not go through the game page – a filter "to download" in the arcade list, or a small symbol on the game tile. Left out on purpose for now, because going by way of the game page shows the visitor the highscores, the rating and the duel offer as well; worth having if a board ever hands out a collection of its own games, and needed if such a game costs points to play, because the payment form then stands in front of the download
 - To think about: jackpot top-up by the admin – a field "top up the jackpot by …" when editing a game (one-off, e.g. for a weekend event)
 - To think about: jackpot base amount – after a win the pot starts at a fixed amount instead of 0 (global, per category, per game like the other points settings); note that these points are created by the board, not paid by players
 - To think about: own placement on every game card for members ("You: place 4 of 9", "not played yet")
