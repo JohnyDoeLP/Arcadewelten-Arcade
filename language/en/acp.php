@@ -446,4 +446,6 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_GAME_DOWNLOAD_OFF'		=> 'Note: downloading is switched off altogether in the settings, so the button does not appear even at “yes”.',
 	'ACP_AW_ARCADE_DOWNLOAD_ON'				=> 'Allow download',
 	'ACP_AW_ARCADE_DOWNLOAD_OFF_BULK'		=> 'Forbid download',
+	'ACP_AW_ARCADE_HELP'					=> 'Help page for the arcade',
+	'ACP_AW_ARCADE_HELP_EXPLAIN'			=> 'A page of its own in the board’s help with more than 40 questions and answers, reached by a button in the arcade and readable by guests as well. Sections about parts you have switched off – duels or tournaments, say – are left out. The texts live in <samp>language/&lt;language&gt;/help/arcade.php</samp> and can be reworded for your board.',
 ]);

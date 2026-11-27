@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **A help page for the arcade**, inside phpBB's own help system at `app.php/help/arcade`, reached by a button in the arcade and readable by guests. Over 40 questions in German and English: why a result was not counted and what the checking list is, duels, tournaments, categories with a password or a period, the season and its certificates, points and the jackpot, favourites, ratings and medals, old Flash games on a phone, downloading, and what the arcade keeps about a member. A block whose part of the arcade is switched off is left out, so nobody reads about duels on a board that has none. The texts sit in `language/<language>/help/arcade.php` and can be reworded for a board. Can be switched off
+
 ## 0.39.1-beta (2026-11-27)
 
 - **Fix: the download permission did not show up in the ACP.** It was created and handed to members, so the button worked, but a board could not take it away again or give it to chosen groups, because a permission has to be announced to phpBB on top of being created. It now stands with "Can use the arcade" under Misc

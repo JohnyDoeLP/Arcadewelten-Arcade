@@ -92,11 +92,12 @@
 </div></div>
 {% endif %}
 
-{% if U_AW_DUELS or U_AW_TOURNEYS or U_AW_STATS %}
+{% if U_AW_DUELS or U_AW_TOURNEYS or U_AW_STATS or U_AW_HELP %}
 <p class="aw-duel-link">
 	{% if U_AW_STATS %}<a class="button" href="{{ U_AW_STATS }}"><i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_STATS_MINE') }}</span></a>{% endif %}
 	{% if U_AW_DUELS %}<a class="button" href="{{ U_AW_DUELS }}"><i class="icon fa-bolt fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DUELS') }}</span>{% if AW_DUELS_OPEN %} <strong class="badge">{{ AW_DUELS_OPEN }}</strong>{% endif %}</a>{% endif %}
 	{% if U_AW_TOURNEYS %}<a class="button" href="{{ U_AW_TOURNEYS }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_TOURNEYS') }}</span></a>{% endif %}
+	{% if U_AW_HELP %}<a class="button" href="{{ U_AW_HELP }}"><i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_HELP') }}</span></a>{% endif %}
 </p>
 {% endif %}
 

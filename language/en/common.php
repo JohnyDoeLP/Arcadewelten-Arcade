@@ -382,4 +382,6 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_DOWNLOAD_TOO_BIG'		=> 'This game is too large to hand out as an archive.',
 	'AW_ARCADE_DOWNLOAD_FAILED'			=> 'The archive could not be packed.',
 	'AW_ARCADE_DOWNLOAD_GAME_OFF'		=> 'This game is not offered for download.',
+	'AW_ARCADE_HELP'				=> 'Help',
+	'AW_ARCADE_HELP_OFF'			=> 'The help page for the arcade is not switched on.',
 ]);

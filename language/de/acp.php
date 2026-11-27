@@ -446,4 +446,6 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_GAME_DOWNLOAD_OFF'		=> 'Hinweis: In den Einstellungen ist das Herunterladen derzeit ganz abgeschaltet, der Knopf erscheint also auch bei „ja“ nicht.',
 	'ACP_AW_ARCADE_DOWNLOAD_ON'				=> 'Herunterladen erlauben',
 	'ACP_AW_ARCADE_DOWNLOAD_OFF_BULK'		=> 'Herunterladen verbieten',
+	'ACP_AW_ARCADE_HELP'					=> 'Hilfeseite zur Spielhalle',
+	'ACP_AW_ARCADE_HELP_EXPLAIN'			=> 'Eine eigene Seite in der Hilfe des Forums mit über 40 Fragen und Antworten, erreichbar über einen Knopf in der Spielhalle und auch für Gäste lesbar. Abschnitte zu Teilen, die bei dir ausgeschaltet sind – etwa Duelle oder Turniere – werden weggelassen. Die Texte stehen in der Sprachdatei <samp>language/&lt;sprache&gt;/help/arcade.php</samp> und lassen sich an dein Forum anpassen.',
 ]);

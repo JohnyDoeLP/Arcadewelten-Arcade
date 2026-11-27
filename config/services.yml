@@ -343,6 +343,20 @@ services:
             - '@arcadewelten.arcade.certificate'
             - '@arcadewelten.arcade.packer'
 
+    arcadewelten.arcade.controller.help:
+        class: arcadewelten\arcade\controller\help
+        arguments:
+            - '@controller.helper'
+            - '@phpbb.help.manager'
+            - '@template'
+            - '@language'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '@config'
+            - '@arcadewelten.arcade.duels'
+            - '@arcadewelten.arcade.tourneys'
+            - '@arcadewelten.arcade.points'
+
     arcadewelten.arcade.listener:
         class: arcadewelten\arcade\event\listener
         arguments:

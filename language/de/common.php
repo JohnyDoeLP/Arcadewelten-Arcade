@@ -382,4 +382,6 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_DOWNLOAD_TOO_BIG'		=> 'Dieses Spiel ist zu umfangreich, um es als Archiv auszuliefern.',
 	'AW_ARCADE_DOWNLOAD_FAILED'			=> 'Das Archiv konnte nicht gepackt werden.',
 	'AW_ARCADE_DOWNLOAD_GAME_OFF'		=> 'Dieses Spiel steht nicht zum Herunterladen bereit.',
+	'AW_ARCADE_HELP'				=> 'Hilfe',
+	'AW_ARCADE_HELP_OFF'			=> 'Die Hilfeseite zur Spielhalle ist nicht eingeschaltet.',
 ]);

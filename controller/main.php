@@ -330,6 +330,7 @@ class main
 			'AW_SEARCH'			=> $search,
 			'U_AW_TOURNEYS'		=> $this->tourneys->enabled() ? $this->helper->route('arcadewelten_arcade_tourneys') : '',
 			'U_AW_STATS'		=> $this->is_member() ? $this->helper->route('arcadewelten_arcade_stats', ['user_id' => (int) $this->user->data['user_id']]) : '',
+			'U_AW_HELP'			=> !empty($this->config['aw_arcade_help']) ? $this->helper->route('arcadewelten_arcade_help') : '',
 			'AW_DUELS_OPEN'		=> (!$is_guest && $this->duels->enabled()) ? $this->duels->count_incoming($this->user->data['user_id']) : 0,
 			'U_AW_DUELS'		=> (!$is_guest && $this->duels->enabled()) ? $this->helper->route('arcadewelten_arcade_duels') : '',
 			'AW_SORT'			=> $sort,
