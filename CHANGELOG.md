@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **A game file given with its path now works.** Another arcade writes the game file into the installation file as `gamedata/<name>/index.html` instead of naming it alone. That path was looked for inside the game folder, where it is not, and every such game was turned away with "game file missing". The path is now read, the game is served from the folder it names, and what kind of game it is follows from the name of the file – a number in `game_type` that means nothing here no longer turns an HTML page into a Flash game. A path given in the installation file also wins over an index.html that happens to lie in the game folder
+
 ## 0.37.0-beta (2026-11-26)
 
 - **The upload now recognises an installation file written by SMF Arcade.** It was searched for by the name of our own field, so an archive that held one of theirs was turned away with "no installation file in the archive", although the importer has been able to read those files since 0.32. An HTML5 game of that arcade (`savetype` html5 or html52) reports its score to the old IBPro address, which this arcade answers, and is set up that way

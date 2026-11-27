@@ -299,6 +299,8 @@ class importer
 			'desc'			=> isset($raw['game_desc']) ? html_entity_decode($raw['game_desc'], ENT_QUOTES, 'UTF-8') : '',
 			'scorevar'		=> isset($raw['game_scorevar']) ? $raw['game_scorevar'] : $dir,
 			'file'			=> isset($raw['game_swf']) ? $raw['game_swf'] : $dir . '.swf',
+			// Folder the game is served from, empty for its own folder
+			'base'			=> '',
 			'image'			=> isset($raw['game_image']) ? $raw['game_image'] : '',
 			'width'			=> isset($raw['game_width']) ? max(100, min(4000, (int) $raw['game_width'])) : 640,
 			'height'		=> isset($raw['game_height']) ? max(100, min(4000, (int) $raw['game_height'])) : 480,
@@ -311,6 +313,26 @@ class importer
 			'reason_arg'	=> '',
 			'note'			=> '',
 		];
+
+		// Another arcade gives the game file with the path it sits under,
+		// pointing into the gamedata folder. The game is then served from
+		// there, and the name of the file says what kind it is - a number in
+		// game_type that means nothing here must not turn an HTML page into
+		// a Flash game.
+		$file = str_replace('\\', '/', (string) $game['file']);
+		$file = preg_replace('#^\./#', '', $file);
+
+		if (preg_match('#^gamedata/([A-Za-z0-9_\-]+)/(.+)$#i', $file, $parts))
+		{
+			$game['base'] = rtrim(self::GAMEDATA_PATH, '/') . '/' . $parts[1];
+			$game['file'] = $parts[2];
+			$file = $parts[2];
+		}
+
+		if (preg_match('/\.html?$/i', $file))
+		{
+			$game['type'] = games::TYPE_HTML5;
+		}
 
 		// A constant we do not support is not final: the game file is checked further down.
 		$declared_unknown = '';
@@ -359,12 +381,26 @@ class importer
 
 		if ($game['type'] === games::TYPE_HTML5)
 		{
-			// Ours keep their index.html in the game folder and report scores
-			// through our own interface.
-			$game['file'] = 'index.html';
-
-			if (is_file($base . 'index.html'))
+			if ($game['base'] !== '')
 			{
+				// The installation file named the path itself. Trust it over
+				// anything that happens to lie in the game folder: a stray
+				// index.html from another game is quickly packed along.
+				if (is_file($this->root_path . $game['base'] . '/' . $game['file']))
+				{
+					$game['save_type'] = games::SAVE_IBPRO;
+				}
+				else
+				{
+					$game['supported'] = false;
+					$game['reason'] = 'HTML5_NO_INDEX';
+				}
+			}
+			else if (is_file($base . 'index.html'))
+			{
+				// Ours keep their index.html in the game folder and report
+				// scores through our own interface.
+				$game['file'] = 'index.html';
 				$game['save_type'] = games::SAVE_HTML5;
 			}
 			else if (is_file($this->root_path . self::GAMEDATA_PATH . $game['dir'] . '/index.html'))
@@ -375,10 +411,12 @@ class importer
 				// score the old IBPro way, with the folder name as the game
 				// name - which is what our own endpoint already answers.
 				$game['base'] = rtrim(self::GAMEDATA_PATH, '/') . '/' . $game['dir'];
+				$game['file'] = 'index.html';
 				$game['save_type'] = games::SAVE_IBPRO;
 			}
 			else
 			{
+				$game['file'] = 'index.html';
 				$game['supported'] = false;
 				$game['reason'] = 'HTML5_NO_INDEX';
 			}
