@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.39.1-beta (2026-11-27)
+
+- **Fix: the download permission did not show up in the ACP.** It was created and handed to members, so the button worked, but a board could not take it away again or give it to chosen groups, because a permission has to be announced to phpBB on top of being created. It now stands with "Can use the arcade" under Misc
+
 ## 0.39.0-beta (2026-11-27)
 
 - **A game can be handed out as a ZIP.** A button on the game page packs the game folder with its gamedata, the way the upload takes an archive – download it, upload it again, and the same game stands there. Three things have to agree before the button appears: the setting is on, the member holds the permission "Can download games from the arcade" (members do, guests do not), and the game itself is marked as one that may go. New games are not, so switching the setting on gives nothing away by itself; the game list sets the mark for many games at once. Most arcade games are somebody else's work, and offering them for download is a different matter from having them playable, so the board decides, game by game

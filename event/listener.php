@@ -142,6 +142,7 @@ class listener implements EventSubscriberInterface
 	{
 		$permissions = $event['permissions'];
 		$permissions['u_aw_arcade_play'] = ['lang' => 'ACL_U_AW_ARCADE_PLAY', 'cat' => 'misc'];
+		$permissions['u_aw_arcade_download'] = ['lang' => 'ACL_U_AW_ARCADE_DOWNLOAD', 'cat' => 'misc'];
 		$event['permissions'] = $permissions;
 	}
 
