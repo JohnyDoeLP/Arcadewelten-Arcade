@@ -438,4 +438,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CERTS_POST_EXPLAIN'		=> 'Hängt die drei Urkunden unter die Saison- und Turnierergebnisse im Forum.',
 	'ACP_AW_ARCADE_CERTS_PAGE_EXPLAIN'		=> 'Zeigt jedem Mitglied seine Urkunden zum Ansehen und Herunterladen.',
 	'ACP_AW_ARCADE_ZIP_GAMEDATA'			=> 'Im Archiv lag ein <samp>gamedata</samp>-Ordner im Spielordner. Seine %d Dateien wurden nach <samp>arcade/gamedata/</samp> gelegt – dort gehören sie hin und dort findet das Spiel sie.',
+	'ACP_AW_ARCADE_DOWNLOAD'				=> 'Spiele zum Herunterladen anbieten',
+	'ACP_AW_ARCADE_DOWNLOAD_EXPLAIN'		=> 'Setzt auf die Spielseite einen Knopf, der das Spiel als ZIP ausliefert – Spielordner samt gamedata, so wie der Uploader ein Archiv annimmt. Wer das darf, legst du zusätzlich über die Berechtigung „Kann Spiele aus der Spielhalle herunterladen“ fest.<br><strong>Zum Überlegen:</strong> Die meisten Spielhallen-Spiele sind fremde Werke. Sie spielbar anzubieten ist das eine, sie zum Herunterladen bereitzustellen etwas anderes.',
+	'ACP_AW_ARCADE_DOWNLOAD_NO_ZIP'			=> 'Auf diesem Server fehlt die ZIP-Unterstützung von PHP – ohne sie bleibt die Einstellung wirkungslos.',
 ]);

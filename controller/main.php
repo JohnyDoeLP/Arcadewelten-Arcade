@@ -52,7 +52,10 @@ class main
 	/** @var \arcadewelten\arcade\core\certificate|null */
 	protected $certificate;
 
-	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot, ?\arcadewelten\arcade\core\sitemap $sitemap = null, ?\arcadewelten\arcade\core\stats $stats = null, ?\arcadewelten\arcade\core\certs $certs = null, ?\arcadewelten\arcade\core\certificate $certificate = null)
+	/** @var \arcadewelten\arcade\core\packer|null */
+	protected $packer;
+
+	public function __construct(games $games, \arcadewelten\arcade\core\scores $scores, \arcadewelten\arcade\core\access $access, \arcadewelten\arcade\core\points $points, ratings $ratings, \arcadewelten\arcade\core\recent $recent, \arcadewelten\arcade\core\duels $duels, \arcadewelten\arcade\core\forum $forum, \arcadewelten\arcade\core\favorites $favorites, \arcadewelten\arcade\core\reports $reports, \phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\language\language $language, \phpbb\user $user, \phpbb\request\request_interface $request, \phpbb\pagination $pagination, $root_path, \arcadewelten\arcade\core\tourneys $tourneys, \arcadewelten\arcade\core\tourney_jobs $tourney_jobs, \arcadewelten\arcade\core\jackpot $jackpot, ?\arcadewelten\arcade\core\sitemap $sitemap = null, ?\arcadewelten\arcade\core\stats $stats = null, ?\arcadewelten\arcade\core\certs $certs = null, ?\arcadewelten\arcade\core\certificate $certificate = null, ?\arcadewelten\arcade\core\packer $packer = null)
 	{
 		$this->games = $games;
 		$this->scores = $scores;
@@ -79,6 +82,7 @@ class main
 		$this->stats = $stats;
 		$this->certs = $certs;
 		$this->certificate = $certificate;
+		$this->packer = $packer;
 
 		$this->language->add_lang('common', 'arcadewelten/arcade');
 	}
@@ -469,6 +473,8 @@ class main
 			'S_AW_FAV'			=> $is_member && $this->favorites->enabled() && $this->favorites->is_favorite($this->user->data['user_id'], $game['game_id']),
 			'U_AW_FAV'			=> $this->helper->route('arcadewelten_arcade_favorite', ['game_id' => (int) $game['game_id']]),
 			'S_AW_REPORTS'		=> $is_member && $this->reports->enabled(),
+			'U_AW_DOWNLOAD'		=> ($this->packer && !empty($this->config['aw_arcade_download']) && $this->packer->available() && $this->access->can_download())
+				? $this->helper->route('arcadewelten_arcade_download', ['game_id' => (int) $game['game_id']]) : '',
 			'U_AW_REPORT'		=> $this->helper->route('arcadewelten_arcade_report', ['game_id' => (int) $game['game_id']]),
 			'S_AW_GUEST'		=> !$is_member,
 			'S_AW_NO_SCORES'	=> (int) $game['game_save_type'] === games::SAVE_NONE,
@@ -867,6 +873,47 @@ class main
 		return new \Symfony\Component\HttpFoundation\Response($xml, 200, [
 			'Content-Type'	=> 'application/xml; charset=UTF-8',
 		]);
+	}
+
+	/**
+	 * Hands a game out as a ZIP, the way the uploader takes one.
+	 */
+	public function download($game_id)
+	{
+		$this->check_use();
+
+		if (!$this->packer || empty($this->config['aw_arcade_download']) || !$this->access->can_download())
+		{
+			throw new \phpbb\exception\http_exception(403, 'AW_ARCADE_DOWNLOAD_OFF');
+		}
+
+		$game = $this->games->get_game((int) $game_id);
+		$cat = $game && $game['cat_id'] ? ['cat_id' => $game['cat_id'], 'cat_password' => $game['cat_password']] : false;
+
+		// Whoever may not see or open the game may not carry it away either.
+		if (!$game || !$this->access->can_see_cat($game['cat_id']) || ($cat && !$this->access->has_access($cat)))
+		{
+			throw new \phpbb\exception\http_exception(404, 'AW_ARCADE_NO_GAME');
+		}
+
+		try
+		{
+			$file = $this->packer->pack($game);
+		}
+		catch (\RuntimeException $e)
+		{
+			throw new \phpbb\exception\http_exception(500, $e->getMessage());
+		}
+
+		$response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($file);
+		$response->headers->set('Content-Type', 'application/zip');
+		$response->setContentDisposition(
+			\Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+			$this->packer->file_name($game)
+		);
+		$response->deleteFileAfterSend(true);
+
+		return $response;
 	}
 
 	/* ---------------------------------------------------------------

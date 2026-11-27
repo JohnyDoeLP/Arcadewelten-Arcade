@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **A game can be handed out as a ZIP.** A button on the game page packs the game folder with its gamedata, the way the upload takes an archive – download it, upload it again, and the same game stands there. Off until a board switches it on, and on top of that tied to the permission "Can download games from the arcade", which members hold and guests do not. Most arcade games are somebody else's work, and offering them for download is a different matter from having them playable, so the board decides
+- **A page on how to pack a game** (`PACKAGING.md`): the folder a game needs, the installation file with its fields for Flash and for HTML5, why the folder, the installation file and the score variable have to carry the same name, what games from other arcades bring along, and what does not belong in an archive
+
 ## 0.38.0-beta (2026-11-27)
 
 - **A game file given with its path now works.** Another arcade writes the game file into the installation file as `gamedata/<name>/index.html` instead of naming it alone. That path was looked for inside the game folder, where it is not, and every such game was turned away with "game file missing". The path is now read, the game is served from the folder it names, and what kind of game it is follows from the name of the file – a number in `game_type` that means nothing here no longer turns an HTML page into a Flash game. A path given in the installation file also wins over an index.html that happens to lie in the game folder

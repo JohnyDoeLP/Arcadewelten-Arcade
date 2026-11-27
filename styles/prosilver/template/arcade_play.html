@@ -51,6 +51,7 @@
 		{% if U_AW_TOPIC %}<a class="button" href="{{ U_AW_TOPIC }}"><i class="icon fa-comments fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DISCUSS') }}</span></a>{% endif %}
 		<button type="button" class="button" id="aw-cinema" aria-pressed="false" data-on="{{ lang('AW_ARCADE_LIGHTS_ON') }}" data-off="{{ lang('AW_ARCADE_LIGHTS_OFF') }}"><i class="icon fa-lightbulb-o fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_LIGHTS_OFF') }}</span></button>
 		{% if not S_AW_GUEST %}<a class="button" href="{{ U_AW_SCORES }}"><i class="icon fa-trophy fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_HIGHSCORES') }}</span></a>{% endif %}
+		{% if U_AW_DOWNLOAD %}<a class="button" href="{{ U_AW_DOWNLOAD }}"><i class="icon fa-download fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_DOWNLOAD') }}</span></a>{% endif %}
 		{% if S_AW_REPORTS %}<button type="button" class="button" id="aw-report-open" aria-expanded="false" aria-controls="aw-report"><i class="icon fa-flag fa-fw" aria-hidden="true"></i><span>{{ lang('AW_ARCADE_REPORT') }}</span></button>{% endif %}
 	</div>
 	{% if S_AW_REPORTS %}

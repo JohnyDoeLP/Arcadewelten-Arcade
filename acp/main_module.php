@@ -230,6 +230,7 @@ class main_module
 			$this->config->set('aw_arcade_post_season', $this->request->variable('aw_post_season', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_tourneys', $this->request->variable('aw_post_tourneys', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_post_batch', max(0, min(100, $this->request->variable('aw_post_batch', 5))));
+			$this->config->set('aw_arcade_download', $this->request->variable('aw_download', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_certs', $this->request->variable('aw_certs', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_certs_post', $this->request->variable('aw_certs_post', 0) ? 1 : 0);
 			$this->config->set('aw_arcade_certs_page', $this->request->variable('aw_certs_page', 0) ? 1 : 0);
@@ -316,6 +317,8 @@ class main_module
 			'AW_FAVORITES'			=> (bool) $this->config['aw_arcade_favorites'],
 			'AW_REPORTS'			=> (bool) $this->config['aw_arcade_reports'],
 			'AW_MEDALS'				=> (bool) $this->config['aw_arcade_medals'],
+			'AW_DOWNLOAD'			=> (bool) $this->config['aw_arcade_download'],
+			'S_AW_ZIP'				=> class_exists('\\ZipArchive'),
 			'AW_CERTS'				=> (bool) $this->config['aw_arcade_certs'],
 			'AW_CERTS_POST'			=> (bool) $this->config['aw_arcade_certs_post'],
 			'AW_CERTS_PAGE'			=> (bool) $this->config['aw_arcade_certs_page'],

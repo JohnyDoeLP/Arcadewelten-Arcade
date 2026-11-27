@@ -67,6 +67,14 @@ class access
 	}
 
 	/**
+	 * Permission "Can download games from the arcade" (administrators always).
+	 */
+	public function can_download()
+	{
+		return (bool) ($this->auth->acl_get('u_aw_arcade_download') || $this->auth->acl_get('a_'));
+	}
+
+	/**
 	 * Groups a category is limited to, for all categories (empty = everybody).
 	 *
 	 * @return array cat_id => [group_id, ...]

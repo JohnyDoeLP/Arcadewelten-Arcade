@@ -18,4 +18,5 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, [
 	'ACL_U_AW_ARCADE_PLAY'	=> 'Can use the arcade',
+	'ACL_U_AW_ARCADE_DOWNLOAD'	=> 'Can download games from the arcade',
 ]);

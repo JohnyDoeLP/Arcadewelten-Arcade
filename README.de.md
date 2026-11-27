@@ -122,6 +122,10 @@ unter **Ankündigungen & Downloads** stehen die Releases, die Spiele-Pakete und 
 
 Wer lieber auf [GitHub](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/issues) meldet, kann das genauso tun.
 
+## Eigene Spiele einbauen
+
+Wie ein Spiel gepackt sein muss, damit die Spielhalle es annimmt, steht in [PACKAGING.md](PACKAGING.md) – Ordnerstruktur, Installationsdatei für Flash und HTML5, und was nicht ins Archiv gehört.
+
 ## Lizenz
 
 GPL-2.0-only, siehe `license.txt`.

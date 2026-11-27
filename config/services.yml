@@ -166,6 +166,12 @@ services:
             - '%arcadewelten.arcade.tables.cats%'
             - '%arcadewelten.arcade.tables.cat_groups%'
 
+    arcadewelten.arcade.packer:
+        class: arcadewelten\arcade\core\packer
+        arguments:
+            - '@arcadewelten.arcade.games'
+            - '%core.root_path%'
+
     arcadewelten.arcade.unpacker:
         class: arcadewelten\arcade\core\unpacker
         arguments:
@@ -335,6 +341,7 @@ services:
             - '@arcadewelten.arcade.stats'
             - '@arcadewelten.arcade.certs'
             - '@arcadewelten.arcade.certificate'
+            - '@arcadewelten.arcade.packer'
 
     arcadewelten.arcade.listener:
         class: arcadewelten\arcade\event\listener

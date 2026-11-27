@@ -118,6 +118,10 @@ Questions about the installation, problems with games, bug reports: the support 
 
 Reporting it on [GitHub](https://github.com/JohnyDoeLP/Arcadewelten-Arcade/issues) works too, whichever you prefer.
 
+## Adding your own games
+
+How an archive has to look so the arcade takes it is in [PACKAGING.md](PACKAGING.md) – the folder, the installation file for Flash and for HTML5, why the folder, the installation file and the score variable carry the same name, and what does not belong in an archive.
+
 ## Licence
 
 GPL-2.0-only, see `license.txt`.

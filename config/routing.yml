@@ -106,3 +106,9 @@ arcadewelten_arcade_certificate_size:
     requirements:
         cert_id: \d+
         size: preview|download
+
+arcadewelten_arcade_download:
+    path: /arcadehall/download/{game_id}
+    defaults: { _controller: arcadewelten.arcade.controller.main:download }
+    requirements:
+        game_id: \d+

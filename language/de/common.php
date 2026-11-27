@@ -375,4 +375,10 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_CERT_LINE_TOURNEY'	=> 'Turnier „%s“',
 	'AW_ARCADE_NO_CERT'				=> 'Diese Urkunde gibt es nicht.',
 	'AW_ARCADE_CERT_NO_GD'			=> 'Urkunden brauchen die GD-Bibliothek mit FreeType. Dein Server hat sie nicht.',
+	'AW_ARCADE_DOWNLOAD'				=> 'Herunterladen',
+	'AW_ARCADE_DOWNLOAD_OFF'			=> 'Spiele können in dieser Spielhalle nicht heruntergeladen werden.',
+	'AW_ARCADE_DOWNLOAD_NO_ZIP'			=> 'Auf diesem Server fehlt die ZIP-Unterstützung von PHP. Ohne sie lässt sich kein Archiv packen.',
+	'AW_ARCADE_DOWNLOAD_EMPTY'			=> 'Zu diesem Spiel liegen keine Dateien auf dem Server.',
+	'AW_ARCADE_DOWNLOAD_TOO_BIG'		=> 'Dieses Spiel ist zu umfangreich, um es als Archiv auszuliefern.',
+	'AW_ARCADE_DOWNLOAD_FAILED'			=> 'Das Archiv konnte nicht gepackt werden.',
 ]);

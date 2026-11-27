@@ -438,4 +438,7 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_CERTS_POST_EXPLAIN'		=> 'Puts the three certificates under the season and tournament results in the forum.',
 	'ACP_AW_ARCADE_CERTS_PAGE_EXPLAIN'		=> 'Shows every member their certificates to look at and to download.',
 	'ACP_AW_ARCADE_ZIP_GAMEDATA'			=> 'The archive had a <samp>gamedata</samp> folder inside the game folder. Its %d files were put in <samp>arcade/gamedata/</samp>, which is where they belong and where the game looks for them.',
+	'ACP_AW_ARCADE_DOWNLOAD'				=> 'Offer games for download',
+	'ACP_AW_ARCADE_DOWNLOAD_EXPLAIN'		=> 'Puts a button on the game page that hands the game out as a ZIP – the game folder with its gamedata, the way the uploader takes an archive. Who may do so is set on top of that by the permission “Can download games from the arcade”.<br><strong>Worth a thought:</strong> most arcade games are somebody else’s work. Having them playable is one thing, offering them for download another.',
+	'ACP_AW_ARCADE_DOWNLOAD_NO_ZIP'			=> 'This server has no ZIP support in PHP – without it the setting does nothing.',
 ]);
