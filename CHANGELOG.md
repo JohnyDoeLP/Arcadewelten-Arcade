@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.38.0-beta (2026-11-27)
 
 - **A game file given with its path now works.** Another arcade writes the game file into the installation file as `gamedata/<name>/index.html` instead of naming it alone. That path was looked for inside the game folder, where it is not, and every such game was turned away with "game file missing". The path is now read, the game is served from the folder it names, and what kind of game it is follows from the name of the file – a number in `game_type` that means nothing here no longer turns an HTML page into a Flash game. A path given in the installation file also wins over an index.html that happens to lie in the game folder
 
