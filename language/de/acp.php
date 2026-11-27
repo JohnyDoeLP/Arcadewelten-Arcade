@@ -441,4 +441,9 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_DOWNLOAD'				=> 'Spiele zum Herunterladen anbieten',
 	'ACP_AW_ARCADE_DOWNLOAD_EXPLAIN'		=> 'Setzt auf die Spielseite einen Knopf, der das Spiel als ZIP ausliefert – Spielordner samt gamedata, so wie der Uploader ein Archiv annimmt. Wer das darf, legst du zusätzlich über die Berechtigung „Kann Spiele aus der Spielhalle herunterladen“ fest.<br><strong>Zum Überlegen:</strong> Die meisten Spielhallen-Spiele sind fremde Werke. Sie spielbar anzubieten ist das eine, sie zum Herunterladen bereitzustellen etwas anderes.',
 	'ACP_AW_ARCADE_DOWNLOAD_NO_ZIP'			=> 'Auf diesem Server fehlt die ZIP-Unterstützung von PHP – ohne sie bleibt die Einstellung wirkungslos.',
+	'ACP_AW_ARCADE_GAME_DOWNLOAD'			=> 'Dieses Spiel darf heruntergeladen werden',
+	'ACP_AW_ARCADE_GAME_DOWNLOAD_EXPLAIN'	=> 'Gedacht für Spiele, die du selbst gemacht hast oder weitergeben darfst. Neue Spiele stehen auf „nein“.',
+	'ACP_AW_ARCADE_GAME_DOWNLOAD_OFF'		=> 'Hinweis: In den Einstellungen ist das Herunterladen derzeit ganz abgeschaltet, der Knopf erscheint also auch bei „ja“ nicht.',
+	'ACP_AW_ARCADE_DOWNLOAD_ON'				=> 'Herunterladen erlauben',
+	'ACP_AW_ARCADE_DOWNLOAD_OFF_BULK'		=> 'Herunterladen verbieten',
 ]);

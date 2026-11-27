@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **A game can be handed out as a ZIP.** A button on the game page packs the game folder with its gamedata, the way the upload takes an archive – download it, upload it again, and the same game stands there. Off until a board switches it on, and on top of that tied to the permission "Can download games from the arcade", which members hold and guests do not. Most arcade games are somebody else's work, and offering them for download is a different matter from having them playable, so the board decides
+- **A game can be handed out as a ZIP.** A button on the game page packs the game folder with its gamedata, the way the upload takes an archive – download it, upload it again, and the same game stands there. Three things have to agree before the button appears: the setting is on, the member holds the permission "Can download games from the arcade" (members do, guests do not), and the game itself is marked as one that may go. New games are not, so switching the setting on gives nothing away by itself; the game list sets the mark for many games at once. Most arcade games are somebody else's work, and offering them for download is a different matter from having them playable, so the board decides, game by game
 - **A page on how to pack a game** (`PACKAGING.md`): the folder a game needs, the installation file with its fields for Flash and for HTML5, why the folder, the installation file and the score variable have to carry the same name, what games from other arcades bring along, and what does not belong in an archive
 
 ## 0.38.0-beta (2026-11-27)

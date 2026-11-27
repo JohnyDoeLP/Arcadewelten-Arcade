@@ -473,7 +473,7 @@ class main
 			'S_AW_FAV'			=> $is_member && $this->favorites->enabled() && $this->favorites->is_favorite($this->user->data['user_id'], $game['game_id']),
 			'U_AW_FAV'			=> $this->helper->route('arcadewelten_arcade_favorite', ['game_id' => (int) $game['game_id']]),
 			'S_AW_REPORTS'		=> $is_member && $this->reports->enabled(),
-			'U_AW_DOWNLOAD'		=> ($this->packer && !empty($this->config['aw_arcade_download']) && $this->packer->available() && $this->access->can_download())
+			'U_AW_DOWNLOAD'		=> ($this->packer && !empty($game['game_download']) && !empty($this->config['aw_arcade_download']) && $this->packer->available() && $this->access->can_download())
 				? $this->helper->route('arcadewelten_arcade_download', ['game_id' => (int) $game['game_id']]) : '',
 			'U_AW_REPORT'		=> $this->helper->route('arcadewelten_arcade_report', ['game_id' => (int) $game['game_id']]),
 			'S_AW_GUEST'		=> !$is_member,
@@ -888,6 +888,11 @@ class main
 		}
 
 		$game = $this->games->get_game((int) $game_id);
+
+		if ($game && empty($game['game_download']))
+		{
+			throw new \phpbb\exception\http_exception(403, 'AW_ARCADE_DOWNLOAD_GAME_OFF');
+		}
 		$cat = $game && $game['cat_id'] ? ['cat_id' => $game['cat_id'], 'cat_password' => $game['cat_password']] : false;
 
 		// Whoever may not see or open the game may not carry it away either.

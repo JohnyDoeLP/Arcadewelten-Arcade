@@ -440,6 +440,13 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt><label>{{ lang('ACP_AW_ARCADE_GAME_DOWNLOAD') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_GAME_DOWNLOAD_EXPLAIN') }}{% if not S_AW_DOWNLOAD_ON %}<br>{{ lang('ACP_AW_ARCADE_GAME_DOWNLOAD_OFF') }}{% endif %}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" name="game_download" value="1"{% if S_GAME_DOWNLOAD %} checked{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="game_download" value="0"{% if not S_GAME_DOWNLOAD %} checked{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
+		<dl>
 			<dt><label>{{ lang('ACP_AW_ARCADE_TOUCH') }}{{ lang('COLON') }}</label><br><span>{{ lang('ACP_AW_ARCADE_TOUCH_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" name="game_touch" value="1"{% if S_GAME_TOUCH %} checked{% endif %}> {{ lang('YES') }}</label>
@@ -534,6 +541,8 @@
 				<option value="guest_off">{{ lang('ACP_AW_ARCADE_GUEST_OFF') }}</option>
 				<option value="touch_on">{{ lang('ACP_AW_ARCADE_TOUCH_ON') }}</option>
 				<option value="touch_off">{{ lang('ACP_AW_ARCADE_TOUCH_OFF') }}</option>
+				<option value="download_on">{{ lang('ACP_AW_ARCADE_DOWNLOAD_ON') }}</option>
+				<option value="download_off">{{ lang('ACP_AW_ARCADE_DOWNLOAD_OFF_BULK') }}</option>
 				<option value="new_on">{{ lang('ACP_AW_ARCADE_NEW_ON') }}</option>
 				<option value="new_off">{{ lang('ACP_AW_ARCADE_NEW_OFF') }}</option>
 				<option value="post_topic">{{ lang('ACP_AW_ARCADE_POST_TOPIC') }}</option>

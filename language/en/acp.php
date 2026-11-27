@@ -441,4 +441,9 @@ $lang = array_merge($lang, [
 	'ACP_AW_ARCADE_DOWNLOAD'				=> 'Offer games for download',
 	'ACP_AW_ARCADE_DOWNLOAD_EXPLAIN'		=> 'Puts a button on the game page that hands the game out as a ZIP – the game folder with its gamedata, the way the uploader takes an archive. Who may do so is set on top of that by the permission “Can download games from the arcade”.<br><strong>Worth a thought:</strong> most arcade games are somebody else’s work. Having them playable is one thing, offering them for download another.',
 	'ACP_AW_ARCADE_DOWNLOAD_NO_ZIP'			=> 'This server has no ZIP support in PHP – without it the setting does nothing.',
+	'ACP_AW_ARCADE_GAME_DOWNLOAD'			=> 'This game may be downloaded',
+	'ACP_AW_ARCADE_GAME_DOWNLOAD_EXPLAIN'	=> 'Meant for games you made yourself or are free to pass on. New games stand at “no”.',
+	'ACP_AW_ARCADE_GAME_DOWNLOAD_OFF'		=> 'Note: downloading is switched off altogether in the settings, so the button does not appear even at “yes”.',
+	'ACP_AW_ARCADE_DOWNLOAD_ON'				=> 'Allow download',
+	'ACP_AW_ARCADE_DOWNLOAD_OFF_BULK'		=> 'Forbid download',
 ]);

@@ -5,8 +5,8 @@ yourself, or one you are bringing over from another arcade. It describes what
 an archive has to look like so the upload under **ACP → Arcade → Add games**
 takes it.
 
-If you have the arcade's download button switched on, the quickest way to see
-a correct archive is to download a game that already works and open it.
+Where the arcade hands games out, the quickest way to see a correct archive is
+to download a game that already works and open it.
 
 ## The short version
 

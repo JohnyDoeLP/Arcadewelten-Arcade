@@ -659,6 +659,14 @@ class main_module
 						$this->games->update_game($id, ['game_touch' => 0]);
 					break;
 
+					case 'download_on':
+						$this->games->update_game($id, ['game_download' => 1]);
+					break;
+
+					case 'download_off':
+						$this->games->update_game($id, ['game_download' => 0]);
+					break;
+
 					case 'new_on':
 						$this->games->update_game($id, ['game_not_new' => 0, 'game_added' => time()]);
 					break;
@@ -758,6 +766,7 @@ class main_module
 				'S_ACTIVE'		=> (bool) $row['game_active'],
 				'S_GUEST'		=> (bool) $row['game_guest'],
 				'S_TOUCH'		=> (bool) $row['game_touch'],
+				'S_DOWNLOAD'	=> (bool) $row['game_download'],
 				'S_NEW'			=> $this->games->is_new($row),
 				'EXTERNAL'		=> isset($row['game_external']) ? implode(', ', \arcadewelten\arcade\core\external::split($row['game_external'])) : '',
 				'S_NO_GAMEDATA'	=> $this->games->gamedata_missing($row['game_scorevar'], $row['game_save_type']),
@@ -833,6 +842,7 @@ class main_module
 				'game_active'		=> $this->request->variable('game_active', 0) ? 1 : 0,
 				'game_guest'		=> $this->request->variable('game_guest', 0) ? 1 : 0,
 				'game_touch'		=> $this->request->variable('game_touch', 0) ? 1 : 0,
+				'game_download'		=> $this->request->variable('game_download', 0) ? 1 : 0,
 				'game_min_time'		=> max(0, min(3600, $this->request->variable('game_min_time', 0))),
 				'game_max_score'	=> max(0, (float) str_replace(',', '.', $this->request->variable('game_max_score', '0'))),
 			] + $this->read_point_fields('game'));
@@ -892,6 +902,8 @@ class main_module
 			'S_GAME_ACTIVE'		=> (bool) $game['game_active'],
 			'S_GAME_GUEST'		=> (bool) $game['game_guest'],
 			'S_GAME_TOUCH'		=> (bool) $game['game_touch'],
+			'S_GAME_DOWNLOAD'	=> (bool) $game['game_download'],
+			'S_AW_DOWNLOAD_ON'	=> (bool) $this->config['aw_arcade_download'],
 			'GAME_MIN_TIME'		=> (int) $game['game_min_time'],
 			'GAME_MAX_SCORE'	=> (float) $game['game_max_score'] + 0,
 			'GAME_RATING'		=> $this->rating_text($game),

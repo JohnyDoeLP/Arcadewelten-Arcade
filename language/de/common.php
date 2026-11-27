@@ -381,4 +381,5 @@ $lang = array_merge($lang, [
 	'AW_ARCADE_DOWNLOAD_EMPTY'			=> 'Zu diesem Spiel liegen keine Dateien auf dem Server.',
 	'AW_ARCADE_DOWNLOAD_TOO_BIG'		=> 'Dieses Spiel ist zu umfangreich, um es als Archiv auszuliefern.',
 	'AW_ARCADE_DOWNLOAD_FAILED'			=> 'Das Archiv konnte nicht gepackt werden.',
+	'AW_ARCADE_DOWNLOAD_GAME_OFF'		=> 'Dieses Spiel steht nicht zum Herunterladen bereit.',
 ]);
