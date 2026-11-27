@@ -33,6 +33,7 @@ Suggestions are welcome – the list grows with the community.
 - 0.36 – HTML5 games packed the way other arcades pack them
 - 0.37 – SMF installation files in an uploaded archive
 - 0.38 – a game file given with its path (JV arcade)
+- 0.39 – hand a game out as a ZIP, and a page on how one is packed
 
 ## Next
 
