@@ -526,7 +526,7 @@
 			{% for g in loops.games %}
 				<tr>
 					<td><input type="checkbox" class="aw-gid" name="game_ids[]" value="{{ g.ID }}"></td>
-					<td><strong>{{ g.NAME }}</strong>{% if g.S_NEW %} <strong class="aw-acp-new">{{ lang('AW_ARCADE_NEW') }}</strong>{% endif %}{% if g.S_TOUCH %} <i class="icon fa-mobile fa-fw" aria-hidden="true" title="{{ lang('ACP_AW_ARCADE_TOUCH') }}"></i>{% endif %}<br><span class="small">{{ g.DIR }}</span>{% if g.EXTERNAL %}<br><span class="small error" title="{{ lang('ACP_AW_ARCADE_EXTERNAL_HINT') }}">⚠ {{ lang('ACP_AW_ARCADE_EXTERNAL_LOADS', g.EXTERNAL) }}</span>{% endif %}{% if g.S_NO_GAMEDATA %}<br><span class="small error" title="{{ lang('ACP_AW_ARCADE_NO_GAMEDATA_HINT') }}">⚠ {{ lang('ACP_AW_ARCADE_NO_GAMEDATA', g.DIR) }}</span>{% endif %}</td>
+					<td><strong>{{ g.NAME }}</strong>{% if g.S_NEW %} <strong class="aw-acp-new">{{ lang('AW_ARCADE_NEW') }}</strong>{% endif %}{% if g.S_TOUCH %} <i class="icon fa-mobile fa-fw" aria-hidden="true" title="{{ lang('ACP_AW_ARCADE_TOUCH') }}"></i>{% endif %}<br><span class="small">{{ g.DIR }}</span>{% if g.EXTERNAL %}<br><span class="small error" title="{{ lang('ACP_AW_ARCADE_EXTERNAL_HINT') }}">⚠ {{ lang('ACP_AW_ARCADE_EXTERNAL_LOADS', g.EXTERNAL) }}</span>{% endif %}{% if g.S_NO_GAMEDATA %}<br><span class="small error" title="{{ lang('ACP_AW_ARCADE_NO_GAMEDATA_HINT') }}">⚠ {{ lang('ACP_AW_ARCADE_NO_GAMEDATA', g.DIR) }}</span>{% endif %}{% if g.DOWNLOADS %}<br><span class="small">{{ lang('ACP_AW_ARCADE_DOWNLOADED', g.DOWNLOADS) }}</span>{% endif %}</td>
 					<td>{{ g.CAT }}</td>
 					<td>{{ g.SAVE_TYPE }}</td>
 					<td>{{ g.PLAYS }}</td>

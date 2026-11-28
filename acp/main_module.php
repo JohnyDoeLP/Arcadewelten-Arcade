@@ -769,6 +769,7 @@ class main_module
 				'S_GUEST'		=> (bool) $row['game_guest'],
 				'S_TOUCH'		=> (bool) $row['game_touch'],
 				'S_DOWNLOAD'	=> (bool) $row['game_download'],
+				'DOWNLOADS'		=> (int) $row['game_downloads'],
 				'S_NEW'			=> $this->games->is_new($row),
 				'EXTERNAL'		=> isset($row['game_external']) ? implode(', ', \arcadewelten\arcade\core\external::split($row['game_external'])) : '',
 				'S_NO_GAMEDATA'	=> $this->games->gamedata_missing($row['game_scorevar'], $row['game_save_type']),

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **A count of how often a game has been handed out**, shown with the game in the ACP list. A number per game and nothing else: who downloaded what is not written down anywhere, here or elsewhere
 - **A help page for the arcade**, inside phpBB's own help system at `app.php/help/arcade`, reached by a button in the arcade and readable by guests. Over 40 questions in German and English: why a result was not counted and what the checking list is, duels, tournaments, categories with a password or a period, the season and its certificates, points and the jackpot, favourites, ratings and medals, old Flash games on a phone, downloading, and what the arcade keeps about a member. A block whose part of the arcade is switched off is left out, so nobody reads about duels on a board that has none. The texts sit in `language/<language>/help/arcade.php` and can be reworded for a board. Can be switched off
 
 ## 0.39.1-beta (2026-11-27)

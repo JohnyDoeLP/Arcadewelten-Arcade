@@ -911,6 +911,8 @@ class main
 			throw new \phpbb\exception\http_exception(500, $e->getMessage());
 		}
 
+		$this->games->count_download((int) $game['game_id']);
+
 		$response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($file);
 		$response->headers->set('Content-Type', 'application/zip');
 		$response->setContentDisposition(

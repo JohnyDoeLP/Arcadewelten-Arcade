@@ -102,6 +102,17 @@ class games
 	 * @return bool
 	 */
 	/**
+	 * One more hand-out of this game. A count, no names: which games are
+	 * wanted is worth knowing, who took them is not kept.
+	 */
+	public function count_download($game_id)
+	{
+		$this->db->sql_query('UPDATE ' . $this->games_table . '
+			SET game_downloads = game_downloads + 1
+			WHERE game_id = ' . (int) $game_id);
+	}
+
+	/**
 	 * Folder that holds the gamedata of a game, empty if it has none.
 	 * The files a v3 game loads at run time live here, not in the game
 	 * folder, so a check that only looks at the game folder misses them.
